@@ -53,7 +53,7 @@ Deleting your account will delete all messages, conversations and contacts follo
 ### Lightweight
 The conversations screen has been designed with low data usage in mind.
 We have accomplished this by using no libraries or bloat and writing front end resources in a minimal fashion while compressing content where possible.
-If you have JavaScript enabled than we use AJAX calls with server side long polling to check for new conversations and messages. With no new conversations or messages this uses around **368 Bytes** per two minutes.
+If you have JavaScript enabled than we use AJAX calls with server side long polling to check for new conversations and messages. With no new conversations or messages this uses around **368 Bytes** (depending on headers) per two minutes.
 
 ---
 

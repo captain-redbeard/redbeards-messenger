@@ -48,7 +48,7 @@ if(isset($_GET['page'])) $page = $_GET['page'];
 			.co { width: 100%; height: 100vh; margin: 0 auto; }
 		</style>
 
-		<base href="http://localhost/customers/php-messenger/src/public/">
+		<base href="https://yourdomain.com.au">
 		<?php if(isset($page) && $page == "conversations") { ?>
 			
 		<link rel="stylesheet" href="./css/m.css">

@@ -5,12 +5,11 @@
  * This is the configuration file, be sure to change the values 
  * as required.
  * 
- * Modified: 01-Dec-2016
+ * Modified: 03-Dec-2016
  * Made Date: 25-Nov-2015
  * Author: Hosvir
  * 
  * */
- 
 getenv("DB_HOSTNAME") != null ? define("DB_HOSTNAME", getenv("DB_HOSTNAME")) : define("DB_HOSTNAME", "");
 getenv("DB_USERNAME") != null ? define("DB_USERNAME", getenv("DB_USERNAME")) : define("DB_USERNAME", "");
 getenv("DB_PASSWORD") != null ? define("DB_PASSWORD", getenv("DB_PASSWORD")) : define("DB_PASSWORD", "");
@@ -21,8 +20,7 @@ getenv("KEY_BUCKET") != null ? define("KEY_BUCKET", getenv("KEY_BUCKET")) : defi
 
 define("TIMEZONE", "UTC");
 define("USESSION", "fdu-user-0auQ8cSlA6c"); //Make unique
-define("PW_COST", 12);	
-define("SECURE", TRUE);					//Set to TRUE for production with SSL
-define("STORE_KEYS_LOCAL", TRUE);
+define("PW_COST", 12);
+define("SECURE", true);
+define("STORE_KEYS_LOCAL", true);
 define("CONVERSATION_MAX_LENGTH", 100);
-?>

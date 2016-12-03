@@ -4,16 +4,16 @@
  * Details:
  * PHP Messenger.
  * 
- * Modified: 25-Nov-2016
+ * Modified: 03-Dec-2016
  * Made Date: 25-Nov-2016
  * Author: Hosvir
  * 
  * */
 include_once(dirname(__FILE__) . "/../includes/authentication.php");
-sec_session_start(); 
+secureSessionStart(); 
 
-if(!login_check($mysqli)) {
-	$loggedin = false;
-	header('Location: ' . str_replace("index.php", "", getURL()) . 'login');
+if (!loginCheck()) {
+    $loggedin = false;
+    header('Location: ' . str_replace("index.php", "", getURL()) . 'login');
 }
 ?>

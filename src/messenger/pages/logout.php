@@ -1,6 +1,6 @@
 <?php
 include(dirname(__FILE__) . "/../includes/authentication.php");
-sec_session_start();
+secureSessionStart();
  
 //Unset all session values 
 $_SESSION = array();

@@ -15,8 +15,25 @@ We accomplish this by utilising [Public Key Encryption](https://en.wikipedia.org
 
 ---
 
-### Official Website
+### Official Demo Website
 [fromdownunder.com.au](https://fromdownunder.com.au)
+**Note: as this is a demo website, all data will be wiped regularly.**
+
+---
+
+### Install (Proof of concept)
+**Please understand this is still in a Proof of concept stage and the code base may change drastically.**
+
+##### Amazon Web Services - ElasticBeanstalk
+Config files have been created to automate the setup of the server located under .ebextensions.
+You should read over these files carefully and update them as required.
+
+##### Stand alone
+The config files under .ebextensions should be referenced for server setup.
+
+##### Shared hosting (NOT RECOMMEND)
+This method is not recommended unless you are developing/testing in an **isolated environment**.
+There is an example .htaccess file under src.
 
 ---
 

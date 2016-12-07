@@ -18,9 +18,10 @@ We accomplish this by utilising [Public Key Encryption](https://en.wikipedia.org
 ### Official Demo Website
 [fromdownunder.com.au](https://fromdownunder.com.au)
 
+* Log files deleted every 15 minutes
+
 **Note: as this is a demo website, all data will be wiped regularly.**
 
-* Log files deleted every 15 minutes
 ---
 
 ### Install (Proof of concept)

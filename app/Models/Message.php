@@ -1,14 +1,14 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 07-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Models;
 
 use Messenger\Core\Functions;
@@ -39,21 +39,21 @@ class Message
         return Functions::niceTime($this->made_date, true);
     }
 
-    /**
-     * 
+    /*
+     *
      * Send message.
-     * 
+     *
      * Details:
      * Gets both parties public keys by GUID, encrypts the message and adds a record to both users.
      * If no conversation has been provided it will create a new one.
-     * 
+     *
      * @param: $to_guid             - to guid
      * @param: $conversation_guid   - conversation guid
      * @param: $message             - message to send
-     * 
+     *
      * @returns: result code
-     * 
-     * */
+     *
+     */
     public function send($to_guid, $conversation_guid, $message)
     {
         Session::start();
@@ -155,22 +155,24 @@ class Message
         }
     }
 
-    /**
-     * 
+    /*
+     *
      * Get messages.
-     * 
+     *
      * Details:
      * Get messages for the current session user from the specified conversation.
-     * 
+     *
      * @param: $conversation_guid       - conversation guid
      * @param: $made_date               - Made date grater than this
-     * 
+     *
      * @returns: Decrypted message array
-     * 
-     * */
+     *
+     */
     public function getAll($conversation_guid, $made_date = null)
     {
-        if($conversation_guid == null) return null;
+        if ($conversation_guid == null) {
+            return null;
+        }
         
         //Get messages
         if ($made_date == null) {
@@ -229,13 +231,13 @@ class Message
 
         //Retrun decrypted message array
         return array_reverse($messages);
-    }    
+    }
 
-    /**
+    /*
      *
      * Get messages.
      *
-     * */
+     */
     public function getMessages($conversation_guid, $made_date = null)
     {
         $messages = [];

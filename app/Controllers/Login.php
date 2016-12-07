@@ -1,14 +1,14 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 05-Dec-2016
  * Made Date: 04-Dec-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Controllers;
 
 use Messenger\Core\Database;
@@ -16,7 +16,7 @@ use Messenger\Core\Database;
 class Login extends Controller
 {
     public function index()
-    {        
+    {
         $this->view(
             'login',
             [
@@ -47,18 +47,18 @@ class Login extends Controller
                 [
                     'page' => 'login',
                     'page_title' => 'Login to ' . SITE_NAME,
-                    'username' => $_POST['username'],
+                    'username' => htmlspecialchars($_POST['username']),
                     'error' => $this->getErrorMessage($error)
                 ]
             );
         }
     }
 
-    /**
+    /*
      *
      * Get the error message.
-     * 
-     * */
+     *
+     */
     private function getErrorMessage($code)
     {
         switch ($code) {

@@ -1,14 +1,14 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 07-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Controllers;
 
 use \DateTimeZone;
@@ -46,7 +46,7 @@ class Settings extends Controller
             //Success
             header('Location: ../settings');
         } else {
-           $this->view(
+            $this->view(
                 'settings',
                 [
                     'page' => 'settings',
@@ -61,7 +61,7 @@ class Settings extends Controller
 
     public function reset()
     {
-         if (isset($_POST['password'])) {
+        if (isset($_POST['password'])) {
             $error = $_SESSION[USESSION]->resetPassword(
                 $_POST['password'],
                 $_POST['npassword'],
@@ -111,11 +111,11 @@ class Settings extends Controller
         );
     }
 
-    /**
+    /*
      *
      * Get the error message.
-     * 
-     * */
+     *
+     */
     private function getErrorMessage($code)
     {
         switch ($code) {

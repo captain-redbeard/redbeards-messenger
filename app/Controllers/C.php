@@ -1,14 +1,14 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 07-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Controllers;
 
 use Messenger\Core\Database;
@@ -74,10 +74,10 @@ class C extends Controller
                     array_push(
                         $returnconversations,
                         [
-                            "c" => $c->conversation_guid, 
-                            "g" => $c->contact_guid, 
-                            "u" => $c->username, 
-                            "a" => $c->alias, 
+                            "c" => $c->conversation_guid,
+                            "g" => $c->contact_guid,
+                            "u" => $c->username,
+                            "a" => $c->alias,
                             "d" => $c->made_date
                         ]
                     );
@@ -88,13 +88,17 @@ class C extends Controller
             if (count($message) > 0) {
                 //Create array
                 foreach ($message as $m) {
-                    if ($m->user2_guid == $_SESSION[USESSION]->user_guid && $m->direction == 1) $sent = true; else $sent = false;
+                    if ($m->user2_guid == $_SESSION[USESSION]->user_guid && $m->direction == 1) {
+                        $sent = true;
+                    } else {
+                        $sent = false;
+                    }
 
                     array_push(
                         $returnmessages,
                         [
-                            "m" => $m->message, 
-                            "d" => $m->getMadeDate(), 
+                            "m" => $m->message,
+                            "d" => $m->getMadeDate(),
                             "r" => $m->made_date,
                             "f" => $sent
                         ]

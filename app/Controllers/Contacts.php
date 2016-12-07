@@ -1,14 +1,14 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 07-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Controllers;
 
 use Messenger\Core\Database;
@@ -69,11 +69,11 @@ class Contacts extends Controller
         header('Location: ../contacts');
     }
 
-    /**
+    /*
      *
      * Get the error message.
-     * 
-     * */
+     *
+     */
     private function getErrorMessage($code)
     {
         switch ($code) {

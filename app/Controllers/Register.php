@@ -1,14 +1,14 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 05-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Controllers;
 
 use \DateTimeZone;
@@ -30,11 +30,11 @@ class Register extends Controller
         );
     }
 
-    /**
+    /*
      *
      * Register user.
-     * 
-     * */
+     *
+     */
     public function user()
     {
         $user = $this->model('User');
@@ -55,19 +55,19 @@ class Register extends Controller
                     'page' => 'register',
                     'page_title' => 'Register to ' . SITE_NAME,
                     'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
-                    'timezone' => $_POST['timezone'],
-                    'username' => $_POST['username'],
+                    'timezone' => htmlspecialchars($_POST['timezone']),
+                    'username' => htmlspecialchars($_POST['username']),
                     'error' => $this->getErrorMessage($error)
                 ]
             );
         }
     }
 
-    /**
+    /*
      *
      * Get the error message.
-     * 
-     * */
+     *
+     */
     private function getErrorMessage($code)
     {
         switch ($code) {

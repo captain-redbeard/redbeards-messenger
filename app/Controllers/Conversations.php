@@ -1,14 +1,14 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 07-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Controllers;
 
 use Messenger\Core\Functions;
@@ -59,12 +59,12 @@ class Conversations extends Controller
         $result = explode(":", $message->send($_POST['tg'], null, $_POST['m']));
 
         switch ($result[0]) {
-        case 0: //Success
-            header('Location: ../conversations/display/' . $_POST['tg'] . '/' . $result[1] . '#l');
-            break;
-        case 1:
-            header('Location: ../conversations');
-            break;
+            case 0:
+                header('Location: ../conversations/display/' . $_POST['tg'] . '/' . $result[1] . '#l');
+                break;
+            case 1:
+                header('Location: ../conversations');
+                break;
         }
     }
 

@@ -1,22 +1,22 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 07-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Controllers;
 
 use Messenger\Core\Database;
 
 class S extends Controller
-{   
+{
     public function index()
-    {        
+    {  
         $to_guid = $_POST['g'];
         $conversation_guid = $_POST['c'];
         $message = $_POST['m'];

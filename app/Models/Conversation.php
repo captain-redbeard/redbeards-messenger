@@ -1,14 +1,14 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 07-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Models;
 
 use Messenger\Core\Functions;
@@ -36,18 +36,18 @@ class Conversation
         return Functions::convertTime($this->made_date, true);
     }
 
-    /**
-     * 
+    /*
+     *
      * Get conversations.
-     * 
+     *
      * Details:
      * Get all conversations for the current session user.
-     * 
+     *
      * @param: $made_date   - Made date grater than this
-     * 
+     *
      * @returns: Conversations array
-     * 
-     * */
+     *
+     */
     public function getAll($made_date = null)
     {
         //Get conversations
@@ -108,11 +108,11 @@ class Conversation
         );
     }
 
-    /**
+    /*
      *
      * Delete conversation by guid.
-     * 
-     * */
+     *
+     */
     public function delete($guid)
     {
         //Delete messages

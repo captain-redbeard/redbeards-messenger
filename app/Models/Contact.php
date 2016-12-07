@@ -1,14 +1,14 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 07-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Models;
 
 use Messenger\Core\Functions;
@@ -45,7 +45,7 @@ class Contact
 
         //Continue
         if (!isset($error)) {
-            if(Database::update(
+            if (Database::update(
                 "UPDATE contacts SET contact_alias = ? WHERE contact_guid = ? AND user_guid = ?;",
                 array(
                     $alias,
@@ -96,11 +96,11 @@ class Contact
         );
     }
 
-    /**
+    /*
      *
      * Get contacts.
      *
-     * */
+     */
     public function getContacts()
     {
         $contacts = [];
@@ -147,7 +147,7 @@ class Contact
             [$guid, $_SESSION[USESSION]->user_guid]
         );
 
-        if (count($contact_data) > 0 ) {
+        if (count($contact_data) > 0) {
             $contact = new Contact(
                 $contact_data[0]['contact_guid'],
                 htmlspecialchars($contact_data[0]['contact_alias']),

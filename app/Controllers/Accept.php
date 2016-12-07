@@ -1,20 +1,20 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 07-Dec-2016
  * Made Date: 07-Dec-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Controllers;
 
 use Messenger\Core\Database;
 
 class Accept extends Controller
-{    
+{
     public function index($guid)
     {
         $this->isLoggedIn();
@@ -39,16 +39,16 @@ class Accept extends Controller
         );
     }
     
-    /**
+    /*
      *
      * Get the error message.
-     * 
-     * */
+     *
+     */
     private function getErrorMessage($code)
     {
         switch ($code) {
             case 1:
-                return "You can't add yourself???";;
+                return "You can't add yourself???";
             case 2:
                 return "Request expired or invalid.";
             default:

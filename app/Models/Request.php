@@ -1,14 +1,14 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 07-Dec-2016
  * Made Date: 07-Dec-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Models;
 
 use Messenger\Core\Functions;
@@ -37,9 +37,15 @@ class Request
     {
         $name = Functions::cleanInput($name);
         $expire = Functions::cleanInput($expire);
-        if (!is_numeric($expire)) return 1;
-        if ($expire < 1) $expire = 1;
-        if ($expire > 48) $expire = 48;
+        if (!is_numeric($expire)) {
+            return 1;
+        }
+        if ($expire < 1) {
+            $expire = 1;
+        }
+        if ($expire > 48) {
+            $expire = 48;
+        }
         $guid = Functions::generateRandomString(6);
 
         if (Database::insert(
@@ -130,7 +136,9 @@ class Request
 
         foreach ($request_data as $request) {
             $expire_time = Functions::niceTime($request['expire_time']);
-            if (Functions::contains('ago', $expire_time)) $expire_time = 'Expired';
+            if (Functions::contains('ago', $expire_time)) {
+                $expire_time = 'Expired';
+            }
             
             array_push(
                 $requests,
@@ -146,5 +154,5 @@ class Request
         }
 
         return $requests;
-    }    
+    }
 }

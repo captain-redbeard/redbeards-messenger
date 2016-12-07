@@ -1,14 +1,14 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 07-Dec-2016
  * Made Date: 04-Nov-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Models;
 
 use Messenger\Core\Functions;
@@ -27,11 +27,11 @@ class User
     public $timezone = null;
     public $mfa_enabled = null;
 
-    /**
+    /*
      *
      * Get user object.
-     * 
-     * */
+     *
+     */
     public function getUser($userid, $passphrase)
     {
         $user_details = Database::select(
@@ -53,11 +53,11 @@ class User
         }
     }
 
-    /**
+    /*
      *
      * Register user.
      *
-     * */
+     */
     public function register($username, $password, $passphrase, $timezone)
     {
         $username = Functions::cleanInput($username, 1);
@@ -68,16 +68,24 @@ class User
         if ($password == null) {
             return 1;
         } else {
-            if (strlen($password) < 9) return 2;
+            if (strlen($password) < 9) {
+                return 2;
+            }
         }
-        if (strlen($username) > 63) return 3;
-        if ($timezone == -1) return 7;
+        if (strlen($username) > 63) {
+            return 3;
+        }
+        if ($timezone == -1) {
+            return 7;
+        }
 
         //Continue
         if (!isset($error)) {
             //Check for existing user
             $existing = Database::select("SELECT user_id FROM users WHERE username = ?;", [$username]);
-            if (count($existing) > 0) return 4;
+            if (count($existing) > 0) {
+                return 4;
+            }
 
             //Get password hash
             $password = password_hash($password, PASSWORD_DEFAULT, ['cost' => PW_COST]);
@@ -125,7 +133,9 @@ class User
                     $passphrase
                 );
                 
-                if (!$keys) return 5;
+                if (!$keys) {
+                    return 5;
+                }
             }
 
             //Create user
@@ -155,11 +165,11 @@ class User
         }
     }
 
-    /**
+    /*
      *
      * Login.
      *
-     * */
+     */
     public function login($username, $password, $passphrase, $mfa)
     {
         $username = Functions::cleanInput($username, 1);
@@ -191,7 +201,7 @@ class User
                 [$existing[0]['user_id']]
             );
 
-            //If there have been more than 5 failed logins 
+            //If there have been more than 5 failed logins
             if (count($attempts) < 5) {
                 //Check password
                 if (password_verify($password, $existing[0]['password'])) {
@@ -254,11 +264,11 @@ class User
         }
     }
 
-    /**
+    /*
      *
      * Update user.
      *
-     * */
+     */
     public function update($username, $timezone)
     {
         $username = Functions::cleanInput($username, 1);
@@ -295,14 +305,14 @@ class User
                 header('Location: conversations');
         } else {
             return 3;
-        }        
+        }
     }
 
-    /**
+    /*
      *
      * Enable MFA.
      *
-     * */
+     */
     public function enableMfa($code1, $code2)
     {
         $code1 = Functions::cleanInput($_POST['code1']);
@@ -328,16 +338,16 @@ class User
                 $_SESSION[USESSION]->mfa_enabled = -1;
                 return 0;
             }
-        }else{
+        } else {
             return 2;
         }
     }
 
-    /**
+    /*
      *
      * Disable MFA.
      *
-     * */
+     */
     public function disableMfa()
     {
         Database::update(
@@ -348,11 +358,11 @@ class User
         $_SESSION[USESSION]->mfa_enabled = 0;
     }
 
-    /**
+    /*
      *
      * Reset password.
      *
-     * */
+     */
     public function resetPassword($password, $new_password, $confirm_new_password)
     {
         //Check for errors
@@ -391,7 +401,7 @@ class User
                         $_SESSION[USESSION]->user_id,
                         $_SESSION[USESSION]->user_guid
                     ]
-                )){
+                )) {
                     return 0;
                 } else {
                     return 14;
@@ -404,11 +414,11 @@ class User
         }
     }
 
-    /**
+    /*
      *
      * Delete user.
-     * 
-     * */
+     *
+     */
     public function delete($password)
     {
         //Get user
@@ -483,11 +493,11 @@ class User
         }
     }
 
-    /**
+    /*
      *
      * Update last load.
-     * 
-     * */
+     *
+     */
     public function updateLastLoad()
     {
         return Database::update(

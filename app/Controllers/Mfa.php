@@ -1,14 +1,14 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 07-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Controllers;
 
 use Messenger\Core\Database;
@@ -83,8 +83,8 @@ class Mfa extends Controller
                 ->setImageType(QrCode::IMAGE_TYPE_PNG)
             ;
             
-           $this->view(
-               'enable-mfa',
+            $this->view(
+                'enable-mfa',
                 [
                     'page' => 'enable-mfa',
                     'page_title' => 'Enable MFA - ' . SITE_NAME,
@@ -96,11 +96,11 @@ class Mfa extends Controller
         }
     }
 
-    /**
+    /*
      *
      * Get the error message.
-     * 
-     * */
+     *
+     */
     private function getErrorMessage($code)
     {
         switch ($code) {

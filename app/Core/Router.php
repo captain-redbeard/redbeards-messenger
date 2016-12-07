@@ -1,14 +1,14 @@
 <?php
-/**
- * 
+/*
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 07-Dec-2016
  * Made Date: 04-Nov-2016
  * Author: Hosvir
- * 
- * */
+ *
+ */
 namespace Messenger\Core;
 
 class Router

@@ -17,8 +17,9 @@ We accomplish this by utilising [Public Key Encryption](https://en.wikipedia.org
 
 ### Official Demo Website
 [fromdownunder.com.au](https://fromdownunder.com.au)
-**Note: as this is a demo website, all data will be wiped regularly.**
 
+**Note: as this is a demo website, all data will be wiped regularly.**
+* Log files deleted every 15 minutes
 ---
 
 ### Install (Proof of concept)
@@ -30,10 +31,6 @@ You should read over these files carefully and update them as required.
 
 ##### Stand alone
 The config files under .ebextensions should be referenced for server setup.
-
-##### Shared hosting (NOT RECOMMEND)
-This method is not recommended unless you are developing/testing in an **isolated environment**.
-There is an example .htaccess file under src.
 
 ---
 

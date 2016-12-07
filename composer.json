@@ -1,0 +1,11 @@
+{
+    "require": {
+        "php": ">=7.0.0",
+        "endroid/qrcode": "^1.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Messenger\\": "app/"
+        }
+    }
+}

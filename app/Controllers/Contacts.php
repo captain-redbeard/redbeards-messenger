@@ -85,5 +85,4 @@ class Contacts extends Controller
                 return "Unknown error.";
         }
     }
-
 }

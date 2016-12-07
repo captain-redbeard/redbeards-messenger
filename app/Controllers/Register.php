@@ -91,5 +91,4 @@ class Register extends Controller
                 return "Unknown error.";
         }
     }
-
 }

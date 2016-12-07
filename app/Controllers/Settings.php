@@ -149,5 +149,4 @@ class Settings extends Controller
                 return "Unknown error.";
         }
     }
-
 }

@@ -36,5 +36,4 @@ class S extends Controller
             }
         }
     }
-
 }

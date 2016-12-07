@@ -55,5 +55,4 @@ class Accept extends Controller
                 return "Unknown error.";
         }
     }
-
 }

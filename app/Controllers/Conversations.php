@@ -74,5 +74,4 @@ class Conversations extends Controller
         $conversation->delete($guid);
         header('Location: ../conversations');
     }
-
 }

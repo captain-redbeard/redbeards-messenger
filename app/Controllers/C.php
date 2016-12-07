@@ -81,8 +81,8 @@ class C extends Controller
                             "d" => $c->made_date
                         ]
                     );
+                }
             }
-        }
 
             //Check we have messages
             if (count($message) > 0) {
@@ -114,5 +114,4 @@ class C extends Controller
             echo 0;
         }
     }
-
 }

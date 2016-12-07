@@ -112,5 +112,4 @@ class Mfa extends Controller
                 return "Unknown error.";
         }
     }
-
 }

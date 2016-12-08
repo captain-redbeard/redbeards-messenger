@@ -48,7 +48,8 @@ class Conversations extends Controller
                 'currenttime' => Functions::convertTime(date('Y-m-d H:i:s'), true),
                 'guid' => htmlspecialchars($guid),
                 'cguid' => htmlspecialchars($cguid),
-                'menu' => htmlspecialchars($menu)
+                'menu' => htmlspecialchars($menu),
+                'token' => $_SESSION['token']
             ]
         );
     }

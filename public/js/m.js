@@ -3,7 +3,7 @@
  * Details:
  * PHP Messenger.
  * 
- * Modified: 06-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 28-Nov-2016
  * Author: Hosvir
  * 
@@ -106,6 +106,12 @@ function i(v) {
     return v.length > 1 ? v : "0" + v;
 }
 
+function j() {
+    if(event.keyCode == 13 && !event.shiftKey) 
+        document.getElementById('c').innerHTML == '' ? document.getElementById('s').submit() : c();
+}
+
 e("l");
 a();
+document.getElementById('m').addEventListener('keyup', j);
 setInterval(g, 30000);

@@ -18,6 +18,10 @@ class Login extends Controller
     public function index()
     {
         $this->startSession();
+        
+        if (isset($_SESSION[USESSION])) {
+            $this->redirect('conversations');
+        }
 
         $this->view(
             'login',

@@ -60,13 +60,12 @@ class C extends Controller
 
         //Echo results
         if ($havemessage) {
-            //Conversation class
             $_SESSION[USESSION]->updateLastLoad();
             $conv = $this->model('Conversation');
             $mess = $this->model('Message');
             $conversations = $conv->getConversations($messages[0]['last_load']);
             $message = $mess->getMessages($conversation_guid, $messages[0]['last_load']);
-
+            
             //Check we have conversations
             if ($conversations > 0) {
                 //Create array

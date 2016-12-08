@@ -40,7 +40,7 @@
                             &nbsp;
                     
                             <a href="<?php echo BASE_HREF; ?>/conversations/delete/<?php echo $conversation->conversation_guid; ?>">
-                                <div class="g id" alt="Delete Conversation" title="Delete Conversation" style="width: 10px; height: 10px;"></div>
+                                <div class="g id ac" alt="Delete Conversation" title="Delete Conversation"></div>
                             </a>
                         </div>
 
@@ -91,8 +91,8 @@
                 <form method="POST" action="<?php echo BASE_HREF; ?>/conversations/send" id="s">
                     <div class="t">
                         <input type="hidden" name="token" value="<?php echo $data['token']; ?>">
-                        <textarea class="u" name="m" id="m" placeholder="Enter your message here." autofocus <?php if ($data['menu'] == null || $data['menu'] != "new") echo "onkeyup=\"if(event.keyCode == 13 && !event.shiftKey) c();\""; elseif ($data['menu'] == "new") echo "onkeyup=\"if(event.keyCode == 13 && !event.shiftKey) document.getElementById('s').submit();\""; ?><?php if ($data['guid'] == null) echo " disabled"; ?>></textarea>
-                        <input class="v w" type="submit" name="ssubmit" value="Send" <?php if ($data['menu'] == null || $data['menu'] != "new") echo "onclick=\"return c();\""; ?><?php if ($data['guid'] == null) echo " disabled"; ?>>
+                        <textarea class="u" name="m" id="m" placeholder="Enter your message here."<?php if ($data['guid'] == null) echo " disabled"; else echo " autofocus"; ?>></textarea>
+                        <input class="v w" type="submit" name="ssubmit" id="z" value="Send"<?php if ($data['guid'] == null) echo " disabled"; ?>>
                         <input type="hidden" name="tg" value="<?php echo $data['guid']; ?>">
                     </div>
                 </form>

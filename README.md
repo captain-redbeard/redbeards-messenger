@@ -19,6 +19,7 @@ We accomplish this by utilising [Public Key Encryption](https://en.wikipedia.org
 [fromdownunder.com.au](https://fromdownunder.com.au)
 
 * Log files deleted every 15 minutes
+* [Website tests](#website-tests)
 
 **Note: as this is a demo website, all data will be wiped regularly.**
 
@@ -70,6 +71,16 @@ Deleting your account will delete all messages, conversations and contacts follo
 The conversations screen has been designed with low data usage in mind.
 We have accomplished this by using no libraries or bloat and writing front end resources in a minimal fashion while compressing content where possible.
 If you have JavaScript enabled than we use AJAX calls with server side long polling to check for new conversations and messages. With no new conversations or messages this uses around **368 Bytes** (depending on headers) per two minutes.
+
+---
+
+### Website tests
+The following tools have been a great help in server configuration.
+
+* [Observatory by mozilla](https://observatory.mozilla.org/analyze.html?host=fromdownunder.com.au)
+* [securityheaders.io](https://securityheaders.io/?q=https%3A%2F%2Ffromdownunder.com.au&followRedirects=on)
+* [Qualys SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=fromdownunder.com.au)
+* [Google PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/?url=fromdownunder.com.au)
 
 ---
 

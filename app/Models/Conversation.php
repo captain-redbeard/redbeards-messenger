@@ -145,7 +145,7 @@ class Conversation
     {
         $conversations = [];
         $conversation_data = $this->getAll($made_date);
-
+        
         foreach ($conversation_data as $conversation) {
             array_push(
                 $conversations,
@@ -158,7 +158,7 @@ class Conversation
                 )
             );
         }
-
+        
         return $conversations;
     }
 }

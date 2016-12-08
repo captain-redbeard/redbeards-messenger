@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 07-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 05-Nov-2016
  * Author: Hosvir
  *
@@ -15,11 +15,16 @@ class PublicPrivateKey
 {
     /*
      * Generate a public private key pair.
-     * NOTE: Supply folder/keyname
      *
-     * @usage: PublicPrivateKey::generateKeyPair("mypublickey","mypriavtekey");
+     * @usage PublicPrivateKey::generateKeyPair("mypublickey","mypriavtekey");
      *
-     * @returns: Boolean
+     * @param $public_name - public key name
+     * @param $private_name - private key name
+     * @param $return_keys - returns key data
+     * @param $passphrase - passphrase for private key
+     * @param $key_bits - size of RSA key
+     *
+     * @returns Boolean
      */
     public static function generateKeyPair($public_name, $private_name, $return_keys = false, $passphrase = null, $key_bits = 4096)
     {
@@ -58,13 +63,17 @@ class PublicPrivateKey
 
     /*
      * Encrypt the data with the supplied public key.
-     * NOTE: Supply folder/keyname
      *
-     * @usage: PublicPrivateKey::encrypt("some data", "mypublickey");
+     * @usage PublicPrivateKey::encrypt("some data", "mypublickey");
      *
-     * @returns: Encrypted data
+     * @param $plain_text - text to encrypt
+     * @param $public_name - public key name
+     * @param $pem - public key pem file
+     * @param $padding - padding option
+     *
+     * @returns Encrypted data
      */
-    public static function encrypt($plain_text, $public_name, $pem = null)
+    public static function encrypt($plain_text, $public_name, $pem = null, $padding = OPENSSL_PKCS1_OAEP_PADDING)
     {
         //Compress the data to be sent
         $plain_text = gzcompress($plain_text);
@@ -85,7 +94,7 @@ class PublicPrivateKey
             $chunk = substr($plain_text, 0, $chunk_size);
             $plain_text = substr($plain_text, $chunk_size);
             $encrypted = "";
-            if (!openssl_public_encrypt($chunk, $encrypted, $public_key)) {
+            if (!openssl_public_encrypt($chunk, $encrypted, $public_key, $padding)) {
                 die('Failed to encrypt data.');
             }
             $output .= $encrypted;
@@ -99,13 +108,18 @@ class PublicPrivateKey
 
     /*
      * Decrypt the data with the supplied private key.
-     * NOTE: Supply folder/keyname
      *
-     * @usage: PublicPrivateKey::encrypt("encrypteddata", "myprivatekey");
+     * @usage PublicPrivateKey::encrypt("encrypteddata", "myprivatekey");
+     *
+     * @param $encrypted - encrypted text to decrypt
+     * @param $private_name - private key name
+     * @param $passphrase - passphrase for private key
+     * @param $key - private key file
+     * @param $padding - padding option
      *
      * @returns: Decrypted data
      */
-    public static function decrypt($encrypted, $private_name, $passphrase = null, $key = null)
+    public static function decrypt($encrypted, $private_name, $passphrase = null, $key = null, $padding = OPENSSL_PKCS1_OAEP_PADDING)
     {
         if ($key == null) {
             if (!$private_key = openssl_pkey_get_private(file_get_contents($private_name . ".key"), $passphrase)) {
@@ -126,7 +140,7 @@ class PublicPrivateKey
             $chunk = substr($encrypted, 0, $chunk_size);
             $encrypted = substr($encrypted, $chunk_size);
             $decrypted = "";
-            if (!openssl_private_decrypt($chunk, $decrypted, $private_key)) {
+            if (!openssl_private_decrypt($chunk, $decrypted, $private_key, $padding)) {
                 die('Failed to decrypt data.');
             }
             $output .= $decrypted;
@@ -144,7 +158,11 @@ class PublicPrivateKey
     /*
      * Internal test to ensure the keys work.
      *
-     * @returns: Boolean
+     * @param $public_name - public key name
+     * @param $private_name - private key name
+     * @param $passphrase - passphrase for private key
+     *
+     * @returns Boolean
      */
     private static function testKeys($public_name, $private_name, $passphrase = null)
     {

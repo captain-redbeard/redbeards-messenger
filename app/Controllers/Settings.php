@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 07-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
  *
@@ -30,6 +30,7 @@ class Settings extends Controller
                 'page_title' => 'Settings - ' . SITE_NAME,
                 'user' => $_SESSION[USESSION],
                 'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
+                'token' => $_SESSION['token'],
                 'error' => ''
             ]
         );
@@ -37,14 +38,10 @@ class Settings extends Controller
 
     public function update()
     {
-        $error = $_SESSION[USESSION]->update(
-            $_POST['username'],
-            $_POST['timezone']
-        );
+        $error = $this->updateSettings();
 
         if ($error == 0) {
-            //Success
-            header('Location: ../settings');
+            $this->redirect('settings');
         } else {
             $this->view(
                 'settings',
@@ -53,24 +50,32 @@ class Settings extends Controller
                     'page_title' => 'Settings - ' . SITE_NAME,
                     'user' => $_SESSION[USESSION],
                     'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
+                    'token' => $_SESSION['token'],
                     'error' => $this->getErrorMessage($error)
                 ]
             );
+        }
+    }
+    
+    private function updateSettings()
+    {
+        if ($this->checkToken()) {
+            return $_SESSION[USESSION]->update(
+                $_POST['username'],
+                $_POST['timezone']
+            );
+        } else {
+            return -1;
         }
     }
 
     public function reset()
     {
         if (isset($_POST['password'])) {
-            $error = $_SESSION[USESSION]->resetPassword(
-                $_POST['password'],
-                $_POST['npassword'],
-                $_POST['cpassword']
-            );
+            $error = $this->resetPassword();
             
             if ($error == 0) {
-                //Success
-                header('Location: ../settings');
+                $this->redirect('settings');
             }
         } else {
             $error = '';
@@ -81,21 +86,32 @@ class Settings extends Controller
             [
                 'page' => 'change-password',
                 'page_title' => 'Change Password - ' . SITE_NAME,
+                'token' => $_SESSION['token'],
                 'error' => $error != '' ? $this->getErrorMessage($error) : $error
             ]
         );
+    }
+    
+    private function resetPassword()
+    {
+        if ($this->checkToken()) {
+            return $_SESSION[USESSION]->resetPassword(
+                $_POST['password'],
+                $_POST['npassword'],
+                $_POST['cpassword']
+            );
+        } else {
+            return -1;
+        }
     }
 
     public function delete()
     {
         if (isset($_POST['password'])) {
-            $error = $_SESSION[USESSION]->delete(
-                $_POST['password']
-            );
+            $error = $this->deleteAccount();
             
             if ($error == 0) {
-                //Success
-                header('Location: ../logout');
+                $this->redirect('logout');
             }
         } else {
             $error = '';
@@ -106,9 +122,21 @@ class Settings extends Controller
             [
                 'page' => 'delete-account',
                 'page_title' => 'Delete Account - ' . SITE_NAME,
-                'error' => ''
+                'token' => $_SESSION['token'],
+                'error' => $error != '' ? $this->getErrorMessage($error) : $error
             ]
         );
+    }
+    
+    private function deleteAccount()
+    {
+        if ($this->checkToken()) {
+            return $_SESSION[USESSION]->delete(
+                $_POST['password']
+            );
+        } else {
+            return -1;
+        }
     }
 
     /*
@@ -119,6 +147,8 @@ class Settings extends Controller
     private function getErrorMessage($code)
     {
         switch ($code) {
+            case -1:
+                return "Invalid token.";
             case 1:
                 return "Username must be less than 64 characters.";
             case 2:

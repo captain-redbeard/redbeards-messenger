@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 06-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 05-Nov-2016
  * Author: Hosvir
  *
@@ -20,24 +20,26 @@ class Session
      */
     public static function start()
     {
-        $session_name = USESSION;
-        $secure = SECURE;
-        $http_only = true;
+        if (!isset($_SESSION)) {
+            $session_name = USESSION;
+            $secure = SECURE;
+            $http_only = true;
 
-        //Gets current cookies params.
-        $cookie_params = session_get_cookie_params();
-        session_set_cookie_params(
-            $cookie_params["lifetime"],
-            $cookie_params["path"],
-            $cookie_params["domain"],
-            $secure,
-            $http_only
-        );
-        
-        //Sets the session name to the one set above.
-        session_name($session_name);
-        session_start();
-        session_regenerate_id();
+            //Gets current cookies params.
+            $cookie_params = session_get_cookie_params();
+            session_set_cookie_params(
+                $cookie_params["lifetime"],
+                $cookie_params["path"],
+                $cookie_params["domain"],
+                $secure,
+                $http_only
+            );
+
+            //Sets the session name to the one set above.
+            session_name($session_name);
+            session_start();
+            session_regenerate_id();
+        }
     }
 
     /**

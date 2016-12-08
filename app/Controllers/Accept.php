@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 07-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 07-Dec-2016
  * Author: Hosvir
  *
@@ -25,8 +25,7 @@ class Accept extends Controller
         $error = $request->accept($guid);
 
         if ($error == 0) {
-            //Success
-            header('Location: ../contacts');
+            $this->redirect('contacts');
         }
         
         $this->view(

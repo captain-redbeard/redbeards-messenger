@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 07-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
  *
@@ -40,11 +40,10 @@ class Contacts extends Controller
         $contact = $this->model('Contact');
 
         if (isset($_POST['alias']) && $_POST['alias'] != '') {
-            $selected_contact = $contact->getByGuid($guid);
-            $error = $selected_contact->setAlias($_POST['alias']);
+            $error = $this->editContact($contact, $guid);
 
             if ($error == 0) {
-                header('Location: ../contacts');
+                $this->redirect('contacts');
             }
         } else {
             $error = '';
@@ -56,6 +55,8 @@ class Contacts extends Controller
                 'page' => 'edit-contact',
                 'page_title' => 'Edit Contact - ' . SITE_NAME,
                 'contact' => $contact->getByGuid($guid),
+                'guid' => htmlspecialchars($guid),
+                'token' => $_SESSION['token'],
                 'error' => $error != '' ? $this->getErrorMessage($error) : $error
             ]
         );
@@ -66,7 +67,17 @@ class Contacts extends Controller
         $contact = $this->model('Contact');
         $selected_contact = $contact->getContactByGuid($guid);
         $selected_contact->delete($guid);
-        header('Location: ../contacts');
+        $this->redirect('contacts');
+    }
+    
+    private function editContact($contact, $guid)
+    {
+        if ($this->checkToken()) {
+            $selected_contact = $contact->getByGuid($guid);
+            return $selected_contact->setAlias($_POST['alias']);
+        } else {
+            return -1;
+        }
     }
 
     /*
@@ -77,6 +88,8 @@ class Contacts extends Controller
     private function getErrorMessage($code)
     {
         switch ($code) {
+            case -1:
+                return "Invalid token.";
             case 1:
                 return "Alias must be less than 64 characters.";
             case 2:

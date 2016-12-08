@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 07-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 04-Nov-2016
  * Author: Hosvir
  *
@@ -15,9 +15,9 @@ class Router
 {
     protected $controller = '\\Messenger\\Controllers\\Login';
     protected $method = 'index';
-    protected $parameters = array();
+    protected $parameters = [];
     
-    public function __construct()
+    public function route()
     {
         $url = $this->parseUrl();
         $url[0] = str_replace(
@@ -43,8 +43,11 @@ class Router
         
         //Check for method
         if (isset($url[1]) && method_exists($this->controller, $url[1])) {
-            $this->method = $url[1];
-            unset($url[1]);
+            $reflection_method = new \ReflectionMethod($this->controller, $url[1]);
+            if($reflection_method->isPublic()) {
+                $this->method = $url[1];
+                unset($url[1]);
+            }
         }
 
         //Set parameters
@@ -52,7 +55,7 @@ class Router
         call_user_func_array(array($this->controller, $this->method), $this->parameters);
     }
     
-    protected function parseUrl()
+    private function parseUrl()
     {
         if (isset($_GET['url'])) {
             return $url = explode(

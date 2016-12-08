@@ -1,5 +1,5 @@
             <div class="cover-wrapper">
-                <form method="POST" action="">
+                <form>
                     <table class="single-table">
                         <thead>
                             <tr>
@@ -27,7 +27,7 @@
 
                             <tr>
                                 <td>
-                                    <a href="conversations">Return</a>
+                                    <a href="<?php echo BASE_HREF; ?>/conversations">Return</a>
                                 </td>
                             </tr>
                         </tfoot>

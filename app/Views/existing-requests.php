@@ -1,5 +1,5 @@
             <div class="cover-wrapper">
-                <form method="POST" action="">
+                <form>
                     <table class="multi-table">
                         <thead>
                             <tr>
@@ -21,7 +21,7 @@
                                     
                                 </td>
                                 <td class="text-right">
-                                    <a href="requests/delete/<?php echo $request->request_guid; ?>">
+                                    <a href="<?php echo BASE_HREF; ?>/requests/delete/<?php echo $request->request_guid; ?>">
                                         <div class="grow idc" alt="Delete" title="Delete Request"></div>
                                     </a>
                                 </td>
@@ -36,7 +36,7 @@
 
                             <tr>
                                 <td>
-                                    <a href="conversations">Return</a>
+                                    <a href="<?php echo BASE_HREF; ?>/conversations">Return</a>
                                 </td>
                             </tr>
                         </tfoot>

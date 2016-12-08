@@ -4,15 +4,15 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 07-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 04-Nov-2016
  * Author: Hosvir
  *
  */
 namespace Messenger\Controllers;
 
-use Messenger\Core\Functions;
 use Messenger\Core\Session;
+use Messenger\Core\Functions;
 
 class Controller
 {
@@ -21,21 +21,43 @@ class Controller
         $model = '\\Messenger\\Models\\' . $model;
         return new $model;
     }
+    
+    public function startSession()
+    {
+        Session::start();
+        
+        if (!isset($_SESSION['token']) || (isset($_SESSION['token']) && (time() - $_SESSION['token_time'])) < 300) {
+            $_SESSION['token'] = Functions::generateRandomString(32);
+            $_SESSION['token_time'] = time();
+        }
+    }
+    
+    public function checkToken()
+    {
+        $this->startSession();
+        if (isset($_POST['token']) && $_POST['token'] == $_SESSION['token']) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public function isLoggedIn()
     {
-        if (!isset($_SESSION)) {
-            Session::start();
-        }
-        
+        $this->startSession();
         return Session::loginCheck();
     }
 
     public function requiresLogin()
     {
         if (!$this->isLoggedIn()) {
-            header('Location: ' . str_replace("index.php", "login", Functions::getUrl()));
+            $this->redirect('login');
         }
+    }
+    
+    public function redirect($page)
+    {
+        header('Location: ' . BASE_HREF . '/' . $page);
     }
 
     public function logout()

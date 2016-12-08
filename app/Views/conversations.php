@@ -1,27 +1,27 @@
             <div class="a">
                 <div class="b">
                     <div class="c">
-                        <a href="settings">
+                        <a href="<?php echo BASE_HREF; ?>/settings">
                             <div class="g is" alt="Settings" title="Settings"></div>
                         </a>
 
                         <div class="fr">
-                        <a href="requests/add">
+                        <a href="<?php echo BASE_HREF; ?>/requests/add">
                             <div class="g ia" alt="Add Contact" title="Add Contact"></div>
                         </a>
                     </div>
                 </div>
 
                 <div class="d">
-                    <a class="v gb y" href="contacts">Start Conversation</a>
+                    <a class="v gb y" href="<?php echo BASE_HREF; ?>/contacts">Start Conversation</a>
 
-                    <a class="x" href="contacts">
+                    <a class="x" href="<?php echo BASE_HREF; ?>/contacts">
                         <div class="g ic" alt="Contacts" title="Contacts"></div>
                     </a>
                 </div>
 
                 <div class="e" id="h">
-                    <?php if($data['newconversation'] != null && count($data['newconversation']) > 0) { ?>
+                    <?php if ($data['newconversation'] != null && count($data['newconversation']) > 0) { ?>
                         
                     <div class="f k">
                         <div class="i"><?php echo $data['newconversation'][0]['username']; ?></div>
@@ -29,17 +29,17 @@
                         <div class="z"></div>
                     </div>
                     <?php } ?>
-                    <?php foreach($data['conversations'] as $conversation) { ?>
+                    <?php foreach ($data['conversations'] as $conversation) { ?>
                         
-                    <div class="f <?php if($data['cguid'] && $conversation->conversation_guid == $data['cguid']) echo "k"; ?>">
-                        <a href="conversations/display/<?php echo $conversation->contact_guid . "/" . $conversation->conversation_guid; ?>#l">
-                            <div class="i"><?php if($conversation->alias != "") echo $conversation->alias . " - "; echo $conversation->username; ?></div>
+                    <div class="f <?php if ($data['cguid'] && $conversation->conversation_guid == $data['cguid']) echo "k"; ?>">
+                        <a href="<?php echo BASE_HREF; ?>/conversations/display/<?php echo $conversation->contact_guid . "/" . $conversation->conversation_guid; ?>#l">
+                            <div class="i"><?php if ($conversation->alias != "") echo $conversation->alias . " - "; echo $conversation->username; ?></div>
                         </a>
                         <div class="cc j fr" data-md="<?php echo $conversation->made_date; ?>">
                             <?php echo $conversation->getMadeDate(); ?>
                             &nbsp;
                     
-                            <a href="conversations/delete/<?php echo $conversation->conversation_guid; ?>">
+                            <a href="<?php echo BASE_HREF; ?>/conversations/delete/<?php echo $conversation->conversation_guid; ?>">
                                 <div class="g id" alt="Delete Conversation" title="Delete Conversation" style="width: 10px; height: 10px;"></div>
                             </a>
                         </div>
@@ -54,7 +54,7 @@
 
                 <div class="l">
                     <div class="m">
-                        <a href="logout">
+                        <a href="<?php echo BASE_HREF; ?>/logout">
                             <div class="g il fr" alt="Logout" title="Logout"></div>
                         </a>
 
@@ -88,10 +88,11 @@
                     </div>
                 </div>
 
-                <form method="POST" action="conversations/send" id="s">
+                <form method="POST" action="<?php echo BASE_HREF; ?>/conversations/send" id="s">
                     <div class="t">
-                        <textarea class="u" name="m" id="m" placeholder="Enter your message here." autofocus <?php if($data['menu'] == null || $data['menu'] != "new") echo "onkeyup=\"if(event.keyCode == 13 && !event.shiftKey) c();\""; elseif ($data['menu'] == "new") echo "onkeyup=\"if(event.keyCode == 13 && !event.shiftKey) document.getElementById('s').submit();\""; ?><?php if ($data['guid'] == null) echo " disabled"; ?>></textarea>
-                        <input class="v w" type="submit" name="ssubmit" value="Send" <?php if($data['menu'] == null || $data['menu'] != "new") echo "onclick=\"return c();\""; ?><?php if ($data['guid'] == null) echo " disabled"; ?>>
+                        <input type="hidden" name="token" value="<?php echo $data['token']; ?>">
+                        <textarea class="u" name="m" id="m" placeholder="Enter your message here." autofocus <?php if ($data['menu'] == null || $data['menu'] != "new") echo "onkeyup=\"if(event.keyCode == 13 && !event.shiftKey) c();\""; elseif ($data['menu'] == "new") echo "onkeyup=\"if(event.keyCode == 13 && !event.shiftKey) document.getElementById('s').submit();\""; ?><?php if ($data['guid'] == null) echo " disabled"; ?>></textarea>
+                        <input class="v w" type="submit" name="ssubmit" value="Send" <?php if ($data['menu'] == null || $data['menu'] != "new") echo "onclick=\"return c();\""; ?><?php if ($data['guid'] == null) echo " disabled"; ?>>
                         <input type="hidden" name="tg" value="<?php echo $data['guid']; ?>">
                     </div>
                 </form>

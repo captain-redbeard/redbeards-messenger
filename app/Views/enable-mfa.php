@@ -1,5 +1,5 @@
             <div class="cover-wrapper">
-                <form method="POST" action="mfa/activate">
+                <form method="POST" action="<?php echo BASE_HREF; ?>/mfa/activate">
                     <table class="single-table">
                         <thead>
                             <tr>
@@ -40,6 +40,7 @@
                         <tfoot>
                             <tr>
                                 <td>
+                                    <input type="hidden" name="token" value="<?php echo $data['token']; ?>">
                                     <input class="raw-button blue-outline w100" type="submit" name="submit" title="Submit" tabindex="4" value="Activate">
                                     <?php if ($data['error']) { ?>
                                         
@@ -55,7 +56,7 @@
 
                             <tr>
                                 <td>
-                                    <a href="conversations">Return</a>
+                                    <a href="<?php echo BASE_HREF; ?>/conversations">Return</a>
                                 </td>
                             </tr>
                         </tfoot>

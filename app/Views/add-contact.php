@@ -1,5 +1,5 @@
             <div class="cover-wrapper">
-                <form method="POST" action="">
+                <form method="POST" action="<?php echo BASE_HREF; ?>/requests/add">
                     <table class="single-table">
                         <thead>
                             <tr>
@@ -27,7 +27,7 @@
 
                             <tr>
                                 <td class="center">
-                                    <a href="requests">View existing requests</a>
+                                    <a href="<?php echo BASE_HREF; ?>/requests">View existing requests</a>
                                 </td>
                             </tr>
 
@@ -54,6 +54,7 @@
                         <tfoot>
                             <tr>
                                 <td>
+                                    <input type="hidden" name="token" value="<?php echo $data['token']; ?>">
                                     <input class="raw-button blue-outline w100" type="submit" name="submit" title="Submit" tabindex="3" value="Get URL">
                                     <?php if($data['url'] != '') { ?>
                                         
@@ -76,7 +77,7 @@
 
                             <tr>
                                 <td>
-                                    <a href="conversations">Return</a>
+                                    <a href="<?php echo BASE_HREF; ?>/conversations">Return</a>
                                 </td>
                             </tr>
                         </tfoot>

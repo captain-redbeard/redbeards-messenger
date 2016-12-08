@@ -4,25 +4,28 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 05-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 04-Dec-2016
  * Author: Hosvir
  *
  */
 namespace Messenger\Controllers;
 
-use Messenger\Core\Database;
+use Messenger\Core\Functions;
 
 class Login extends Controller
 {
     public function index()
     {
+        $this->startSession();
+
         $this->view(
             'login',
             [
                 'page' => 'login',
                 'page_title' => 'Login - ' . SITE_NAME,
                 'username' => '',
+                'token' => $_SESSION['token'],
                 'error' => ''
             ]
         );
@@ -30,17 +33,10 @@ class Login extends Controller
     
     public function authenticate()
     {
-        $user = $this->model('User');
-        $error = $user->login(
-            $_POST['username'],
-            $_POST['password'],
-            $_POST['passphrase'],
-            $_POST['mfa']
-        );
-
+        $error = $this->authenticateUser();
+        
         if ($error == 0) {
-            //Success
-            header('Location: ../conversations');
+            $this->redirect('conversations');
         } else {
             $this->view(
                 'login',
@@ -48,9 +44,26 @@ class Login extends Controller
                     'page' => 'login',
                     'page_title' => 'Login to ' . SITE_NAME,
                     'username' => htmlspecialchars($_POST['username']),
+                    'token' => $_SESSION['token'],
                     'error' => $this->getErrorMessage($error)
                 ]
             );
+        }
+    }
+    
+    private function authenticateUser()
+    {
+        if ($this->checkToken()) {
+            $user = $this->model('User');
+
+            return $user->login(
+                $_POST['username'],
+                $_POST['password'],
+                $_POST['passphrase'],
+                $_POST['mfa']
+            );
+        } else {
+            return -1;
         }
     }
 
@@ -62,6 +75,8 @@ class Login extends Controller
     private function getErrorMessage($code)
     {
         switch ($code) {
+            case -1:
+                return "Invalid token.";
             case 1:
                 return "No password entered.";
             case 2:

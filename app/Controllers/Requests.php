@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 07-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 07-Dec-2016
  * Author: Hosvir
  *
@@ -31,6 +31,7 @@ class Requests extends Controller
                 'page' => 'existing-requests',
                 'page_title' => 'Requests - ' . SITE_NAME,
                 'requests' => $requests,
+                'token' => $_SESSION['token'],
                 'error' => ''
             ]
         );
@@ -38,15 +39,15 @@ class Requests extends Controller
 
     public function add()
     {
+        $url = '';
+        
         if (isset($_POST['expire'])) {
-            $request = $this->model('Request');
-            $error = $request->add($_POST['requestname'], $_POST['expire']);
+            $error = $this->addRequest();
             if (!is_numeric($error)) {
                 $url = $error;
                 $error = '';
             }
         } else {
-            $url = '';
             $error = '';
         }
         
@@ -56,17 +57,32 @@ class Requests extends Controller
                 'page' => 'add-contact',
                 'page_title' => 'Add Contact - ' . SITE_NAME,
                 'expire_times' => [1, 6, 12, 24, 48],
-                'url' => $url,
+                'url' => $url != '' ? $url : '',
+                'token' => $_SESSION['token'],
                 'error' => $error != '' ? $this->getErrorMessage($error) : $error
             ]
         );
+    }
+    
+    private function addRequest()
+    {
+        if ($this->checkToken()) {
+            $request = $this->model('Request');
+
+            return $request->add(
+                $_POST['requestname'],
+                $_POST['expire']
+            );
+        } else {
+            return -1;
+        }
     }
 
     public function delete($guid)
     {
         $request = $this->model('Request');
         $request->delete($guid);
-        header('Location: ../requests');
+        $this->redirect('requests');
     }
 
     /*
@@ -77,6 +93,8 @@ class Requests extends Controller
     private function getErrorMessage($code)
     {
         switch ($code) {
+            case -1:
+                return "Invalid token.";
             case 1:
                 return "Expire must be a number.";
             case 2:

@@ -1,5 +1,5 @@
             <div class="cover-wrapper">
-                <form method="POST" action="settings/update">
+                <form method="POST" action="<?php echo BASE_HREF; ?>/settings/update">
                     <table class="single-table">
                         <thead>
                             <tr>
@@ -10,13 +10,13 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <input class="glow w100" type="text" name="username" title="Username" tabindex="1" placeholder="Username" value="<?php echo $data['user']->username; ?>">
+                                    <input class="glow w100" type="text" name="username" title="Username" tabindex="1" placeholder="Username" value="<?php echo $data['user']->username; ?>" required>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td>
-                                    <select class="glow w100" name="timezone" tabindex="2">
+                                    <select class="glow w100" name="timezone" tabindex="2" required>
                                         <?php foreach ($data['timezones'] as $tz) { ?>
                                             
                                         <option value="<?php echo $tz; ?>"<?php if ($tz == $data['user']->timezone) echo " selected"; ?>><?php echo $tz; ?></option>
@@ -30,13 +30,13 @@
                                 <td>
                                     <?php if ($data['user']->mfa_enabled == -1) { ?>
 
-                                    <a class="raw-button red-button w49 fl" href="mfa/disable">Disable MFA</a>
+                                    <a class="raw-button red-button w49 fl" href="<?php echo BASE_HREF; ?>/mfa/disable">Disable MFA</a>
                                     <?php }else { ?>
 
-                                    <a class="raw-button blue-button w49 fl" href="mfa/enable">Enable MFA</a>
+                                    <a class="raw-button blue-button w49 fl" href="<?php echo BASE_HREF; ?>/mfa/enable">Enable MFA</a>
                                     <?php } ?>
 
-                                    <a class="raw-button blue-button w49 fr" href="settings/reset">Reset Password</a>
+                                    <a class="raw-button blue-button w49 fr" href="<?php echo BASE_HREF; ?>/settings/reset">Reset Password</a>
                                 </td>
                             </tr>
 
@@ -45,7 +45,7 @@
 
                             <tr>
                                 <td>
-                                    <a class="raw-button red-button w100" href="settings/delete">Delete Account</a>
+                                    <a class="raw-button red-button w100" href="<?php echo BASE_HREF; ?>/settings/delete">Delete Account</a>
                                 </td>
                             </tr>
 
@@ -56,6 +56,7 @@
                         <tfoot>
                             <tr>
                                 <td>
+                                    <input type="hidden" name="token" value="<?php echo $data['token']; ?>">
                                     <input class="raw-button blue-outline w100" type="submit" name="submit" title="Submit" tabindex="3" value="Save">
                                     <?php if ($data['error'] != '') { ?>
                                         
@@ -71,7 +72,7 @@
 
                             <tr>
                                 <td>
-                                    <a href="conversations">Return</a>
+                                    <a href="<?php echo BASE_HREF; ?>/conversations">Return</a>
                                 </td>
                             </tr>
                         </tfoot>

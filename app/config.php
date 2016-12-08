@@ -22,7 +22,7 @@ define("SITE_NAME", "PHP Messenger");
 define("BASE_HREF", "https://yourdomain.com");
 define("BASE_DIR", __DIR__);
 define("TIMEZONE", "UTC");
-define("USESSION", "fdu-user-0auQ8cSlA6c"); //Make unique
+define("USESSION", "fdu-user-0auQ8cSlA6c");
 define("PW_COST", 12);
 define("SECURE", true);
 define("STORE_KEYS_LOCAL", true);

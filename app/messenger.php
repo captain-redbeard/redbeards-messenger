@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 05-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 04-Nov-2016
  * Author: Hosvir
  *
@@ -18,3 +18,4 @@ date_default_timezone_set(TIMEZONE);
 
 //Create new router
 $router = new Router();
+$router->route();

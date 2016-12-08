@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 07-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
  *
@@ -24,7 +24,7 @@ class Conversations extends Controller
     public function index($menu = null, $guid = null, $cguid = null)
     {
         if (isset($_SESSION['request'])) {
-            header('Location: accept/' . $_SESSION['request']);
+            $this->redirect('accept/' . $_SESSION['request']);
         }
         
         $conversation = $this->model('Conversation');
@@ -46,9 +46,9 @@ class Conversations extends Controller
                 'messages' => $message->getMessages($cguid),
                 'newconversation' => $newconversation,
                 'currenttime' => Functions::convertTime(date('Y-m-d H:i:s'), true),
-                'guid' => $guid,
-                'cguid' => $cguid,
-                'menu' => $menu
+                'guid' => htmlspecialchars($guid),
+                'cguid' => htmlspecialchars($cguid),
+                'menu' => htmlspecialchars($menu)
             ]
         );
     }
@@ -60,10 +60,10 @@ class Conversations extends Controller
 
         switch ($result[0]) {
             case 0:
-                header('Location: ../conversations/display/' . $_POST['tg'] . '/' . $result[1] . '#l');
+                $this->redirect('conversations/display/' . $_POST['tg'] . '/' . $result[1] . '#l');
                 break;
             case 1:
-                header('Location: ../conversations');
+                $this->redirect('conversations');
                 break;
         }
     }
@@ -72,6 +72,6 @@ class Conversations extends Controller
     {
         $conversation = $this->model('Conversation');
         $conversation->delete($guid);
-        header('Location: ../conversations');
+        $this->redirect('conversations');
     }
 }

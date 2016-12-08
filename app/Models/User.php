@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 07-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 04-Nov-2016
  * Author: Hosvir
  *
@@ -59,10 +59,14 @@ class User
      *
      */
     public function register($username, $password, $passphrase, $timezone)
-    {
+    {    
         $username = Functions::cleanInput($username, 1);
         $passphrase = Functions::cleanInput($passphrase, 1);
         $timezone = Functions::cleanInput($timezone, 1);
+        
+        if ($passphrase == '') {
+            $passphrase = null;
+        }
         
         //Check for errors
         if ($password == null) {
@@ -71,6 +75,9 @@ class User
             if (strlen($password) < 9) {
                 return 2;
             }
+        }
+        if (strlen(trim($username)) < 1) {
+            return 8;
         }
         if (strlen($username) > 63) {
             return 3;

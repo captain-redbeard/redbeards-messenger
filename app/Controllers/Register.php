@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 05-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
  *
@@ -18,6 +18,8 @@ class Register extends Controller
 {
     public function index()
     {
+        $this->startSession();
+        
         $this->view(
             'register',
             [
@@ -25,6 +27,7 @@ class Register extends Controller
                 'page_title' => 'Register to ' . SITE_NAME,
                 'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
                 'timezone' => '',
+                'token' => $_SESSION['token'],
                 'error' => ''
             ]
         );
@@ -37,17 +40,10 @@ class Register extends Controller
      */
     public function user()
     {
-        $user = $this->model('User');
-        $error = $user->register(
-            $_POST['username'],
-            $_POST['password'],
-            $_POST['passphrase'],
-            $_POST['timezone']
-        );
+        $error = $this->registerUser();
 
         if ($error == 0) {
-            //Success
-            header('Location: ../conversations');
+            $this->redirect('conversations');
         } else {
             $this->view(
                 'register',
@@ -57,9 +53,26 @@ class Register extends Controller
                     'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
                     'timezone' => htmlspecialchars($_POST['timezone']),
                     'username' => htmlspecialchars($_POST['username']),
+                    'token' => $_SESSION['token'],
                     'error' => $this->getErrorMessage($error)
                 ]
             );
+        }
+    }
+    
+    private function registerUser()
+    {
+        if ($this->checkToken()) {
+            $user = $this->model('User');
+
+            return $user->register(
+                $_POST['username'],
+                $_POST['password'],
+                $_POST['passphrase'],
+                $_POST['timezone']
+            );
+        } else {
+            return -1;
         }
     }
 
@@ -71,6 +84,8 @@ class Register extends Controller
     private function getErrorMessage($code)
     {
         switch ($code) {
+            case -1:
+                return "Invalid token.";
             case 1:
                 return "No password entered.";
             case 2:

@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 07-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
  *
@@ -46,6 +46,7 @@ class Mfa extends Controller
                 'page_title' => 'Enable MFA - ' . SITE_NAME,
                 'qr_code' => $qrCode,
                 'secret_key' => $user[0]['secret_key'],
+                'token' => $_SESSION['token'],
                 'error' => ''
             ]
         );
@@ -54,18 +55,15 @@ class Mfa extends Controller
     public function disable()
     {
         $_SESSION[USESSION]->disableMfa();
-        header('Location: ../settings');
+        $this->redirect('settings');
     }
 
     public function activate()
     {
-        $error = $_SESSION[USESSION]->enableMfa(
-            $_POST['code1'],
-            $_POST['code2']
-        );
+        $error = $this->activateMfa();
 
         if ($error == 0) {
-            header('Location: ../settings');
+            $this->redirect('settings');
         } else {
             $user = Database::select(
                 "SELECT secret_key, mfa_enabled FROM users WHERE user_guid = ?;",
@@ -90,9 +88,22 @@ class Mfa extends Controller
                     'page_title' => 'Enable MFA - ' . SITE_NAME,
                     'qr_code' => $qrCode,
                     'secret_key' => $user[0]['secret_key'],
+                    'token' => $_SESSION['token'],
                     'error' => $this->getErrorMessage($error)
                 ]
             );
+        }
+    }
+    
+    private function activateMfa()
+    {
+        if ($this->checkToken()) {
+            return $_SESSION[USESSION]->enableMfa(
+                $_POST['code1'],
+                $_POST['code2']
+            );
+        } else {
+            return -1;
         }
     }
 
@@ -104,6 +115,8 @@ class Mfa extends Controller
     private function getErrorMessage($code)
     {
         switch ($code) {
+            case -1:
+                return "Invalid token.";
             case 1:
                 return "You must provide two consecutive codes.";
             case 2:

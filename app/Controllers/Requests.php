@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
@@ -24,7 +24,7 @@ class Requests extends Controller
     {
         $request = $this->model('Request');
         $requests = $request->getRequests();
-
+        
         $this->view(
             'existing-requests',
             [
@@ -36,7 +36,7 @@ class Requests extends Controller
             ]
         );
     }
-
+    
     public function add()
     {
         $url = '';
@@ -68,7 +68,7 @@ class Requests extends Controller
     {
         if ($this->checkToken()) {
             $request = $this->model('Request');
-
+            
             return $request->add(
                 $_POST['requestname'],
                 $_POST['expire']
@@ -77,19 +77,14 @@ class Requests extends Controller
             return -1;
         }
     }
-
+    
     public function delete($guid)
     {
         $request = $this->model('Request');
         $request->delete($guid);
         $this->redirect('requests');
     }
-
-    /*
-     *
-     * Get the error message.
-     *
-     */
+    
     private function getErrorMessage($code)
     {
         switch ($code) {

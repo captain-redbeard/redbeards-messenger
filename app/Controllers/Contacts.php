@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
@@ -23,7 +23,7 @@ class Contacts extends Controller
     public function index()
     {
         $contact = $this->model('Contact');
-
+        
         $this->view(
             'contacts',
             [
@@ -34,14 +34,14 @@ class Contacts extends Controller
             ]
         );
     }
-
+    
     public function edit($guid)
     {
         $contact = $this->model('Contact');
-
+        
         if (isset($_POST['alias']) && $_POST['alias'] != '') {
             $error = $this->editContact($contact, $guid);
-
+            
             if ($error == 0) {
                 $this->redirect('contacts');
             }
@@ -79,12 +79,7 @@ class Contacts extends Controller
             return -1;
         }
     }
-
-    /*
-     *
-     * Get the error message.
-     *
-     */
+    
     private function getErrorMessage($code)
     {
         switch ($code) {

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
@@ -16,6 +16,5 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 date_default_timezone_set(TIMEZONE);
 
-//Create new router
 $router = new Router();
 $router->route();

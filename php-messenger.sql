@@ -2,7 +2,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 03, 2016 at 11:31 PM
+-- Generation Time: Dec 09, 2016 at 11:17 PM
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -103,6 +103,7 @@ CREATE TABLE `users` (
   `timezone` varchar(128) NOT NULL DEFAULT 'UTC',
   `mfa_enabled` tinyint(1) NOT NULL DEFAULT '0',
   `password_reset` tinyint(1) NOT NULL DEFAULT '0',
+  `expire` tinyint(2) NOT NULL DEFAULT '0',
   `last_load` datetime NOT NULL,
   `modified` datetime DEFAULT NULL,
   `made_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP

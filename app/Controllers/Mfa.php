@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
@@ -23,21 +23,8 @@ class Mfa extends Controller
     
     public function enable()
     {
-        $user = Database::select(
-            "SELECT secret_key, mfa_enabled FROM users WHERE user_guid = ?;",
-            [$_SESSION[USESSION]->user_guid]
-        );
-
-        $qrCode = new QrCode();
-        $qrCode
-            ->setText("otpauth://totp/" . SITE_NAME . ":" . $_SESSION[USESSION]->username . "?secret=" . $user[0]['secret_key'] . "&issuer=" . SITE_NAME)
-            ->setSize(200)
-            ->setPadding(0)
-            ->setErrorCorrection('high')
-            ->setForegroundColor(array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0))
-            ->setBackgroundColor(array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0))
-            ->setImageType(QrCode::IMAGE_TYPE_PNG)
-        ;
+        $user = $this->getSecretKey();
+        $qrCode = $this->getQrCode($user);
         
         $this->view(
             'enable-mfa',
@@ -51,35 +38,22 @@ class Mfa extends Controller
             ]
         );
     }
-
+    
     public function disable()
     {
         $_SESSION[USESSION]->disableMfa();
         $this->redirect('settings');
     }
-
+    
     public function activate()
     {
         $error = $this->activateMfa();
-
+        
         if ($error == 0) {
             $this->redirect('settings');
         } else {
-            $user = Database::select(
-                "SELECT secret_key, mfa_enabled FROM users WHERE user_guid = ?;",
-                [$_SESSION[USESSION]->user_guid]
-            );
-
-            $qrCode = new QrCode();
-            $qrCode
-                ->setText("otpauth://totp/" . SITE_NAME . ":" . $_SESSION[USESSION]->username . "?secret=" . $user[0]['secret_key'] . "&issuer=" . SITE_NAME)
-                ->setSize(200)
-                ->setPadding(0)
-                ->setErrorCorrection('high')
-                ->setForegroundColor(array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0))
-                ->setBackgroundColor(array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0))
-                ->setImageType(QrCode::IMAGE_TYPE_PNG)
-            ;
+            $user = $this->getSecretKey();
+            $qrCode = $this->getQrCode($user);
             
             $this->view(
                 'enable-mfa',
@@ -106,12 +80,35 @@ class Mfa extends Controller
             return -1;
         }
     }
-
-    /*
-     *
-     * Get the error message.
-     *
-     */
+    
+    private function getSecretKey()
+    {
+        return Database::select(
+            "SELECT secret_key, mfa_enabled FROM users WHERE user_guid = ?;",
+            [$_SESSION[USESSION]->user_guid]
+        );
+    }
+    
+    private function getQrCode($user)
+    {
+        $qrCode = new QrCode();
+        $qrCode
+            ->setText("otpauth://totp/" .
+                      SITE_NAME . ":" .
+                      $_SESSION[USESSION]->username . "?secret=" .
+                      $user[0]['secret_key'] . "&issuer=" .
+                      SITE_NAME)
+            ->setSize(200)
+            ->setPadding(0)
+            ->setErrorCorrection('high')
+            ->setForegroundColor(array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0))
+            ->setBackgroundColor(array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0))
+            ->setImageType(QrCode::IMAGE_TYPE_PNG)
+        ;
+        
+        return $qrCode;
+    }
+    
     private function getErrorMessage($code)
     {
         switch ($code) {

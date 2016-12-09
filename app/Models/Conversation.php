@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
  *
- * Modified: 07-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
  *
@@ -21,42 +21,36 @@ class Conversation
     public $username = null;
     public $alias = null;
     public $made_date = null;
-
-    public function __construct($conversation_guid = null, $contact_guid = null, $username = null, $alias = null, $made_date = null)
-    {
+    
+    public function __construct(
+        $conversation_guid = null,
+        $contact_guid = null,
+        $username = null,
+        $alias = null,
+        $made_date = null
+    ) {
         $this->conversation_guid = $conversation_guid;
         $this->contact_guid = $contact_guid;
         $this->username = $username;
         $this->alias = $alias;
         $this->made_date = $made_date;
     }
-
+    
     public function getMadeDate()
     {
         return Functions::convertTime($this->made_date, true);
     }
-
-    /*
-     *
-     * Get conversations.
-     *
-     * Details:
-     * Get all conversations for the current session user.
-     *
-     * @param: $made_date   - Made date grater than this
-     *
-     * @returns: Conversations array
-     *
-     */
+    
     public function getAll($made_date = null)
     {
-        //Get conversations
         if ($made_date == null) {
             $conversations = Database::select(
                 "SELECT conversation_guid, contact_guid,
                     (SELECT username FROM users WHERE user_guid = contact_guid) AS username,
-                    (SELECT contact_alias FROM contacts WHERE contact_guid = conversations.contact_guid AND user_guid = conversations.user_guid) AS contact_alias,
-                    (SELECT made_date FROM messages WHERE conversation_guid = conversations.conversation_guid AND (user1_guid = ? OR user2_guid = ?) ORDER BY made_date DESC LIMIT 1) AS made_date
+                    (SELECT contact_alias FROM contacts WHERE contact_guid = conversations.contact_guid 
+                        AND user_guid = conversations.user_guid) AS contact_alias,
+                    (SELECT made_date FROM messages WHERE conversation_guid = conversations.conversation_guid 
+                        AND (user1_guid = ? OR user2_guid = ?) ORDER BY made_date DESC LIMIT 1) AS made_date
                     FROM conversations WHERE user_guid = ?
                     ORDER BY made_date DESC;",
                 [
@@ -69,8 +63,10 @@ class Conversation
             $conversations = Database::select(
                 "SELECT conversation_guid, contact_guid,
                     (SELECT username FROM users WHERE user_guid = contact_guid) AS username,
-                    (SELECT contact_alias FROM contacts WHERE contact_guid = conversations.contact_guid AND user_guid = conversations.user_guid) AS contact_alias,
-                    (SELECT made_date FROM messages WHERE conversation_guid = conversations.conversation_guid AND (user1_guid = ? OR user2_guid = ?) ORDER BY made_date DESC LIMIT 1) AS made_date
+                    (SELECT contact_alias FROM contacts WHERE contact_guid = conversations.contact_guid 
+                        AND user_guid = conversations.user_guid) AS contact_alias,
+                    (SELECT made_date FROM messages WHERE conversation_guid = conversations.conversation_guid 
+                        AND (user1_guid = ? OR user2_guid = ?) ORDER BY made_date DESC LIMIT 1) AS made_date
                     FROM conversations
                     WHERE user_guid = ?
                     AND made_date > ?
@@ -83,16 +79,10 @@ class Conversation
                 ]
             );
         }
-
-        //Return conversation array
+        
         return $conversations;
     }
-
-    /**
-     *
-     * Get new conversation.
-     *
-     * */
+    
     public function getNew($guid)
     {
         return Database::select(
@@ -107,15 +97,9 @@ class Conversation
             ]
         );
     }
-
-    /*
-     *
-     * Delete conversation by guid.
-     *
-     */
+    
     public function delete($guid)
     {
-        //Delete messages
         Database::update(
             "DELETE FROM messages WHERE conversation_guid = ? AND (user1_guid = ? OR user2_guid = ?);",
             [
@@ -124,8 +108,7 @@ class Conversation
                 $_SESSION[USESSION]->user_guid
             ]
         );
-
-        //Delete conversations
+        
         return Database::update(
             "DELETE FROM conversations WHERE conversation_guid = ? AND (user_guid = ? OR contact_guid = ?);",
             [
@@ -135,12 +118,7 @@ class Conversation
             ]
         );
     }
-
-    /**
-     *
-     * Get conversations.
-     *
-     * */
+    
     public function getConversations($made_date = null)
     {
         $conversations = [];

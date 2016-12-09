@@ -22,7 +22,7 @@ function a() {
     var g, c;
     g = document.getElementById('g');
     c = document.getElementById('c');
-    r(false, "C/" + (g.innerHTML != null ? g.innerHTML : '') + "/" + (c.innerHTML != null ? c.innerHTML : ''), null, null, b);
+    r(false, "check/" + (g.innerHTML != null ? g.innerHTML : '') + "/" + (c.innerHTML != null ? c.innerHTML : ''), null, null, b);
 }
 
 function b(v) {
@@ -50,7 +50,7 @@ function b(v) {
 function c() {
     var a = document.getElementById('m');
     if(a.value.length > 0 && !/^\s+$/.test(a.value)) {
-        r(true, "S", "g=" + document.getElementById('g').innerHTML + "&c=" + document.getElementById('c').innerHTML + "&m=" + a.value, a.value, d);
+        r(true, "send", "g=" + document.getElementById('g').innerHTML + "&c=" + document.getElementById('c').innerHTML + "&m=" + a.value, a.value, d);
         a.value = '';
         a.select();
     }

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
@@ -22,7 +22,7 @@ class Login extends Controller
         if (isset($_SESSION[USESSION])) {
             $this->redirect('conversations');
         }
-
+        
         $this->view(
             'login',
             [
@@ -59,7 +59,7 @@ class Login extends Controller
     {
         if ($this->checkToken()) {
             $user = $this->model('User');
-
+            
             return $user->login(
                 $_POST['username'],
                 $_POST['password'],
@@ -70,12 +70,7 @@ class Login extends Controller
             return -1;
         }
     }
-
-    /*
-     *
-     * Get the error message.
-     *
-     */
+    
     private function getErrorMessage($code)
     {
         switch ($code) {

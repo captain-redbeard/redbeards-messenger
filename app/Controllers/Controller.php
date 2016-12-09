@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
@@ -41,13 +41,13 @@ class Controller
             return false;
         }
     }
-
+    
     public function isLoggedIn()
     {
         $this->startSession();
         return Session::loginCheck();
     }
-
+    
     public function requiresLogin()
     {
         if (!$this->isLoggedIn()) {
@@ -59,7 +59,7 @@ class Controller
     {
         header('Location: ' . BASE_HREF . '/' . $page);
     }
-
+    
     public function logout()
     {
         Session::kill();

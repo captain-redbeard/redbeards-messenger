@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
@@ -23,7 +23,7 @@ class Accept extends Controller
         
         $request = $this->model('Request');
         $error = $request->accept($guid);
-
+        
         if ($error == 0) {
             $this->redirect('contacts');
         }
@@ -38,11 +38,6 @@ class Accept extends Controller
         );
     }
     
-    /*
-     *
-     * Get the error message.
-     *
-     */
     private function getErrorMessage($code)
     {
         switch ($code) {

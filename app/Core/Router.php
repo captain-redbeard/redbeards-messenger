@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
@@ -31,26 +31,22 @@ class Router
                 )
             )
         );
-
-        //Check for controller
+        
         if (file_exists('../app/Controllers/' . $url[0] . '.php')) {
             $this->controller = '\\Messenger\\Controllers\\' . $url[0];
             unset($url[0]);
         }
         
-        //New controller object
         $this->controller = new $this->controller();
         
-        //Check for method
         if (isset($url[1]) && method_exists($this->controller, $url[1])) {
             $reflection_method = new \ReflectionMethod($this->controller, $url[1]);
-            if($reflection_method->isPublic()) {
+            if ($reflection_method->isPublic()) {
                 $this->method = $url[1];
                 unset($url[1]);
             }
         }
-
-        //Set parameters
+        
         $this->parameters = $url ? array_values($url) : [];
         call_user_func_array(array($this->controller, $this->method), $this->parameters);
     }

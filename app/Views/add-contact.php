@@ -43,7 +43,7 @@
                                         <option value="-1" selected disabled>Select Expire Time (hours)</option>
                                         <?php foreach ($data['expire_times'] as $tz) { ?>
 
-                                        <option value="<?php echo $tz; ?>"><?php echo $tz; ?></option>
+                                        <option value="<?php echo $tz; ?>"><?php echo $tz; ?> hour<?php if($tz > 1) echo "s"; ?></option>
                                         <?php } ?>
                                         
                                     </select>

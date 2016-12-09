@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
  *
- * Modified: 07-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
  *
@@ -24,22 +24,27 @@ class Message
     public $direction = null;
     public $message = null;
     public $made_date = null;
-
-    public function __construct($user1_guid = null, $user2_guid = null, $direction = null, $message = null, $made_date = null)
-    {
+    
+    public function __construct(
+        $user1_guid = null,
+        $user2_guid = null,
+        $direction = null,
+        $message = null,
+        $made_date = null
+    ) {
         $this->user1_guid = $user1_guid;
         $this->user2_guid = $user2_guid;
         $this->direction = $direction;
         $this->message = $message;
         $this->made_date = $made_date;
     }
-
+    
     public function getMadeDate()
     {
         return Functions::niceTime($this->made_date, true);
     }
-
-    /*
+    
+    /**
      *
      * Send message.
      *
@@ -63,8 +68,7 @@ class Message
             "SELECT contact_guid FROM contacts WHERE contact_guid = ? AND user_guid = ?;",
             [$to_guid, $_SESSION[USESSION]->user_guid]
         );
-
-        //Contact set
+        
         if ($to_guid != null && count($contact) > 0) {
             if (!STORE_KEYS_LOCAL) {
                 S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
@@ -72,24 +76,24 @@ class Message
                 $user_public_key = S3::getObject(KEY_BUCKET, $_SESSION[USESSION]->user_guid . ".pem");
             } else {
                 $to_public_key = file_get_contents(BASE_DIR . "/keys/public/" . $to_guid . ".pem");
-                $user_public_key = file_get_contents(BASE_DIR . "/keys/public/" . $_SESSION[USESSION]->user_guid . ".pem");
+                $user_public_key = file_get_contents(
+                    BASE_DIR . "/keys/public/" .
+                    $_SESSION[USESSION]->user_guid . ".pem"
+                );
             }
-
-            //Encrypt to message
+            
             $to_message = PublicPrivateKey::encrypt(
                 $message,
                 null,
                 STORE_KEYS_LOCAL ? $to_public_key : $to_public_key->body
             );
-
-            //Encrypt user message
+            
             $user_message = PublicPrivateKey::encrypt(
                 $message,
                 null,
                 STORE_KEYS_LOCAL ? $user_public_key : $user_public_key->body
             );
-
-            //Get conversation
+            
             $conversation = Database::select(
                 "SELECT conversation_guid
                     FROM conversations
@@ -102,7 +106,6 @@ class Message
             );
                 
             if (count($conversation) < 1) {
-                //Add new conversations
                 Database::insert(
                     "INSERT INTO conversations (conversation_guid, contact_guid, user_guid) VALUES (?,?,?);",
                     [
@@ -124,10 +127,10 @@ class Message
             } elseif ($conversation_guid != $conversation[0]['conversation_guid']) {
                 $conversation_guid = $conversation[0]['conversation_guid'];
             }
-
-            //Insert to message
+            
             Database::insert(
-                "INSERT INTO messages (conversation_guid, user1_guid, user2_guid, direction, message) VALUES (?,?,?,?,?);",
+                "INSERT INTO messages (conversation_guid, user1_guid, user2_guid, direction, message) 
+                    VALUES (?,?,?,?,?);",
                 [
                     $conversation_guid,
                     $to_guid,
@@ -136,10 +139,10 @@ class Message
                     $to_message
                 ]
             );
-
-            //Insert from message
+            
             Database::insert(
-                "INSERT INTO messages (conversation_guid, user1_guid, user2_guid, direction, message) VALUES (?,?,?,?,?);",
+                "INSERT INTO messages (conversation_guid, user1_guid, user2_guid, direction, message) 
+                    VALUES (?,?,?,?,?);",
                 [
                     $conversation_guid,
                     $to_guid,
@@ -148,14 +151,14 @@ class Message
                     $user_message
                 ]
             );
-
+            
             return 0 . ":" . $conversation_guid;
         } else {
             return 1;
         }
     }
-
-    /*
+    
+    /**
      *
      * Get messages.
      *
@@ -174,7 +177,6 @@ class Message
             return null;
         }
         
-        //Get messages
         if ($made_date == null) {
             $messages = Database::select(
                 "SELECT user1_guid, user2_guid, direction, message, made_date
@@ -208,16 +210,17 @@ class Message
                 ]
             );
         }
-
-        //Get private key
+        
         if (!STORE_KEYS_LOCAL) {
             S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
             $user_private_key = S3::getObject(KEY_BUCKET, $_SESSION[USESSION]->user_guid . ".key");
         } else {
-            $user_private_key = file_get_contents(BASE_DIR . "/keys/private/" . $_SESSION[USESSION]->user_guid . ".key");
+            $user_private_key = file_get_contents(
+                BASE_DIR . "/keys/private/" .
+                $_SESSION[USESSION]->user_guid . ".key"
+            );
         }
-
-        //Decrypt messages
+        
         for ($i = 0; $i < count($messages); $i++) {
             $messages[$i]['message'] = htmlspecialchars(
                 PublicPrivateKey::decrypt(
@@ -228,16 +231,10 @@ class Message
                 )
             );
         }
-
-        //Retrun decrypted message array
+        
         return array_reverse($messages);
     }
-
-    /*
-     *
-     * Get messages.
-     *
-     */
+    
     public function getMessages($conversation_guid, $made_date = null)
     {
         $messages = [];
@@ -257,7 +254,7 @@ class Message
                 );
             }
         }
-
+        
         return $messages;
     }
 }

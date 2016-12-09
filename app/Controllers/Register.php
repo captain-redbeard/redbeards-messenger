@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
@@ -32,16 +32,11 @@ class Register extends Controller
             ]
         );
     }
-
-    /*
-     *
-     * Register user.
-     *
-     */
+    
     public function user()
     {
         $error = $this->registerUser();
-
+        
         if ($error == 0) {
             $this->redirect('conversations');
         } else {
@@ -64,7 +59,7 @@ class Register extends Controller
     {
         if ($this->checkToken()) {
             $user = $this->model('User');
-
+            
             return $user->register(
                 $_POST['username'],
                 $_POST['password'],
@@ -75,12 +70,7 @@ class Register extends Controller
             return -1;
         }
     }
-
-    /*
-     *
-     * Get the error message.
-     *
-     */
+    
     private function getErrorMessage($code)
     {
         switch ($code) {

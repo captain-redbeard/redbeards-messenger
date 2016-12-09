@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
@@ -13,10 +13,10 @@ namespace Messenger\Controllers;
 
 use Messenger\Core\Database;
 
-class S extends Controller
+class Send extends Controller
 {
     public function index()
-    {  
+    {
         $to_guid = $_POST['g'];
         $conversation_guid = $_POST['c'];
         $message = $_POST['m'];
@@ -29,7 +29,7 @@ class S extends Controller
                     $conversation_guid,
                     $message
                 );
-
+                
                 echo 1;
             } else {
                 echo 0;

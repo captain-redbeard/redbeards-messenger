@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
  *
- * Modified: 05-Dec-2016
+ * Modified: 08-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
  *
@@ -17,7 +17,6 @@ class Statistics extends Controller
 {
     public function index()
     {
-        //Get statistics
         $statistics = Database::select(
             "SELECT
                 (SELECT COUNT(user_id) FROM users) AS user_count,
@@ -25,8 +24,7 @@ class Statistics extends Controller
                 (SELECT COUNT(conversation_id) FROM conversations) AS conversation_count;",
             []
         );
-
-        //Pass data to template
+        
         $this->view(
             'statistics',
             [

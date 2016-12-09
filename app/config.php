@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  * Details:
  * This is the configuration file, be sure to change the values 

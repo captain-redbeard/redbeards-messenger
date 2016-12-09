@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
@@ -30,7 +30,7 @@ class Conversations extends Controller
         $conversation = $this->model('Conversation');
         $message = $this->model('Message');
         $_SESSION[USESSION]->updateLastLoad();
-
+        
         if ($menu != null && $menu == 'new') {
             $newconversation = $conversation->getNew($guid);
         } else {
@@ -53,12 +53,12 @@ class Conversations extends Controller
             ]
         );
     }
-
+    
     public function send()
     {
         $message = $this->model('Message');
         $result = explode(":", $message->send($_POST['tg'], null, $_POST['m']));
-
+        
         switch ($result[0]) {
             case 0:
                 $this->redirect('conversations/display/' . $_POST['tg'] . '/' . $result[1] . '#l');
@@ -68,7 +68,7 @@ class Conversations extends Controller
                 break;
         }
     }
-
+    
     public function delete($guid = null)
     {
         $conversation = $this->model('Conversation');

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  * Details:
  * PHP Messenger.
@@ -12,7 +12,6 @@
 namespace Messenger\Controllers;
 
 use \DateTimeZone;
-use Messenger\Core\Database;
 
 class Settings extends Controller
 {
@@ -35,11 +34,11 @@ class Settings extends Controller
             ]
         );
     }
-
+    
     public function update()
     {
         $error = $this->updateSettings();
-
+        
         if ($error == 0) {
             $this->redirect('settings');
         } else {
@@ -68,7 +67,7 @@ class Settings extends Controller
             return -1;
         }
     }
-
+    
     public function reset()
     {
         if (isset($_POST['password'])) {
@@ -104,7 +103,7 @@ class Settings extends Controller
             return -1;
         }
     }
-
+    
     public function delete()
     {
         if (isset($_POST['password'])) {
@@ -138,12 +137,7 @@ class Settings extends Controller
             return -1;
         }
     }
-
-    /*
-     *
-     * Get the error message.
-     *
-     */
+    
     private function getErrorMessage($code)
     {
         switch ($code) {

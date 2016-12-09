@@ -1,6 +1,7 @@
 # php-messenger
 PHP Messenger is a lightweight secure instant messaging platform designed to put you in control of your data.
 We accomplish this by utilising [Public Key Encryption](https://en.wikipedia.org/wiki/Public-key_cryptography) to create a unique key pair with a 4096 bit key on registration.
+See [Website Security](#website-security) for more information about our security policies.
 
 * Security orientated
 * Be in control of your data
@@ -65,6 +66,9 @@ Deletes all messages for both parties relating to this conversation. **Neither p
 ##### Delete Account
 Deleting your account will delete all messages, conversations and contacts followed by your **Public and Private keys** and finally your user will be deleted. **No party retains any history, all deletions are final.**
 
+##### Deletion Policy
+Setup a deletion policy for your account based on your last login date. **No party retains any history, all deletions are final.**
+
 ---
 
 ### Lightweight
@@ -81,6 +85,7 @@ The following tools have been a great help in server configuration.
 * [securityheaders.io](https://securityheaders.io/?q=https%3A%2F%2Ffromdownunder.com.au&followRedirects=on)
 * [Qualys SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=fromdownunder.com.au)
 * [Google PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/?url=fromdownunder.com.au)
+* [Detectify](https://detectify.com)
 
 ---
 

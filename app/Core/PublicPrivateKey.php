@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 08-Dec-2016
+ * Modified: 11-Dec-2016
  * Made Date: 05-Nov-2016
  * Author: Hosvir
  *
@@ -165,6 +165,6 @@ class PublicPrivateKey
         $encrypted = self::encrypt($raw, $public_name);
         $decrypted = self::decrypt($encrypted, $private_name, $passphrase);
         
-        return ($raw == $decrypted);
+        return ($raw === $decrypted);
     }
 }

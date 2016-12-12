@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 08-Dec-2016
+ * Modified: 11-Dec-2016
  * Made Date: 04-Nov-2016
  * Author: Hosvir
  *
@@ -121,8 +121,8 @@ class User
                 );
             } else {
                 $keys = PublicPrivateKey::generateKeyPair(
-                    BASE_DIR . "/keys/public/$guid",
-                    BASE_DIR . "/keys/private/$guid",
+                    BASE_DIR . PPK_PUBLIC_FOLDER . $guid,
+                    BASE_DIR . PPK_PRIVATE_FOLDER . $guid,
                     false,
                     $passphrase
                 );
@@ -211,7 +211,7 @@ class User
                     }
                     
                     if ($existing[0]['mfa_enabled'] == -1) {
-                        $rmfa = \Messenger\ThirdParty\Google2FA::verify_key($existing[0]['secret_key'], $mfa);
+                        $rmfa = Google2FA::verify_key($existing[0]['secret_key'], $mfa);
                         
                         if (!$rmfa) {
                             Database::update(
@@ -423,8 +423,8 @@ class User
         if (count($user) > 0) {
             if (password_verify($password, $user[0]['password'])) {
                 if (STORE_KEYS_LOCAL) {
-                    unlink(BASE_DIR . "/keys/public/" . $user[0]['user_guid'] . ".pem");
-                    unlink(BASE_DIR . "/keys/private/" . $user[0]['user_guid'] . ".key");
+                    unlink(BASE_DIR . PPK_PUBLIC_FOLDER . $user[0]['user_guid'] . ".pem");
+                    unlink(BASE_DIR . PPK_PRIVATE_FOLDER . $user[0]['user_guid'] . ".key");
                 } else {
                     S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
                     S3::deleteObject(KEY_BUCKET, $guid . ".pem");

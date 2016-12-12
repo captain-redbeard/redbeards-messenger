@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 08-Dec-2016
+ * Modified: 10-Dec-2016
  * Made Date: 07-Dec-2016
  * Author: Hosvir
  *
@@ -37,12 +37,12 @@ class Requests extends Controller
         );
     }
     
-    public function add()
+    public function add($parameters = null)
     {
         $url = '';
         
-        if (isset($_POST['expire'])) {
-            $error = $this->addRequest();
+        if ($parameters !== null) {
+            $error = $this->addRequest($parameters);
             if (!is_numeric($error)) {
                 $url = $error;
                 $error = '';
@@ -64,14 +64,14 @@ class Requests extends Controller
         );
     }
     
-    private function addRequest()
+    private function addRequest($parameters)
     {
         if ($this->checkToken()) {
             $request = $this->model('Request');
             
             return $request->add(
-                $_POST['requestname'],
-                $_POST['expire']
+                $parameters['requestname'],
+                $parameters['expire']
             );
         } else {
             return -1;

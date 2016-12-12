@@ -35,7 +35,7 @@ class Controller
     public function checkToken()
     {
         $this->startSession();
-        if (isset($_POST['token']) && $_POST['token'] == $_SESSION['token']) {
+        if (isset($_POST['token']) && $_POST['token'] === $_SESSION['token']) {
             return true;
         } else {
             return false;

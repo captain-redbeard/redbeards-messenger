@@ -78,6 +78,19 @@ If you have JavaScript enabled than we use AJAX calls with server side long poll
 
 ---
 
+### Supported HTML tags
+The following HTML tags are supported in the messenger.
+
+```
+<br>
+<b>
+<ul>
+<li>
+<strong>
+```
+
+---
+
 ### Website tests
 The following tools have been a great help in server configuration.
 

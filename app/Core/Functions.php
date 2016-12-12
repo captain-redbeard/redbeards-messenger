@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 08-Dec-2016
+ * Modified: 11-Dec-2016
  * Made Date: 05-Nov-2016
  * Author: Hosvir
  *
@@ -17,7 +17,6 @@ use \Tidy;
 
 class Functions
 {
-    
     public static function generateRandomString($length)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -58,6 +57,10 @@ class Functions
             case 1:
                 $clean = strip_tags($input);
                 $clean = preg_replace('/[^a-zA-Z0-9 \-_\/ @.]/i', ' ', $clean);
+                break;
+            case 2:
+                $clean = strip_tags($input);
+                $clean = preg_replace('/[^a-zA-Z0-9 \-\/]/i', ' ', $clean);
                 break;
             default:
                 $clean = strip_tags($input);
@@ -115,10 +118,10 @@ class Functions
     {
         $url = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
         $url .= $_SERVER['SERVER_NAME'] . str_replace($_SERVER['DOCUMENT_ROOT'], "", $_SERVER['PHP_SELF']);
-        return $url;
+        return str_replace('/index.php', '', $url);
     }
     
-    public static function allowTags($message)
+    public static function allowTags($message, $allowImage)
     {
         $allowed = [
             '/\\n/',
@@ -145,6 +148,11 @@ class Functions
             '<strong>',
             '</strong>'
         ];
+        
+        if ($allowImage) {
+            array_push($allowed, '/&lt;img src=&quot;(.*)&quot;&gt;/');
+            array_push($replace, '<img src="$1">');
+        }
         
         $tidy = new Tidy();
         

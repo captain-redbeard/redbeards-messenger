@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 08-Dec-2016
+ * Modified: 10-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
  *
@@ -35,14 +35,14 @@ class Contacts extends Controller
         );
     }
     
-    public function edit($guid)
+    public function edit($guid, $parameters = null)
     {
         $contact = $this->model('Contact');
         
-        if (isset($_POST['alias']) && $_POST['alias'] != '') {
-            $error = $this->editContact($contact, $guid);
+        if ($parameters != null && $parameters['alias'] != '') {
+            $error = $this->editContact($contact, $guid, $parameters);
             
-            if ($error == 0) {
+            if ($error === 0) {
                 $this->redirect('contacts');
             }
         } else {
@@ -70,11 +70,11 @@ class Contacts extends Controller
         $this->redirect('contacts');
     }
     
-    private function editContact($contact, $guid)
+    private function editContact($contact, $guid, $parameters)
     {
         if ($this->checkToken()) {
             $selected_contact = $contact->getByGuid($guid);
-            return $selected_contact->setAlias($_POST['alias']);
+            return $selected_contact->setAlias($parameters['alias']);
         } else {
             return -1;
         }

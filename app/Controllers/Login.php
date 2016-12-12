@@ -35,11 +35,11 @@ class Login extends Controller
         );
     }
     
-    public function authenticate()
+    public function authenticate($parameters)
     {
-        $error = $this->authenticateUser();
+        $error = $this->authenticateUser($parameters);
         
-        if ($error == 0) {
+        if ($error === 0) {
             $this->redirect('conversations');
         } else {
             $this->view(
@@ -55,16 +55,16 @@ class Login extends Controller
         }
     }
     
-    private function authenticateUser()
+    private function authenticateUser($parameters)
     {
         if ($this->checkToken()) {
             $user = $this->model('User');
             
             return $user->login(
-                $_POST['username'],
-                $_POST['password'],
-                $_POST['passphrase'],
-                $_POST['mfa']
+                $parameters['username'],
+                $parameters['password'],
+                $parameters['passphrase'],
+                $parameters['mfa']
             );
         } else {
             return -1;

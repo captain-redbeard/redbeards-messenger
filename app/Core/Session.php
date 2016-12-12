@@ -66,13 +66,13 @@ class Session
                 [$_SESSION['user_id']]
             );
             
-            if (count($user) == 1) {
+            if (count($user) === 1) {
                 $login_check = hash(
                     'sha512',
                     $user[0]['user_id'] . $_SERVER['HTTP_USER_AGENT'] . $user[0]['user_guid']
                 );
                 
-                if ($login_check == $_SESSION['login_string']) {
+                if ($login_check === $_SESSION['login_string']) {
                     return true;
                 } else {
                     return false;

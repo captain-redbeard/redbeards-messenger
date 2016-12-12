@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 07-Dec-2016
+ * Modified: 10-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
  *
@@ -21,8 +21,8 @@ class Send extends Controller
         $conversation_guid = $_POST['c'];
         $message = $_POST['m'];
         
-        if ($message != null && strlen(trim($message)) > 0) {
-            if ($to_guid != null) {
+        if ($message !== null && strlen(trim($message)) > 0) {
+            if ($to_guid !== null) {
                 $mess = $this->model('Message');
                 $mess->send(
                     $to_guid,

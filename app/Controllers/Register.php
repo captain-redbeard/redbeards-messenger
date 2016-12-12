@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 08-Dec-2016
+ * Modified: 10-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
  *
@@ -33,11 +33,11 @@ class Register extends Controller
         );
     }
     
-    public function user()
+    public function user($parameters)
     {
-        $error = $this->registerUser();
+        $error = $this->registerUser($parameters);
         
-        if ($error == 0) {
+        if ($error === 0) {
             $this->redirect('conversations');
         } else {
             $this->view(
@@ -55,16 +55,16 @@ class Register extends Controller
         }
     }
     
-    private function registerUser()
+    private function registerUser($parameters)
     {
         if ($this->checkToken()) {
             $user = $this->model('User');
             
             return $user->register(
-                $_POST['username'],
-                $_POST['password'],
-                $_POST['passphrase'],
-                $_POST['timezone']
+                $parameters['username'],
+                $parameters['password'],
+                $parameters['passphrase'],
+                $parameters['timezone']
             );
         } else {
             return -1;

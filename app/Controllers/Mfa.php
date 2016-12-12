@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 08-Dec-2016
+ * Modified: 10-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
  *
@@ -45,11 +45,11 @@ class Mfa extends Controller
         $this->redirect('settings');
     }
     
-    public function activate()
+    public function activate($parameters)
     {
-        $error = $this->activateMfa();
+        $error = $this->activateMfa($parameters);
         
-        if ($error == 0) {
+        if ($error === 0) {
             $this->redirect('settings');
         } else {
             $user = $this->getSecretKey();
@@ -69,12 +69,12 @@ class Mfa extends Controller
         }
     }
     
-    private function activateMfa()
+    private function activateMfa($parameters)
     {
         if ($this->checkToken()) {
             return $_SESSION[USESSION]->enableMfa(
-                $_POST['code1'],
-                $_POST['code2']
+                $parameters['code1'],
+                $parameters['code2']
             );
         } else {
             return -1;

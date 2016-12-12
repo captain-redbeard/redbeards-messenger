@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 08-Dec-2016
+ * Modified: 10-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
  *
@@ -35,11 +35,11 @@ class Settings extends Controller
         );
     }
     
-    public function update()
+    public function update($parameters = null)
     {
-        $error = $this->updateSettings();
+        $error = $this->updateSettings($parameters);
         
-        if ($error == 0) {
+        if ($error === 0) {
             $this->redirect('settings');
         } else {
             $this->view(
@@ -56,24 +56,24 @@ class Settings extends Controller
         }
     }
     
-    private function updateSettings()
+    private function updateSettings($parameters)
     {
         if ($this->checkToken()) {
             return $_SESSION[USESSION]->update(
-                $_POST['username'],
-                $_POST['timezone']
+                $parameters['username'],
+                $parameters['timezone']
             );
         } else {
             return -1;
         }
     }
     
-    public function reset()
+    public function reset($parameters = null)
     {
-        if (isset($_POST['password'])) {
-            $error = $this->resetPassword();
+        if ($parameters !== null) {
+            $error = $this->resetPassword($parameters);
             
-            if ($error == 0) {
+            if ($error === 0) {
                 $this->redirect('settings');
             }
         } else {
@@ -91,25 +91,25 @@ class Settings extends Controller
         );
     }
     
-    private function resetPassword()
+    private function resetPassword($parameters)
     {
         if ($this->checkToken()) {
             return $_SESSION[USESSION]->resetPassword(
-                $_POST['password'],
-                $_POST['npassword'],
-                $_POST['cpassword']
+                $parameters['password'],
+                $parameters['npassword'],
+                $parameters['cpassword']
             );
         } else {
             return -1;
         }
     }
     
-    public function delete()
+    public function delete($parameters = null)
     {
-        if (isset($_POST['password'])) {
-            $error = $this->deleteAccount();
+        if ($parameters !== null) {
+            $error = $this->deleteAccount($parameters);
             
-            if ($error == 0) {
+            if ($error === 0) {
                 $this->redirect('logout');
             }
         } else {
@@ -127,11 +127,11 @@ class Settings extends Controller
         );
     }
     
-    private function deleteAccount()
+    private function deleteAccount($parameters)
     {
         if ($this->checkToken()) {
             return $_SESSION[USESSION]->delete(
-                $_POST['password']
+                $parameters['password']
             );
         } else {
             return -1;

@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 08-Dec-2016
+ * Modified: 11-Dec-2016
  * Made Date: 05-Nov-2016
  * Author: Hosvir
  *
@@ -19,7 +19,7 @@ class Database
     
     public static function connect($rdbms = 'mysql')
     {
-        if (self::$connection == null) {
+        if (self::$connection === null) {
             $options = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -30,7 +30,7 @@ class Database
                 $rdbms . ':' .
                 'host=' . DB_HOSTNAME . ';' .
                 'dbname=' . DB_DATABASE . ';' .
-                'chatset=utf8mb4;',
+                'chatset=' . DB_CHARSET . ';',
                 DB_USERNAME,
                 DB_PASSWORD,
                 $options
@@ -93,6 +93,7 @@ class Database
         }
         
         array_unshift($parameters, $types);
+        
         return $types;
     }
     

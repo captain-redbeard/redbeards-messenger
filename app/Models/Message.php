@@ -75,10 +75,17 @@ class Message
                 $to_public_key = S3::getObject(KEY_BUCKET, $to_guid . ".pem");
                 $user_public_key = S3::getObject(KEY_BUCKET, $_SESSION[USESSION]->user_guid . ".pem");
             } else {
-                $to_public_key = file_get_contents(BASE_DIR . "/keys/public/" . $to_guid . ".pem");
+                $to_public_key = file_get_contents(
+                    BASE_DIR . 
+                    PPK_PUBLIC_FOLDER . 
+                    $to_guid . 
+                    ".pem"
+                );
                 $user_public_key = file_get_contents(
-                    BASE_DIR . "/keys/public/" .
-                    $_SESSION[USESSION]->user_guid . ".pem"
+                    BASE_DIR . 
+                    PPK_PUBLIC_FOLDER . 
+                    $_SESSION[USESSION]->user_guid . 
+                    ".pem"
                 );
             }
             
@@ -216,8 +223,10 @@ class Message
             $user_private_key = S3::getObject(KEY_BUCKET, $_SESSION[USESSION]->user_guid . ".key");
         } else {
             $user_private_key = file_get_contents(
-                BASE_DIR . "/keys/private/" .
-                $_SESSION[USESSION]->user_guid . ".key"
+                BASE_DIR . 
+                PPK_PRIVATE_FOLDER .
+                $_SESSION[USESSION]->user_guid . 
+                ".key"
             );
         }
         

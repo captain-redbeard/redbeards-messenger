@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 09-Dec-2016
+ * Modified: 10-Dec-2016
  * Made Date: 09-Dec-2016
  * Author: Hosvir
  *
@@ -18,12 +18,12 @@ class Deletion extends Controller
         $this->requiresLogin();
     }
     
-    public function enable()
+    public function enable($parameters = null)
     {
-        if (isset($_POST['expire'])) {
-            $error = $this->updateDeletion($_POST['expire']);
+        if ($parameters !== null) {
+            $error = $this->updateDeletion($parameters);
             
-            if ($error == 0) {
+            if ($error === 0) {
                 $this->redirect('settings');
             }
         } else {
@@ -49,10 +49,10 @@ class Deletion extends Controller
         $this->redirect('settings');
     }
     
-    private function updateDeletion($expire)
+    private function updateDeletion($parameters)
     {
         if ($this->checkToken()) {
-            return $_SESSION[USESSION]->updateExpire($expire);
+            return $_SESSION[USESSION]->updateExpire($parameters['expire']);
         } else {
             return -1;
         }

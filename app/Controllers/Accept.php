@@ -19,12 +19,13 @@ class Accept extends Controller
     {
         $this->isLoggedIn();
         $_SESSION['request'] = $guid;
+        
         $this->requiresLogin();
         
         $request = $this->model('Request');
         $error = $request->accept($guid);
         
-        if ($error == 0) {
+        if ($error === 0) {
             $this->redirect('contacts');
         }
         

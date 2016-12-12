@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 08-Dec-2016
+ * Modified: 10-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
  *
@@ -31,7 +31,7 @@ class Conversations extends Controller
         $message = $this->model('Message');
         $_SESSION[USESSION]->updateLastLoad();
         
-        if ($menu != null && $menu == 'new') {
+        if ($menu !== null && $menu === 'new') {
             $newconversation = $conversation->getNew($guid);
         } else {
             $newconversation = null;

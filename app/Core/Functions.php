@@ -121,7 +121,7 @@ class Functions
         return str_replace('/index.php', '', $url);
     }
     
-    public static function allowTags($message, $allowImage)
+    public static function allowTags($message, $allowImage = false)
     {
         $allowed = [
             '/\\n/',

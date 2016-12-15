@@ -16,16 +16,6 @@ See [Website Security](#website-security) for more information about our securit
 
 ---
 
-### Official Demo Website
-[fromdownunder.com.au](https://fromdownunder.com.au)
-
-* Log files deleted every 15 minutes
-* [Website tests](#website-tests)
-
-**Note: as this is a demo website, all data will be wiped regularly.**
-
----
-
 ### Install (Proof of concept)
 **Please understand this is still in a Proof of concept stage and the code base may change drastically.**
 
@@ -88,17 +78,6 @@ The following HTML tags are supported in the messenger.
 <li>
 <strong>
 ```
-
----
-
-### Website tests
-The following tools have been a great help in server configuration.
-
-* [Observatory by mozilla](https://observatory.mozilla.org/analyze.html?host=fromdownunder.com.au)
-* [securityheaders.io](https://securityheaders.io/?q=https%3A%2F%2Ffromdownunder.com.au&followRedirects=on)
-* [Qualys SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=fromdownunder.com.au)
-* [Google PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/?url=fromdownunder.com.au)
-* [Detectify](https://detectify.com)
 
 ---
 

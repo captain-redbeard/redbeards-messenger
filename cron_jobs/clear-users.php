@@ -1,13 +1,13 @@
 <?php
 /**
- * 
+ *
  * Details:
  * PHP Messenger.
- * 
- * Modified: 09-Dec-2016
+ *
+ * Modified: 23-Dec-2016
  * Made Date: 09-Dec-2016
  * Author: Hosvir
- * 
+ *
  */
 use Messenger\Core\Database;
 
@@ -27,8 +27,8 @@ if (count($users) > 0) {
     foreach ($users as $user) {
         //Delete public private key pair
         if (STORE_KEYS_LOCAL) {
-            unlink("../app/keys/public/" . $user['user_guid'] . ".pem");
-            unlink("../app/keys/private/" . $user['user_guid'] . ".key");
+            unlink(BASE_DIR . PPK_PUBLIC_FOLDER . $user['user_guid'] . ".pem");
+            unlink(BASE_DIR . PPK_PRIVATE_FOLDER . $user['user_guid'] . ".key");
         } else {
             S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
             S3::deleteObject(KEY_BUCKET, $guid . ".pem");

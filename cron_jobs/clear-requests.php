@@ -1,13 +1,13 @@
 <?php
 /**
- * 
+ *
  * Details:
  * PHP Messenger.
- * 
+ *
  * Modified: 09-Dec-2016
  * Made Date: 29-Nov-2016
  * Author: Hosvir
- * 
+ *
  */
 use Messenger\Core\Database;
 

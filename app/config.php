@@ -4,7 +4,7 @@
  * Details:
  * This is the configuration file, be sure to change the values as required.
  *
- * Modified: 11-Dec-2016
+ * Modified: 23-Dec-2016
  * Made Date: 04-Dec-2015
  * Author: Hosvir
  *
@@ -28,6 +28,7 @@ getenv("S3_SECRET_KEY") != null ? define("S3_SECRET_KEY", getenv("S3_SECRET_KEY"
 getenv("KEY_BUCKET") != null ? define("KEY_BUCKET", getenv("KEY_BUCKET")) : define("KEY_BUCKET", "");
 
 //App
+define("BASE_DIR", __DIR__);
 define("SITE_NAME", "PHP Messenger");
 define("TIMEZONE", "UTC");
 define("USESSION", "fdu-user-0auQ8cSlA6c");

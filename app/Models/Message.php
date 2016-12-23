@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 08-Dec-2016
+ * Modified: 23-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
  *
@@ -24,19 +24,22 @@ class Message
     public $direction = null;
     public $message = null;
     public $made_date = null;
+    public $signature = null;
     
     public function __construct(
         $user1_guid = null,
         $user2_guid = null,
         $direction = null,
         $message = null,
-        $made_date = null
+        $made_date = null,
+        $signature = null
     ) {
         $this->user1_guid = $user1_guid;
         $this->user2_guid = $user2_guid;
         $this->direction = $direction;
         $this->message = $message;
         $this->made_date = $made_date;
+        $this->signature = $signature;
     }
     
     public function getMadeDate()
@@ -74,18 +77,25 @@ class Message
                 S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
                 $to_public_key = S3::getObject(KEY_BUCKET, $to_guid . ".pem");
                 $user_public_key = S3::getObject(KEY_BUCKET, $_SESSION[USESSION]->user_guid . ".pem");
+                $user_private_key = S3::getObject(KEY_BUCKET, $_SESSION[USESSION]->user_guid . ".key");
             } else {
                 $to_public_key = file_get_contents(
-                    BASE_DIR . 
-                    PPK_PUBLIC_FOLDER . 
-                    $to_guid . 
+                    BASE_DIR .
+                    PPK_PUBLIC_FOLDER .
+                    $to_guid .
                     ".pem"
                 );
                 $user_public_key = file_get_contents(
-                    BASE_DIR . 
-                    PPK_PUBLIC_FOLDER . 
-                    $_SESSION[USESSION]->user_guid . 
+                    BASE_DIR .
+                    PPK_PUBLIC_FOLDER .
+                    $_SESSION[USESSION]->user_guid .
                     ".pem"
+                );
+                $user_private_key = file_get_contents(
+                    BASE_DIR .
+                    PPK_PRIVATE_FOLDER .
+                    $_SESSION[USESSION]->user_guid .
+                    ".key"
                 );
             }
             
@@ -100,6 +110,9 @@ class Message
                 null,
                 STORE_KEYS_LOCAL ? $user_public_key : $user_public_key->body
             );
+            
+            $to_signature = PublicPrivateKey::sign($to_message, $user_private_key, $_SESSION[USESSION]->passphrase);
+            $user_signature = PublicPrivateKey::sign($user_message, $user_private_key, $_SESSION[USESSION]->passphrase);
             
             $conversation = Database::select(
                 "SELECT conversation_guid
@@ -136,26 +149,28 @@ class Message
             }
             
             Database::insert(
-                "INSERT INTO messages (conversation_guid, user1_guid, user2_guid, direction, message) 
-                    VALUES (?,?,?,?,?);",
+                "INSERT INTO messages (conversation_guid, user1_guid, user2_guid, direction, message, signature) 
+                    VALUES (?,?,?,?,?,?);",
                 [
                     $conversation_guid,
                     $to_guid,
                     $_SESSION[USESSION]->user_guid,
                     0,
-                    $to_message
+                    $to_message,
+                    $to_signature
                 ]
             );
             
             Database::insert(
-                "INSERT INTO messages (conversation_guid, user1_guid, user2_guid, direction, message) 
-                    VALUES (?,?,?,?,?);",
+                "INSERT INTO messages (conversation_guid, user1_guid, user2_guid, direction, message, signature) 
+                    VALUES (?,?,?,?,?,?);",
                 [
                     $conversation_guid,
                     $to_guid,
                     $_SESSION[USESSION]->user_guid,
                     1,
-                    $user_message
+                    $user_message,
+                    $user_signature
                 ]
             );
             
@@ -184,9 +199,21 @@ class Message
             return null;
         }
         
+        $conversation = Database::select(
+            "SELECT conversation_guid, contact_guid, user_guid 
+                FROM conversations 
+                WHERE conversation_guid = ? 
+                AND user_guid = ? 
+                LIMIT 1;",
+            [
+                $conversation_guid,
+                $_SESSION[USESSION]->user_guid            
+            ]
+        );
+        
         if ($made_date == null) {
             $messages = Database::select(
-                "SELECT user1_guid, user2_guid, direction, message, made_date
+                "SELECT user1_guid, user2_guid, direction, message, signature, made_date
                     FROM messages
                     WHERE (user1_guid = ? AND direction = 0 OR user2_guid = ? AND direction = 1)
                     AND conversation_guid = ?
@@ -201,7 +228,7 @@ class Message
             );
         } else {
             $messages = Database::select(
-                "SELECT user1_guid, user2_guid, direction, message, made_date
+                "SELECT user1_guid, user2_guid, direction, message, signature, made_date
                     FROM messages
                     WHERE (user1_guid = ? AND direction = 0 OR user2_guid = ? AND direction = 1)
                     AND conversation_guid = ?
@@ -220,17 +247,43 @@ class Message
         
         if (!STORE_KEYS_LOCAL) {
             S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
+            $from_public_key = S3::getObject(KEY_BUCKET, $conversation[0]['contact_guid'] . ".pem");
+            $user_public_key = S3::getObject(KEY_BUCKET, $_SESSION[USESSION]->user_guid . ".pem");
             $user_private_key = S3::getObject(KEY_BUCKET, $_SESSION[USESSION]->user_guid . ".key");
         } else {
+            $from_public_key = file_get_contents(
+                BASE_DIR .
+                PPK_PUBLIC_FOLDER .
+                $conversation[0]['contact_guid'] .
+                ".pem"
+            );
+            $user_public_key = file_get_contents(
+                BASE_DIR .
+                PPK_PUBLIC_FOLDER .
+                $_SESSION[USESSION]->user_guid .
+                ".pem"
+            );
             $user_private_key = file_get_contents(
-                BASE_DIR . 
+                BASE_DIR .
                 PPK_PRIVATE_FOLDER .
-                $_SESSION[USESSION]->user_guid . 
+                $_SESSION[USESSION]->user_guid .
                 ".key"
             );
         }
         
         for ($i = 0; $i < count($messages); $i++) {
+            if ($messages[$i]['user2_guid'] == $_SESSION[USESSION]->user_guid && $messages[$i]['direction'] === 1) {
+                $public_key = $user_public_key;
+            } else {
+                $public_key = $from_public_key;
+            }
+            
+            if (PublicPrivateKey::verify($messages[$i]['message'], $public_key, $messages[$i]['signature'])) {
+                $messages[$i]['signature'] = 0;
+            } else {
+                $messages[$i]['signature'] = 1;
+            }
+            
             $messages[$i]['message'] = htmlspecialchars(
                 PublicPrivateKey::decrypt(
                     $messages[$i]['message'],
@@ -238,7 +291,7 @@ class Message
                     $_SESSION[USESSION]->passphrase,
                     STORE_KEYS_LOCAL ? $user_private_key : $user_private_key->body
                 )
-            );
+            );            
         }
         
         return array_reverse($messages);
@@ -258,7 +311,8 @@ class Message
                         $message['user2_guid'],
                         $message['direction'],
                         Functions::allowTags($message['message']),
-                        $message['made_date']
+                        $message['made_date'],
+                        $message['signature']
                     )
                 );
             }

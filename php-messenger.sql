@@ -84,6 +84,7 @@ CREATE TABLE `messages` (
   `user2_guid` varchar(32) NOT NULL,
   `direction` tinyint(1) NOT NULL DEFAULT '0',
   `message` blob NOT NULL,
+  `signature` blob NOT NULL,
   `made_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

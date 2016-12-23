@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 08-Dec-2016
+ * Modified: 23-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
  *
@@ -89,7 +89,8 @@ class Check extends Controller
                             "m" => $m->message,
                             "d" => $m->getMadeDate(),
                             "r" => $m->made_date,
-                            "f" => $sent
+                            "f" => $sent,
+                            "s" => $m->signature
                         ]
                     );
                 }

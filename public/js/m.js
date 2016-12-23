@@ -3,7 +3,7 @@
  * Details:
  * PHP Messenger.
  * 
- * Modified: 08-Dec-2016
+ * Modified: 23-Dec-2016
  * Made Date: 28-Nov-2016
  * Author: Hosvir
  * 
@@ -27,20 +27,42 @@ function a() {
 
 function b(v) {
     if(v != null && v != "0") {
-        var i, k, s, j, r, y, x, z;
+        var i, k, s, t, j, r, y, x, z;
         k = document.getElementById('l');
         s = document.getElementsByClassName("re");
         for(i = 0; i < s.length; i++) s[i].outerHTML='';
         for(i = 0; i < v.c.length; i++) {
             x = v.c[i];
             y = x.a != '' ? (x.a + ' - ') : '';
-            document.getElementById('h').insertAdjacentHTML('afterbegin', '<a href="conversations/display/' + x.g + '/' + x.c + '#l"><div class="f"><div class="i">' + y + x.u + '</div><div class="cc j fr" data-md="">' + h(x.d) + ' &nbsp;<a href="delete-conversation/' + x.c + '"><div class="g id" alt="Delete Conversation" title="Delete Conversation" style="width: 10px; height: 10px;"></div></a></div><div class="z"></div></a>');
+            document.getElementById('h').insertAdjacentHTML(
+                'afterbegin',
+                '<a href="conversations/display/' + x.g + '/' + x.c + '#l">' +
+                    '<div class="f">' +
+                        '<div class="i">' + y + x.u + '</div>' +
+                        '<div class="cc j fr" data-md="">' +
+                            h(x.d) + ' &nbsp;' +
+                            '<a href="delete-conversation/' + x.c + '">' +
+                                '<div class="g id ac" alt="Delete Conversation" title="Delete Conversation"></div>' +
+                            '</a>' +
+                        '</div>' +
+                    '<div class="z"></div>' +
+                '</a>'
+            );
         }
         for(i = 0; i < v.m.length; i++) {
             j = v.m[i];
             r = j.f == true ? 'fr' : 'fl';
             z = j.f == true ? 's' : 'r';
-            k.insertAdjacentHTML('beforebegin', '<div class="o ' + r + '"><div class="q ' + z + '">' + j.m + '</div><div class="z j aa ' + r + '" data-md="' + j.r + '">' + j.d + '</div></div><div class="p"></div>');
+            z = j.s == 1 ? z += ' ae' : z;
+            t = j.s == 1 ? '<div class="ad">-= Message has been tampered with =-</div>' : '';
+            k.insertAdjacentHTML(
+                'beforebegin',
+                '<div class="o ' + r + '">' +
+                    '<div class="q ' + z + '">' + t + j.m + '</div>' +
+                    '<div class="z j aa ' + r + '" data-md="' + j.r + '">' + j.d + '</div>' +
+                '</div>' +
+                '<div class="p"></div>'
+            );
         }
         e("l");
     }
@@ -59,7 +81,14 @@ function c() {
 
 function d(v, x) {
     if(v == 1) {
-        document.getElementById('l').insertAdjacentHTML('beforebegin', '<div class="re o fr"><div class="q s fr">' + x.replace(new RegExp('\n', 'g'), '<br/>') + '</div><div class="z j aa fr">now</div></div><div class="re p"></div>');
+        document.getElementById('l').insertAdjacentHTML(
+            'beforebegin',
+            '<div class="re o fr">' +
+                '<div class="q s fr">' + x.replace(new RegExp('\n', 'g'), '<br/>') + '</div>' +
+                '<div class="z j aa fr">now</div>' +
+            '</div>' +
+            '<div class="re p"></div>'
+        );
         e("l");
     }
 }

@@ -64,16 +64,23 @@
                     <div class="n">
                         <?php if ($data['messages'] != null) {
                                 foreach ($data['messages'] as $message) { 
-                                    if ($message->user2_guid == $_SESSION[USESSION]->user_guid && $message->direction == 1) $sent = true; else $sent = false;
+                                    if ($message->user2_guid == $_SESSION[USESSION]->user_guid && $message->direction === 1) $sent = true; else $sent = false;
                         ?>
                         
                         <div class="o <?php echo $sent ? "fr" : "fl"; ?>">
-                            <div class="q <?php echo $sent ? "s" : "r"; ?>">
+                            <div class="q <?php echo $sent ? "s" : "r"; if($message->signature === 1) echo " ae"; ?>">
+                                <?php if($message->signature === 1) { ?>
+                                
+                                <div class="ad">
+                                    -= Message has been tampered with =-
+                                </div>
+                                <?php } ?>
+                                
                                 <?php echo $message->message; ?>
                                 
                             </div>
                             
-                            <div class="z j aa <?php echo $sent ? "fr" : "fl"; ?>" data-md="<?php echo $message->made_date; ?>">
+                            <div class="z j aa <?php echo $sent ? "fr" : "fl";?>" data-md="<?php echo $message->made_date; ?>">
                                 <?php echo $message->getMadeDate(); ?>
                                 
                             </div>

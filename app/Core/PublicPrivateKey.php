@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 11-Dec-2016
+ * Modified: 23-Dec-2016
  * Made Date: 05-Nov-2016
  * Author: Hosvir
  *
@@ -148,6 +148,57 @@ class PublicPrivateKey
         $output = gzuncompress($output);
         
         return $output;
+    }
+    
+    /**
+    * Sign the data with a private key.
+    * This allows us to check if the data has been tampered.
+    *
+    * @param $data - data to sign
+    * @param $key - private key file
+    * @param $signature_algorithm - algorithm to use for signature
+    */
+    public static function sign($data, $key, $passphrase, $signature_algorithm = OPENSSL_ALGO_SHA512)
+    {
+        $signature = "";
+        
+        if ($key == null) {
+            if (!$private_key = openssl_pkey_get_private(file_get_contents($private_name . ".key"), $passphrase)) {
+                die('Private Key failed, check your passphrase.');
+            }
+        } else {
+            if (!$private_key = openssl_pkey_get_private($key, $passphrase)) {
+                die('Private Key failed, check your passphrase.');
+            }
+        }
+        
+        openssl_sign($data, $signature, $private_key, $signature_algorithm);
+        openssl_free_key($private_key);
+        
+        return $signature;
+    }
+    
+    /**
+    * Verify the signature.
+    * This allows us to check if the data has been tampered.
+    *
+    * @param $data - data to sign
+    * @param $pem - public key file
+    * @param $signature - signature generated from sign
+    * @param $signature_algorithm - algorithm to use for signature
+    */
+    public static function verify($data, $pem, $signature, $signature_algorithm = OPENSSL_ALGO_SHA512)
+    {
+        if ($pem == null) {
+            $public_key = openssl_pkey_get_public(file_get_contents($public_name . ".pem"));
+        } else {
+            $public_key = openssl_pkey_get_public($pem);
+        }
+        
+        $verify = openssl_verify($data, $signature, $public_key, $signature_algorithm);
+        openssl_free_key($public_key);
+        
+        return $verify === 1;
     }
     
     /**

@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 08-Dec-2016
+ * Modified: 23-Dec-2016
  * Made Date: 06-Dec-2016
  * Author: Hosvir
  *
@@ -31,7 +31,7 @@ class Contact
     
     public function getMadeDate()
     {
-        return Functions::convertTime($this->made_date, true);
+        return Functions::convertTime($this->made_date, false);
     }
     
     public function setAlias($alias)

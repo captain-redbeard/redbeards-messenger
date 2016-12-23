@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 10-Dec-2016
+ * Modified: 23-Dec-2016
  * Made Date: 05-Dec-2016
  * Author: Hosvir
  *
@@ -37,23 +37,27 @@ class Settings extends Controller
     
     public function update($parameters = null)
     {
-        $error = $this->updateSettings($parameters);
-        
-        if ($error === 0) {
-            $this->redirect('settings');
+        if ($parameters !== null) {
+            $error = $this->updateSettings($parameters);
+            
+            if ($error === 0) {
+                $this->redirect('settings');
+            }
         } else {
-            $this->view(
-                'settings',
-                [
-                    'page' => 'settings',
-                    'page_title' => 'Settings - ' . SITE_NAME,
-                    'user' => $_SESSION[USESSION],
-                    'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
-                    'token' => $_SESSION['token'],
-                    'error' => $this->getErrorMessage($error)
-                ]
-            );
+            $error = '';
         }
+        
+         $this->view(
+            'settings',
+            [
+                'page' => 'settings',
+                'page_title' => 'Settings - ' . SITE_NAME,
+                'user' => $_SESSION[USESSION],
+                'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
+                'token' => $_SESSION['token'],
+                'error' => $error != '' ? $this->getErrorMessage($error) : $error
+             ]
+        );
     }
     
     private function updateSettings($parameters)
@@ -98,6 +102,41 @@ class Settings extends Controller
                 $parameters['password'],
                 $parameters['npassword'],
                 $parameters['cpassword']
+            );
+        } else {
+            return -1;
+        }
+    }
+    
+    public function newkeypair($parameters = null)
+    {
+        if ($parameters !== null) {
+            $error = $this->generateNewKeypair($parameters);
+            
+            if ($error === 0) {
+                $this->redirect('settings');
+            }
+        } else {
+            $error = '';
+        }
+        
+        $this->view(
+            'new-keypair',
+            [
+                'page' => 'new-keypair',
+                'page_title' => 'New Keypair - ' . SITE_NAME,
+                'token' => $_SESSION['token'],
+                'error' => $error != '' ? $this->getErrorMessage($error) : $error
+            ]
+        );
+    }
+    
+    private function generateNewKeypair($parameters)
+    {
+        if ($this->checkToken()) {
+            return $_SESSION[USESSION]->generateNewKeypair(
+                $parameters['password'],
+                $parameters['passphrase']
             );
         } else {
             return -1;
@@ -151,6 +190,8 @@ class Settings extends Controller
                 return "Failed to save settings.";
             case 4:
                 return "Username must be at least 1 character.";
+            case 5:
+                return "Failed to create PPK.";
             case 10:
                 return "Passwords don't match.";
             case 11:

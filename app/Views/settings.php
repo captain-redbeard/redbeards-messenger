@@ -58,6 +58,12 @@
                             
                             <tr>
                                 <td>
+                                    <a class="raw-button red-button w100" href="<?php echo BASE_HREF; ?>/settings/newkeypair">Generate new Keypair</a>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>
                                     <a class="raw-button red-button w100" href="<?php echo BASE_HREF; ?>/settings/delete">Delete Account</a>
                                 </td>
                             </tr>

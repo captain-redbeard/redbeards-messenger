@@ -66,7 +66,7 @@ class Request
                 $expire
             ]
         ) > -1) {
-            return str_replace("index.php", "accept", Functions::getURL()) . "/" . $guid;
+            return BASE_HREF . "/accept/" . $guid;
         } else {
             return 2;
         }
@@ -153,7 +153,7 @@ class Request
                     $request['user_guid'],
                     htmlspecialchars($request['expire']),
                     $expire_time,
-                    str_replace("index.php", "accept", Functions::getUrl()) . "/" . $request['request_guid']
+                    BASE_HREF . "/accept/" . $request['request_guid']
                 )
             );
         }

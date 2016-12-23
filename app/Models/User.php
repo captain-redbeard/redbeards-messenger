@@ -4,7 +4,7 @@
  * Details:
  * PHP Messenger.
  *
- * Modified: 11-Dec-2016
+ * Modified: 23-Dec-2016
  * Made Date: 04-Nov-2016
  * Author: Hosvir
  *
@@ -162,7 +162,7 @@ class User
         $username = Functions::cleanInput($username, 1);
         $passphrase = Functions::cleanInput($passphrase, 1);
         
-        if ($password == null) {
+        if ($password === null) {
             return 1;
         } elseif (strlen($password) < 9) {
             return 2;
@@ -279,7 +279,7 @@ class User
             ]
         )) {
                 $_SESSION[USESSION] = User::getUser($_SESSION[USESSION]->user_id, $_SESSION[USESSION]->passphrase);
-                header('Location: conversations');
+                return 0;
         } else {
             return 3;
         }
@@ -401,6 +401,97 @@ class User
                     return 0;
                 } else {
                     return 14;
+                }
+            } else {
+                return 12;
+            }
+        } else {
+            return 13;
+        }
+    }
+    
+    public function generateNewKeypair($password, $passphrase)
+    {
+        $user = Database::select(
+            "SELECT user_id, user_guid, password, mfa_enabled FROM users WHERE user_id = ? AND user_guid = ?;",
+            [
+                $_SESSION[USESSION]->user_id,
+                $_SESSION[USESSION]->user_guid
+            ]
+        );
+
+        if (count($user) > 0) {
+            if (password_verify($password, $user[0]['password'])) {
+                if (STORE_KEYS_LOCAL) {
+                    unlink(BASE_DIR . PPK_PUBLIC_FOLDER . $user[0]['user_guid'] . ".pem");
+                    unlink(BASE_DIR . PPK_PRIVATE_FOLDER . $user[0]['user_guid'] . ".key");
+                } else {
+                    S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
+                    S3::deleteObject(KEY_BUCKET, $guid . ".pem");
+                    S3::deleteObject(KEY_BUCKET, $guid . ".key");
+                }
+                
+                if (!Database::update(
+                    "DELETE FROM messages WHERE (user1_guid = ? OR user2_guid = ?);",
+                    [
+                        $user[0]['user_guid'],
+                        $user[0]['user_guid']
+                    ]
+                )) {
+                    return 20;
+                }
+                
+                if (!Database::update(
+                    "DELETE FROM conversations WHERE (contact_guid = ? OR user_guid = ?);",
+                    [
+                        $user[0]['user_guid'],
+                        $user[0]['user_guid']
+                    ]
+                )) {
+                    return 21;
+                }
+                
+                if (!STORE_KEYS_LOCAL) {
+                    $keys = PublicPrivateKey::generateKeyPair(
+                        $user[0]['user_guid'],
+                        $user[0]['user_guid'],
+                        true,
+                        $passphrase
+                    );
+
+                    S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
+
+                    S3::putObject(
+                        $keys[0],
+                        KEY_BUCKET,
+                        $guid . ".pem",
+                        S3::ACL_PRIVATE,
+                        [],
+                        ['Content-Type' => 'application/x-pem-file']
+                    );
+
+                    S3::putObject(
+                        $keys[1],
+                        KEY_BUCKET,
+                        $guid . ".key",
+                        S3::ACL_PRIVATE,
+                        [],
+                        ['Content-Type' => 'application/x-iwork-keynote-sffkey']
+                    );
+                } else {
+                    $keys = PublicPrivateKey::generateKeyPair(
+                        BASE_DIR . PPK_PUBLIC_FOLDER . $user[0]['user_guid'],
+                        BASE_DIR . PPK_PRIVATE_FOLDER . $user[0]['user_guid'],
+                        false,
+                        $passphrase
+                    );
+
+                    if (!$keys) {
+                        return 5;
+                    }
+                    
+                    $_SESSION[USESSION] = User::getUser($_SESSION[USESSION]->user_id, $passphrase);
+                    return 0;
                 }
             } else {
                 return 12;

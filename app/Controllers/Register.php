@@ -1,34 +1,29 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 10-Dec-2016
- * Made Date: 05-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 05/12/16
  */
-namespace Messenger\Controllers;
+namespace Redbeard\Controllers;
 
 use \DateTimeZone;
-use Messenger\Core\Database;
+use Redbeard\Core\Database;
 
 class Register extends Controller
 {
-    public function index()
+    public function index($timezone = '', $username = '', $error = '')
     {
         $this->startSession();
         
         $this->view(
-            'register',
+            ['register'],
             [
                 'page' => 'register',
                 'page_title' => 'Register to ' . SITE_NAME,
                 'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
-                'timezone' => '',
+                'timezone' => htmlspecialchars($timezone),
+                'username' => htmlspecialchars($username),
                 'token' => $_SESSION['token'],
-                'error' => ''
+                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
             ]
         );
     }
@@ -40,18 +35,7 @@ class Register extends Controller
         if ($error === 0) {
             $this->redirect('conversations');
         } else {
-            $this->view(
-                'register',
-                [
-                    'page' => 'register',
-                    'page_title' => 'Register to ' . SITE_NAME,
-                    'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
-                    'timezone' => htmlspecialchars($_POST['timezone']),
-                    'username' => htmlspecialchars($_POST['username']),
-                    'token' => $_SESSION['token'],
-                    'error' => $this->getErrorMessage($error)
-                ]
-            );
+            $this->index($_POST['timezone'], $_POST['username'], $error);
         }
     }
     

@@ -1,15 +1,9 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 11-Dec-2016
- * Made Date: 05-Nov-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 20/01/17
  */
-namespace Messenger\Core;
+namespace Redbeard\Core;
 
 use \PDO;
 

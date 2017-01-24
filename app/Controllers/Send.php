@@ -1,17 +1,11 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 10-Dec-2016
- * Made Date: 06-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 06/12/16
  */
-namespace Messenger\Controllers;
+namespace Redbeard\Controllers;
 
-use Messenger\Core\Database;
+use Redbeard\Core\Database;
 
 class Send extends Controller
 {

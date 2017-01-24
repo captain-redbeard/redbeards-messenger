@@ -1,5 +1,5 @@
             <div class="cover-wrapper">
-                <form method="POST" action="<?php echo BASE_HREF; ?>/login/authenticate">
+                <form method="POST" action="<?=BASE_HREF;?>/login/authenticate">
                     <table class="single-table">
                         <thead>
                             <tr>
@@ -10,7 +10,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <input class="glow w100" type="text" name="username" title="Username" tabindex="1" placeholder="Username" autofocus value="<?php echo $data['username']; ?>" required>
+                                    <input class="glow w100" type="text" name="username" title="Username" tabindex="1" placeholder="Username" autofocus value="<?=$data['username'];?>" required>
                                 </td>
                             </tr>
 
@@ -36,11 +36,11 @@
                         <tfoot>
                             <tr>
                                 <td>
-                                    <input type="hidden" name="token" value="<?php echo $data['token']; ?>">
+                                    <input type="hidden" name="token" value="<?=$data['token'];?>">
                                     <input class="raw-button blue-outline w100" type="submit" name="submit" title="Submit" tabindex="5" value="Submit">
-                                    <?php if ($data['error'] != '') { ?>
+                                    <?php if ($data['error'] !== '') { ?>
                                     <br/>
-                                    <div class="message-error"><?php echo $data['error']; ?></div>
+                                    <div class="message-error"><?=$data['error'];?></div>
                                     <?php } ?>
 
                                 </td> 
@@ -51,7 +51,7 @@
 
                             <tr>
                                 <td>
-                                    <a href="<?php echo BASE_HREF; ?>/register">Register</a>
+                                    <a href="<?=BASE_HREF;?>/register">Register</a>
                                 </td>
                             </tr>
                         </tfoot>

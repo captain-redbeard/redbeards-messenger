@@ -1,15 +1,9 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 23-Dec-2016
- * Made Date: 05-Nov-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 05/11/16
  */
-namespace Messenger\Core;
+namespace Redbeard\Core;
 
 class PublicPrivateKey
 {

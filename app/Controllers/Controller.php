@@ -1,24 +1,18 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 08-Dec-2016
- * Made Date: 04-Nov-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 20/01/17
  */
-namespace Messenger\Controllers;
+namespace Redbeard\Controllers;
 
-use Messenger\Core\Session;
-use Messenger\Core\Functions;
+use Redbeard\Core\Session;
+use Redbeard\Core\Functions;
 
 class Controller
 {
     public function model($model)
     {
-        $model = '\\Messenger\\Models\\' . $model;
+        $model = APP_PATH . 'Models\\' . $model;
         return new $model;
     }
     
@@ -35,6 +29,7 @@ class Controller
     public function checkToken()
     {
         $this->startSession();
+        
         if (isset($_POST['token']) && $_POST['token'] === $_SESSION['token']) {
             return true;
         } else {
@@ -65,10 +60,18 @@ class Controller
         Session::kill();
     }
     
-    public function view($view, $data = [])
+    public function view($view = [], $data = [], $raw = false)
     {
-        require_once '../app/Views/template/header.php';
-        require_once '../app/Views/' . $view . '.php';
-        require_once '../app/Views/template/footer.php';
+        if (!$raw) {
+            require_once '../app/Views/template/header.php';
+        }
+        
+        foreach ($view as $v) {
+            require_once '../app/Views/' . $v . '.php';
+        }
+        
+        if (!$raw) {
+            require_once '../app/Views/template/footer.php';
+        }
     }
 }

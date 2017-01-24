@@ -1,18 +1,12 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 08-Dec-2016
- * Made Date: 06-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 06/12/16
  */
-namespace Messenger\Models;
+namespace Redbeard\Models;
 
-use Messenger\Core\Functions;
-use Messenger\Core\Database;
+use Redbeard\Core\Functions;
+use Redbeard\Core\Database;
 
 class Conversation
 {

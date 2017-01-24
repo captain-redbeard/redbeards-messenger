@@ -1,18 +1,12 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 08-Dec-2016
- * Made Date: 07-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 07/12/16
  */
-namespace Messenger\Models;
+namespace Redbeard\Models;
 
-use Messenger\Core\Functions;
-use Messenger\Core\Database;
+use Redbeard\Core\Functions;
+use Redbeard\Core\Database;
 
 class Request
 {
@@ -42,7 +36,8 @@ class Request
     public function add($name, $expire)
     {
         $name = Functions::cleanInput($name);
-        $expire = Functions::cleanInput($expire);
+        $expire = Functions::cleanInput($expire, 2);
+        
         if (!is_numeric($expire)) {
             return 1;
         }
@@ -74,15 +69,19 @@ class Request
     
     public function delete($guid)
     {
-        $guid = Functions::cleanInput($guid);
+        $guid = Functions::cleanInput($guid, 2);
         
-        Database::update(
+        if(!Database::update(
             "DELETE FROM contact_requests WHERE request_guid = ? AND user_guid = ?;",
             [
                 $guid,
                 $_SESSION[USESSION]->user_guid
             ]
-        );
+        )) {
+            return 10;
+        }
+        
+        return 0;
     }
     
     public function accept($guid)

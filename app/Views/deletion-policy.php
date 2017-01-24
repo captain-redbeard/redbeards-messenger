@@ -1,5 +1,5 @@
             <div class="cover-wrapper">
-                <form method="POST" action="<?php echo BASE_HREF; ?>/deletion/enable">
+                <form method="POST" action="<?=BASE_HREF;?>/deletion/enable">
                     <table class="single-table">
                         <thead>
                             <tr>
@@ -22,7 +22,7 @@
                                         <option value="-1" selected disabled>Select Expire Time (days)</option>
                                         <?php foreach ($data['days'] as $day) { ?>
                                             
-                                        <option value="<?php echo $day; ?>"<?php if ($day == $data['expire']) echo " selected"; ?>><?php echo $day; ?> days</option>
+                                        <option value="<?=$day;?>"<?php if ($day === $data['expire']) echo " selected"; ?>><?=$day;?> days</option>
                                         <?php } ?>
                                         
                                     </select>
@@ -33,12 +33,12 @@
                         <tfoot>
                             <tr>
                                 <td>
-                                    <input type="hidden" name="token" value="<?php echo $data['token']; ?>">
+                                    <input type="hidden" name="token" value="<?=$data['token'];?>">
                                     <input class="raw-button blue-outline w100" type="submit" name="submit" title="Submit" tabindex="3" value="Enable">
-                                    <?php if ($data['error'] != '') { ?>
+                                    <?php if ($data['error'] !== '') { ?>
                                         
                                     <br/>
-                                    <div class="message-error"><?php echo $data['error']; ?></div>
+                                    <div class="message-error"><?=$data['error'];?></div>
                                     <?php } ?>
                                     
                                 </td> 
@@ -49,7 +49,7 @@
 
                             <tr>
                                 <td>
-                                    <a href="<?php echo BASE_HREF; ?>/settings">Return</a>
+                                    <a href="<?=BASE_HREF;?>/settings">Return</a>
                                 </td>
                             </tr>
                         </tfoot>

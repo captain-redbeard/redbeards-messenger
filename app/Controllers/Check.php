@@ -1,17 +1,11 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 23-Dec-2016
- * Made Date: 06-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 06/12/16
  */
-namespace Messenger\Controllers;
+namespace Redbeard\Controllers;
 
-use Messenger\Core\Database;
+use Redbeard\Core\Database;
 
 class Check extends Controller
 {
@@ -77,7 +71,7 @@ class Check extends Controller
             
             if (count($message) > 0) {
                 foreach ($message as $m) {
-                    if ($m->user2_guid == $_SESSION[USESSION]->user_guid && $m->direction == 1) {
+                    if ($m->user2_guid === $_SESSION[USESSION]->user_guid && $m->direction === 1) {
                         $sent = true;
                     } else {
                         $sent = false;

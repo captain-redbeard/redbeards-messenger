@@ -1,21 +1,15 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 23-Dec-2016
- * Made Date: 06-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 06/12/16
  */
-namespace Messenger\Models;
+namespace Redbeard\Models;
 
-use Messenger\Core\Functions;
-use Messenger\Core\Database;
-use Messenger\Core\Session;
-use Messenger\Core\PublicPrivateKey;
-use Messenger\ThirdParty\S3;
+use Redbeard\Core\Functions;
+use Redbeard\Core\Database;
+use Redbeard\Core\Session;
+use Redbeard\Core\PublicPrivateKey;
+use Redbeard\ThirdParty\S3;
 
 class Message
 {
@@ -48,24 +42,22 @@ class Message
     }
     
     /**
-     *
-     * Send message.
-     *
-     * Details:
      * Gets both parties public keys by GUID, encrypts the message and adds a record to both users.
      * If no conversation has been provided it will create a new one.
      *
-     * @param: $to_guid             - to guid
-     * @param: $conversation_guid   - conversation guid
-     * @param: $message             - message to send
+     * @param $to_guid             - to guid
+     * @param $conversation_guid   - conversation guid
+     * @param $message             - message to send
      *
-     * @returns: result code
-     *
+     * @returns result code
      */
     public function send($to_guid, $conversation_guid, $message)
     {
         Session::start();
-        $message = Functions::cleanInput($message, 0);
+        
+        $to_guid = Functions::cleanInput($to_guid, 2);
+        $conversation_guid = Functions::cleanInput($to_guid, 2);
+        
         $conversation_guid = $conversation_guid != null ? $conversation_guid : Functions::generateRandomString(32);
         $contact = Database::select(
             "SELECT contact_guid FROM contacts WHERE contact_guid = ? AND user_guid = ?;",
@@ -181,17 +173,12 @@ class Message
     }
     
     /**
-     *
-     * Get messages.
-     *
-     * Details:
      * Get messages for the current session user from the specified conversation.
      *
-     * @param: $conversation_guid       - conversation guid
-     * @param: $made_date               - Made date grater than this
+     * @param $conversation_guid       - conversation guid
+     * @param $made_date               - Made date grater than this
      *
-     * @returns: Decrypted message array
-     *
+     * @returns Decrypted message array
      */
     public function getAll($conversation_guid, $made_date = null)
     {

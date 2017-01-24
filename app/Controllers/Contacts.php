@@ -1,17 +1,11 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 23-Dec-2016
- * Made Date: 05-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 05/12/16
  */
-namespace Messenger\Controllers;
+namespace Redbeard\Controllers;
 
-use Messenger\Core\Database;
+use Redbeard\Core\Database;
 
 class Contacts extends Controller
 {
@@ -20,17 +14,17 @@ class Contacts extends Controller
         $this->requiresLogin();
     }
     
-    public function index()
+    public function index($error = '')
     {
         $contact = $this->model('Contact');
         
         $this->view(
-            'contacts',
+            ['contacts'],
             [
                 'page' => 'contacts',
                 'page_title' => 'Contacts - ' . SITE_NAME,
                 'contacts' => $contact->getContacts(),
-                'error' => ''
+                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
             ]
         );
     }
@@ -39,7 +33,7 @@ class Contacts extends Controller
     {
         $contact = $this->model('Contact');
         
-        if ($parameters != null && $parameters['alias'] != '') {
+        if ($parameters !== null && $parameters['alias'] !== '') {
             $error = $this->editContact($contact, $guid, $parameters);
             
             if ($error === 0) {
@@ -50,7 +44,7 @@ class Contacts extends Controller
         }
         
         $this->view(
-            'edit-contact',
+            ['edit-contact'],
             [
                 'page' => 'edit-contact',
                 'page_title' => 'Edit Contact - ' . SITE_NAME,
@@ -65,9 +59,18 @@ class Contacts extends Controller
     public function delete($guid)
     {
         $contact = $this->model('Contact');
-        $selected_contact = $contact->getContactByGuid($guid);
-        $selected_contact->delete($guid);
-        $this->redirect('contacts');
+        
+        if ($guid != null) {
+            $error = $this->deleteContact($contact, $guid);
+            
+            if ($error === 0) {
+                $this->redirect('contacts');
+            }
+        } else {
+            $error = '';
+        }
+        
+        $this->index($error);
     }
     
     private function editContact($contact, $guid, $parameters)
@@ -80,6 +83,12 @@ class Contacts extends Controller
         }
     }
     
+    private function deleteContact($contact, $guid)
+    {
+        $selected_contact = $contact->getByGuid($guid);
+        return $selected_contact->delete($guid);
+    }
+    
     private function getErrorMessage($code)
     {
         switch ($code) {
@@ -89,6 +98,12 @@ class Contacts extends Controller
                 return "Alias must be less than 64 characters.";
             case 2:
                 return "Failed to save contact, contact support.";
+            case 10:
+                return "Failed to delete messages, contact support.";
+            case 11:
+                return "Failed to delete conversations, contact support.";
+            case 12:
+                return "Failed to delete contacts, contact support.";
             default:
                 return "Unknown error.";
         }

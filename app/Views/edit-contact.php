@@ -1,5 +1,5 @@
             <div class="cover-wrapper">
-                <form method="POST" action="<?php echo BASE_HREF . '/contacts/edit/' . $data['guid']; ?>">
+                <form method="POST" action="<?=BASE_HREF . '/contacts/edit/' . $data['guid'];?>">
                     <table class="single-table">
                         <thead>
                             <tr>
@@ -10,13 +10,13 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <input class="glow w100" type="text" name="alias" title="Alias" tabindex="1" placeholder="Alias" value="<?php echo $data['contact']->alias; ?>">
+                                    <input class="glow w100" type="text" name="alias" title="Alias" tabindex="1" placeholder="Alias" value="<?=$data['contact']->alias;?>">
                                 </td>
                             </tr>
 
                             <tr>
                                 <td>
-                                    <input class="glow disabled w100" type="text" name="username" title="Username" tabindex="2" placeholder="Username" value="<?php echo $data['contact']->username; ?>" disabled>
+                                    <input class="glow disabled w100" type="text" name="username" title="Username" tabindex="2" placeholder="Username" value="<?=$data['contact']->username;?>" disabled>
                                 </td>
                             </tr>
                         </tbody>
@@ -24,12 +24,12 @@
                         <tfoot>
                             <tr>
                                 <td>
-                                    <input type="hidden" name="token" value="<?php echo $data['token']; ?>">
+                                    <input type="hidden" name="token" value="<?=$data['token'];?>">
                                     <input class="raw-button blue-outline w100" type="submit" name="submit" title="Submit" tabindex="4" value="Save">
-                                    <?php if($data['error'] != '') { ?>
+                                    <?php if($data['error'] !== '') { ?>
                                         
                                     <br/>
-                                    <div class="message-error"><?php echo $data['error']; ?></div>
+                                    <div class="message-error"><?=$data['error'];?></div>
                                     <?php } ?>
                                     
                                 </td> 
@@ -40,7 +40,7 @@
 
                             <tr>
                                 <td>
-                                    <a href="<?php echo BASE_HREF; ?>/conversations">Return</a>
+                                    <a href="<?=BASE_HREF;?>/conversations">Return</a>
                                 </td>
                             </tr>
                         </tfoot>

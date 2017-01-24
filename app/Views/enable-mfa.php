@@ -1,5 +1,5 @@
             <div class="cover-wrapper">
-                <form method="POST" action="<?php echo BASE_HREF; ?>/mfa/activate">
+                <form method="POST" action="<?=BASE_HREF;?>/mfa/activate">
                     <table class="single-table">
                         <thead>
                             <tr>
@@ -12,14 +12,14 @@
                                 <td>
                                     <p>If your virtual MFA application supports scanning QR codes, scan the following image.</p>
                                     <div class="qr-wrapper">
-                                        <img src="<?php echo "data:image/png;base64," . base64_encode($data['qr_code']->get()); ?>" alt="">
+                                        <img src="<?="data:image/png;base64," . base64_encode($data['qr_code']->get());?>" alt="">
                                     </div>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td>
-                                    <div class="message-info"><?php echo $data['secret_key']; ?></div>
+                                    <div class="message-info"><?=$data['secret_key'];?></div>
                                     <p>After the application is configured, enter two consecutive authentication codes in the boxes below and click Activate.</p>
                                 </td>
                             </tr>
@@ -40,12 +40,12 @@
                         <tfoot>
                             <tr>
                                 <td>
-                                    <input type="hidden" name="token" value="<?php echo $data['token']; ?>">
+                                    <input type="hidden" name="token" value="<?=$data['token'];?>">
                                     <input class="raw-button blue-outline w100" type="submit" name="submit" title="Submit" tabindex="4" value="Activate">
-                                    <?php if ($data['error']) { ?>
+                                    <?php if ($data['error'] !== '') { ?>
                                         
                                     <br/>
-                                    <div class="message-error"><?php echo $data['error']; ?></div>
+                                    <div class="message-error"><?=$data['error'];?></div>
                                     <?php } ?>
                                     
                                 </td> 
@@ -56,7 +56,7 @@
 
                             <tr>
                                 <td>
-                                    <a href="<?php echo BASE_HREF; ?>/conversations">Return</a>
+                                    <a href="<?=BASE_HREF;?>/conversations">Return</a>
                                 </td>
                             </tr>
                         </tfoot>

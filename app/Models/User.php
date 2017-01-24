@@ -1,23 +1,16 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 23-Dec-2016
- * Made Date: 04-Nov-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 20/01/17
  */
-namespace Messenger\Models;
+namespace Redbeard\Models;
 
-use Messenger\Core\Functions;
-use Messenger\Core\Database;
-use Messenger\Core\Session;
-use Messenger\Core\PublicPrivateKey;
-use Messenger\Models\Conversations;
-use Messenger\ThirdParty\Google2FA;
-use Messenger\ThirdParty\S3;
+use Redbeard\Core\Functions;
+use Redbeard\Core\Database;
+use Redbeard\Core\Session;
+use Redbeard\Core\PublicPrivateKey;
+use Redbeard\ThirdParty\Google2FA;
+use Redbeard\ThirdParty\S3;
 
 class User
 {
@@ -32,7 +25,7 @@ class User
     public function getUser($userid, $passphrase)
     {
         $user_details = Database::select(
-            "SELECT user_id, user_guid, username, timezone, mfa_enabled, expire FROM users WHERE user_id = ?;",
+            "SELECT user_id, user_guid, username, timezone, mfa_enabled FROM users WHERE user_id = ?;",
             [$userid]
         );
         
@@ -53,31 +46,21 @@ class User
     
     public function register($username, $password, $passphrase, $timezone)
     {
-        $username = Functions::cleanInput($username, 1);
-        $passphrase = Functions::cleanInput($passphrase, 1);
+        $username = Functions::cleanInput($username);
         $timezone = Functions::cleanInput($timezone, 1);
         
-        if ($passphrase == '') {
-            $passphrase = null;
+        $validUsername = $this->validateUsername($username);
+        $validPassword = $this->validatePassword($password);
+        
+        if ($validUsername !== 0) {
+            return $validUsername;
         }
         
-        if ($password == null) {
-            return 1;
-        } else {
-            if (strlen($password) < 9) {
-                return 2;
-            }
+        if ($validPassword !== 0) {
+            return $validPassword;
         }
         
-        if (strlen(trim($username)) < 1) {
-            return 8;
-        }
-        
-        if (strlen($username) > 63) {
-            return 3;
-        }
-        
-        if ($timezone == -1) {
+        if ($timezone === -1) {
             return 7;
         }
         
@@ -90,7 +73,7 @@ class User
             $password = password_hash($password, PASSWORD_DEFAULT, ['cost' => PW_COST]);
             $guid = Functions::generateRandomString(32);
             $activation = Functions::generateRandomString(32);
-            $secretkey = Google2FA::generate_secret_key();
+            $secretkey = Google2FA::generateSecretKey();
             
             if (!STORE_KEYS_LOCAL) {
                 $keys = PublicPrivateKey::generateKeyPair(
@@ -132,7 +115,7 @@ class User
                 }
             }
             
-            $insertid = Database::insert(
+            $userid = Database::insert(
                 "INSERT INTO users (user_guid, username, password, secret_key, activation, timezone, modified) 
                     VALUES (?,?,?,?,?,?,NOW());",
                 [
@@ -145,11 +128,11 @@ class User
                 ]
             );
             
-            if ($insertid > -1) {
+            if ($userid > -1) {
                 Session::start();
-                $_SESSION['user_id'] = $insertid;
-                $_SESSION['login_string'] = hash('sha512', $insertid . $_SERVER['HTTP_USER_AGENT'] . $guid);
-                $_SESSION[USESSION] = self::getUser($insertid, $passphrase);
+                $_SESSION['user_id'] = $userid;
+                $_SESSION['login_string'] = hash('sha512', $userid . $_SERVER['HTTP_USER_AGENT'] . $guid);
+                $_SESSION[USESSION] = $this->getUser($userid, $passphrase);
                 return 0;
             } else {
                 return 6;
@@ -160,20 +143,16 @@ class User
     public function login($username, $password, $passphrase, $mfa)
     {
         $username = Functions::cleanInput($username, 1);
-        $passphrase = Functions::cleanInput($passphrase, 1);
         
-        if ($password === null) {
-            return 1;
-        } elseif (strlen($password) < 9) {
-            return 2;
+        $validUsername = $this->validateUsername($username);
+        $validPassword = $this->validatePassword($password);
+        
+        if ($validUsername !== 0) {
+            return $validUsername;
         }
         
-        if (strlen(trim($username)) < 1) {
-            return 8;
-        }
-        
-        if (strlen($username) > 63) {
-            return 3;
+        if ($validPassword !== 0) {
+            return $validPassword;
         }
         
         $existing = Database::select(
@@ -188,7 +167,7 @@ class User
                 [$existing[0]['user_id']]
             );
             
-            if (count($attempts) < 5) {
+            if (count($attempts) < MAX_LOGIN_ATTEMPTS) {
                 if (password_verify($password, $existing[0]['password'])) {
                     if (password_needs_rehash(
                         $existing[0]['password'],
@@ -210,8 +189,8 @@ class User
                         );
                     }
                     
-                    if ($existing[0]['mfa_enabled'] == -1) {
-                        $rmfa = Google2FA::verify_key($existing[0]['secret_key'], $mfa);
+                    if ($existing[0]['mfa_enabled'] === -1) {
+                        $rmfa = Google2FA::verifyKey($existing[0]['secret_key'], $mfa);
                         
                         if (!$rmfa) {
                             Database::update(
@@ -229,7 +208,7 @@ class User
                         'sha512',
                         $existing[0]['user_id'] . $_SERVER['HTTP_USER_AGENT'] . $existing[0]['user_guid']
                     );
-                    $_SESSION[USESSION] = self::getUser($_SESSION['user_id'], $passphrase);
+                    $_SESSION[USESSION] = $this->getUser($_SESSION['user_id'], $passphrase);
                     
                     return 0;
                 } else {
@@ -240,24 +219,22 @@ class User
                     return 6;
                 }
             } else {
-                return 5;
+                return 8;
             }
         } else {
-            return 4;
+            return 9;
         }
     }
     
     public function update($username, $timezone)
     {
-        $username = Functions::cleanInput($username, 1);
+        $username = Functions::cleanInput($username);
         $timezone = Functions::cleanInput($timezone, 1);
         
-        if (strlen(trim($username)) < 1) {
-            return 4;
-        }
+        $validUsername = $this->validateUsername($username);
         
-        if (strlen($username) > 63) {
-            return 1;
+        if ($validUsername !== 0) {
+            return $validUsername;
         }
         
         $existing = Database::select(
@@ -265,7 +242,7 @@ class User
             [$username]
         );
         
-        if (count($existing) > 0 && $existing[0]['username'] != $_SESSION[USESSION]->username) {
+        if (count($existing) > 0 && $existing[0]['username'] != $this->username) {
             return 2;
         }
         
@@ -274,46 +251,46 @@ class User
             [
                 $username,
                 $timezone,
-                $_SESSION[USESSION]->user_id,
-                $_SESSION[USESSION]->user_guid
+                $this->user_id,
+                $this->user_guid
             ]
         )) {
-                $_SESSION[USESSION] = User::getUser($_SESSION[USESSION]->user_id, $_SESSION[USESSION]->passphrase);
+                $_SESSION[USESSION] = $this->getUser($this->user_id, $this->passphrase);
                 return 0;
         } else {
-            return 3;
+            return 6;
         }
     }
     
     public function enableMfa($code1, $code2)
     {
-        $code1 = Functions::cleanInput($_POST['code1']);
-        $code2 = Functions::cleanInput($_POST['code2']);
+        $code1 = Functions::cleanInput($_POST['code1'], 2);
+        $code2 = Functions::cleanInput($_POST['code2'], 2);
         
-        if ($code1 == null || $code2 == null) {
+        if ($code1 === null || $code2 === null) {
             return 1;
         }
         
         $user = Database::select(
             "SELECT secret_key, mfa_enabled FROM users WHERE user_id = ? AND user_guid = ?;",
             [
-                $_SESSION[USESSION]->user_id,
-                $_SESSION[USESSION]->user_guid
+                $this->user_id,
+                $this->user_guid
             ]
         );
         
-        $result1 = Google2FA::verify_key($user[0]['secret_key'], $code1);
-        $result2 = Google2FA::verify_key($user[0]['secret_key'], $code2);
+        $result1 = Google2FA::verifyKey($user[0]['secret_key'], $code1);
+        $result2 = Google2FA::verifyKey($user[0]['secret_key'], $code2);
         
         if ($result1 && $result2) {
             if (Database::update(
                 "UPDATE users SET mfa_enabled = -1 WHERE user_id = ? AND user_guid = ?;",
                 [
-                    $_SESSION[USESSION]->user_id,
-                    $_SESSION[USESSION]->user_guid
+                    $this->user_id,
+                    $this->user_guid
                 ]
             )) {
-                $_SESSION[USESSION]->mfa_enabled = -1;
+                $this->mfa_enabled = -1;
                 return 0;
             }
         } else {
@@ -326,17 +303,17 @@ class User
         Database::update(
             "UPDATE users SET mfa_enabled = 0 WHERE user_id = ? AND user_guid = ?;",
             [
-                $_SESSION[USESSION]->user_id,
-                $_SESSION[USESSION]->user_guid
+                $this->user_id,
+                $this->user_guid
             ]
         );
         
-        $_SESSION[USESSION]->mfa_enabled = 0;
+        $this->mfa_enabled = 0;
     }
     
     public function updateExpire($expire)
     {
-        $expire = Functions::cleanInput($expire);
+        $expire = Functions::cleanInput($expire, 2);
         
         if (!is_numeric($expire)) {
             return 1;
@@ -354,12 +331,12 @@ class User
             "UPDATE users SET expire = ? WHERE user_id = ? AND user_guid = ?;",
             [
                 $expire,
-                $_SESSION[USESSION]->user_id,
-                $_SESSION[USESSION]->user_guid
+                $this->user_id,
+                $this->user_guid
             ]
         );
         
-        $_SESSION[USESSION]->expire = $expire;
+        $this->expire = $expire;
         
         return 0;
     }
@@ -370,15 +347,17 @@ class User
             return 10;
         }
         
-        if (strlen($new_password) < 9) {
-            return 11;
+        $validPassword = $this->validatePassword($new_password);
+        
+        if ($validPassword !== 0) {
+            return $validPassword;
         }
         
         $user = Database::select(
             "SELECT user_id, user_guid, password FROM users WHERE user_id = ? AND user_guid = ?;",
             [
-                $_SESSION[USESSION]->user_id,
-                $_SESSION[USESSION]->user_guid
+                $this->user_id,
+                $this->user_guid
             ]
         );
 
@@ -394,13 +373,13 @@ class User
                     "UPDATE users SET password = ? WHERE user_id = ? AND user_guid = ?;",
                     [
                         $newpass,
-                        $_SESSION[USESSION]->user_id,
-                        $_SESSION[USESSION]->user_guid
+                        $this->user_id,
+                        $this->user_guid
                     ]
                 )) {
                     return 0;
                 } else {
-                    return 14;
+                    return 11;
                 }
             } else {
                 return 12;
@@ -415,8 +394,8 @@ class User
         $user = Database::select(
             "SELECT user_id, user_guid, password, mfa_enabled FROM users WHERE user_id = ? AND user_guid = ?;",
             [
-                $_SESSION[USESSION]->user_id,
-                $_SESSION[USESSION]->user_guid
+                $this->user_id,
+                $this->user_guid
             ]
         );
 
@@ -458,9 +437,9 @@ class User
                         true,
                         $passphrase
                     );
-
+                    
                     S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
-
+                    
                     S3::putObject(
                         $keys[0],
                         KEY_BUCKET,
@@ -469,7 +448,7 @@ class User
                         [],
                         ['Content-Type' => 'application/x-pem-file']
                     );
-
+                    
                     S3::putObject(
                         $keys[1],
                         KEY_BUCKET,
@@ -485,12 +464,12 @@ class User
                         false,
                         $passphrase
                     );
-
+                    
                     if (!$keys) {
                         return 5;
                     }
                     
-                    $_SESSION[USESSION] = User::getUser($_SESSION[USESSION]->user_id, $passphrase);
+                    $_SESSION[USESSION] = $this->getUser($this->user_id, $passphrase);
                     return 0;
                 }
             } else {
@@ -506,11 +485,11 @@ class User
         $user = Database::select(
             "SELECT user_id, user_guid, password, mfa_enabled FROM users WHERE user_id = ? AND user_guid = ?;",
             [
-                $_SESSION[USESSION]->user_id,
-                $_SESSION[USESSION]->user_guid
+                $this->user_id,
+                $this->user_guid
             ]
         );
-
+        
         if (count($user) > 0) {
             if (password_verify($password, $user[0]['password'])) {
                 if (STORE_KEYS_LOCAL) {
@@ -572,7 +551,33 @@ class User
     {
         return Database::update(
             "UPDATE users SET last_load = NOW() WHERE user_guid = ?;",
-            [$_SESSION[USESSION]->user_guid]
+            [$this->user_guid]
         );
+    }
+    
+    public function validateUsername($username)
+    {
+        if (strlen(trim($username)) < 1) {
+            return 1;
+        }
+        
+        if (strlen($username) > 63) {
+            return 2;
+        }
+        
+        return 0;
+    }
+    
+    public function validatePassword($password)
+    {        
+        if ($password === null || strlen($password) < 9) {
+            return 3;
+        }
+        
+        if (strlen($password) > 63) {
+            return 4;
+        }
+        
+        return 0;
     }
 }

@@ -14,15 +14,15 @@
                             <?php foreach ($data['contacts'] as $contact) { ?>
 
                             <tr>
-                                <td><a href="<?php echo BASE_HREF; ?>/conversations/new/<?php echo $contact->contact_guid; ?>"><?php echo $contact->alias; ?></a></td>
-                                <td><a href="<?php echo BASE_HREF; ?>/conversations/new/<?php echo $contact->contact_guid; ?>"><?php echo $contact->username; ?></a></td>
-                                <td class="text-right"><?php echo $contact->getMadeDate(); ?></td>
+                                <td><a href="<?=BASE_HREF;?>/conversations/new/<?=$contact->contact_guid;?>"><?=$contact->alias;?></a></td>
+                                <td><a href="<?=BASE_HREF;?>/conversations/new/<?=$contact->contact_guid;?>"><?=$contact->username;?></a></td>
+                                <td class="text-right"><?=$contact->getMadeDate();?></td>
                                 <td class="text-right">
-                                    <a href="<?php echo BASE_HREF; ?>/contacts/edit/<?php echo $contact->contact_guid; ?>">
+                                    <a href="<?=BASE_HREF;?>/contacts/edit/<?=$contact->contact_guid;?>">
                                         <div class="grow ie" alt="Edit" title="Edit Contact"></div>
                                     </a>
                                     &nbsp;
-                                    <a href="<?php echo BASE_HREF; ?>/contacts/delete/<?php echo $contact->contact_guid; ?>">
+                                    <a href="<?=BASE_HREF;?>/contacts/delete/<?=$contact->contact_guid;?>">
                                         <div class="grow idc" alt="Delete" title="Delete Contact"></div>
                                     </a>
                                 </td>
@@ -37,10 +37,16 @@
 
                             <tr>
                                 <td>
-                                    <a href="<?php echo BASE_HREF; ?>/conversations">Return</a>
+                                    <a href="<?=BASE_HREF;?>/conversations">Return</a>
+                                    <input type="hidden" name="token" value="<?=$data['token'];?>">
                                 </td>
                             </tr>
                         </tfoot>
                     </table>
+                    <?php if($data['error'] !== '') { ?>
+                    
+                    <div class="message-error"><?=$data['error'];?></div>
+                    <?php } ?>
+                    
                 </form>
             </div>

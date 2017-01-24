@@ -1,15 +1,9 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 23-Dec-2016
- * Made Date: 09-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 09/12/16
  */
-use Messenger\Core\Database;
+use Redbeard\Core\Database;
 
 require_once '../app/config.php';
 require_once '../vendor/autoload.php';

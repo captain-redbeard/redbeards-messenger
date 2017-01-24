@@ -1,15 +1,9 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 10-Dec-2016
- * Made Date: 09-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 09/12/16
  */
-namespace Messenger\Controllers;
+namespace Redbeard\Controllers;
 
 class Deletion extends Controller
 {
@@ -31,7 +25,7 @@ class Deletion extends Controller
         }
         
         $this->view(
-            'deletion-policy',
+            ['deletion-policy'],
             [
                 'page' => 'deletion-policy',
                 'page_title' => 'Deletion Policy - ' . SITE_NAME,

@@ -1,17 +1,11 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 10-Dec-2016
- * Made Date: 06-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 06/12/16
  */
-namespace Messenger\Controllers;
+namespace Redbeard\Controllers;
 
-use Messenger\Core\Database;
+use Redbeard\Core\Database;
 use Endroid\QrCode\QrCode;
 
 class Mfa extends Controller
@@ -21,20 +15,20 @@ class Mfa extends Controller
         $this->requiresLogin();
     }
     
-    public function enable()
+    public function enable($error = '')
     {
         $user = $this->getSecretKey();
         $qrCode = $this->getQrCode($user);
         
         $this->view(
-            'enable-mfa',
+            ['enable-mfa'],
             [
                 'page' => 'enable-mfa',
                 'page_title' => 'Enable MFA - ' . SITE_NAME,
                 'qr_code' => $qrCode,
                 'secret_key' => $user[0]['secret_key'],
                 'token' => $_SESSION['token'],
-                'error' => ''
+                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
             ]
         );
     }
@@ -52,20 +46,7 @@ class Mfa extends Controller
         if ($error === 0) {
             $this->redirect('settings');
         } else {
-            $user = $this->getSecretKey();
-            $qrCode = $this->getQrCode($user);
-            
-            $this->view(
-                'enable-mfa',
-                [
-                    'page' => 'enable-mfa',
-                    'page_title' => 'Enable MFA - ' . SITE_NAME,
-                    'qr_code' => $qrCode,
-                    'secret_key' => $user[0]['secret_key'],
-                    'token' => $_SESSION['token'],
-                    'error' => $this->getErrorMessage($error)
-                ]
-            );
+            $this->enable($error);
         }
     }
     

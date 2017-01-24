@@ -1,21 +1,16 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 08-Dec-2016
- * Made Date: 04-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 04/12/16
  */
-namespace Messenger\Controllers;
+namespace Redbeard\Controllers;
 
-use Messenger\Core\Functions;
+use Redbeard\Core\Functions;
 
 class Login extends Controller
 {
-    public function index()
+    //TEST FOR VUNRABLE
+    public function index($username = '', $error = '')
     {
         $this->startSession();
         
@@ -24,13 +19,13 @@ class Login extends Controller
         }
         
         $this->view(
-            'login',
+            ['login'],
             [
                 'page' => 'login',
                 'page_title' => 'Login - ' . SITE_NAME,
-                'username' => '',
+                'username' => htmlspecialchars($username),
                 'token' => $_SESSION['token'],
-                'error' => ''
+                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
             ]
         );
     }
@@ -42,16 +37,7 @@ class Login extends Controller
         if ($error === 0) {
             $this->redirect('conversations');
         } else {
-            $this->view(
-                'login',
-                [
-                    'page' => 'login',
-                    'page_title' => 'Login to ' . SITE_NAME,
-                    'username' => htmlspecialchars($_POST['username']),
-                    'token' => $_SESSION['token'],
-                    'error' => $this->getErrorMessage($error)
-                ]
-            );
+            $this->index($_POST['username'], $error);
         }
     }
     

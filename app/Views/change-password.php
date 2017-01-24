@@ -1,5 +1,5 @@
             <div class="cover-wrapper">
-                <form method="POST" action="<?php echo BASE_HREF; ?>/settings/reset">
+                <form method="POST" action="<?=BASE_HREF;?>/settings/reset">
                     <table class="single-table">
                         <thead>
                             <tr>
@@ -30,12 +30,12 @@
                         <tfoot>
                             <tr>
                                 <td>
-                                    <input type="hidden" name="token" value="<?php echo $data['token']; ?>">
+                                    <input type="hidden" name="token" value="<?=$data['token'];?>">
                                     <input class="raw-button blue-outline w100" type="submit" name="submit" title="Submit" tabindex="4" value="Save">
-                                    <?php if ($data['error'] != '') { ?>
+                                    <?php if ($data['error'] !== '') { ?>
                                         
                                     <br/>
-                                    <div class="message-error"><?php echo $data['error']; ?></div>
+                                    <div class="message-error"><?=$data['error'];?></div>
                                     <?php } ?>
 
                                 </td> 
@@ -46,7 +46,7 @@
 
                             <tr>
                                 <td>
-                                    <a href="<?php echo BASE_HREF; ?>/settings">Return</a>
+                                    <a href="<?=BASE_HREF;?>/settings">Return</a>
                                 </td>
                             </tr>
                         </tfoot>

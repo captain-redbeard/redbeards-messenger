@@ -1,17 +1,11 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 08-Dec-2016
- * Made Date: 07-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 07/12/16
  */
-namespace Messenger\Controllers;
+namespace Redbeard\Controllers;
 
-use Messenger\Core\Database;
+use Redbeard\Core\Database;
 
 class Accept extends Controller
 {
@@ -19,7 +13,6 @@ class Accept extends Controller
     {
         $this->isLoggedIn();
         $_SESSION['request'] = $guid;
-        
         $this->requiresLogin();
         
         $request = $this->model('Request');
@@ -30,7 +23,7 @@ class Accept extends Controller
         }
         
         $this->view(
-            'accept-requests',
+            ['accept-requests'],
             [
                 'page' => 'accept-requests',
                 'page_title' => 'Accept Request - ' . SITE_NAME,

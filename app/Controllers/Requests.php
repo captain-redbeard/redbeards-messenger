@@ -1,17 +1,11 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 10-Dec-2016
- * Made Date: 07-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 07/12/16
  */
-namespace Messenger\Controllers;
+namespace Redbeard\Controllers;
 
-use Messenger\Core\Database;
+use Redbeard\Core\Database;
 
 class Requests extends Controller
 {
@@ -20,19 +14,19 @@ class Requests extends Controller
         $this->requiresLogin();
     }
     
-    public function index()
+    public function index($error = '')
     {
         $request = $this->model('Request');
         $requests = $request->getRequests();
         
         $this->view(
-            'existing-requests',
+            ['existing-requests'],
             [
                 'page' => 'existing-requests',
                 'page_title' => 'Requests - ' . SITE_NAME,
                 'requests' => $requests,
                 'token' => $_SESSION['token'],
-                'error' => ''
+                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
             ]
         );
     }
@@ -52,7 +46,7 @@ class Requests extends Controller
         }
         
         $this->view(
-            'add-contact',
+            ['add-contact'],
             [
                 'page' => 'add-contact',
                 'page_title' => 'Add Contact - ' . SITE_NAME,
@@ -62,6 +56,23 @@ class Requests extends Controller
                 'error' => $error != '' ? $this->getErrorMessage($error) : $error
             ]
         );
+    }
+    
+    public function delete($guid)
+    {
+        $request = $this->model('Request');
+        
+        if ($guid != null) {
+            $error = $request->delete($guid);
+            
+            if ($error === 0) {
+                $this->redirect('requests');
+            }
+        } else {
+            $error = '';
+        }
+        
+        $this->index($error);
     }
     
     private function addRequest($parameters)
@@ -78,13 +89,6 @@ class Requests extends Controller
         }
     }
     
-    public function delete($guid)
-    {
-        $request = $this->model('Request');
-        $request->delete($guid);
-        $this->redirect('requests');
-    }
-    
     private function getErrorMessage($code)
     {
         switch ($code) {
@@ -94,6 +98,8 @@ class Requests extends Controller
                 return "Expire must be a number.";
             case 2:
                 return "Failed to add contact request, contact support.";
+            case 10:
+                return "Failed to delete request, contact support.";
             default:
                 return "Unknown error.";
         }

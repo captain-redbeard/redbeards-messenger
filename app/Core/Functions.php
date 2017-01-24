@@ -1,15 +1,9 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 11-Dec-2016
- * Made Date: 05-Nov-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 20/01/17
  */
-namespace Messenger\Core;
+namespace Redbeard\Core;
 
 use \DateTime;
 use \DateTimeZone;
@@ -23,7 +17,7 @@ class Functions
         $randomString = '';
         
         for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[mt_rand(0, strlen($characters) - 1)];
+            $randomString .= $characters[random_int(0, strlen($characters) - 1)];
         }
         
         return $randomString;
@@ -47,11 +41,10 @@ class Functions
         }
     }
     
-    public static function cleanInput($input, $level = 2)
+    public static function cleanInput($input, $level = -1)
     {
         switch ($level) {
             case 0:
-                //NO FILTERING, MUST FILTER BEFORE DISPLAYING
                 $clean = $input;
                 break;
             case 1:
@@ -64,7 +57,6 @@ class Functions
                 break;
             default:
                 $clean = strip_tags($input);
-                $clean = preg_replace('/[^a-zA-Z0-9 \-]/i', ' ', $clean);
                 break;
         }
         
@@ -119,6 +111,24 @@ class Functions
         $url = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
         $url .= $_SERVER['SERVER_NAME'] . str_replace($_SERVER['DOCUMENT_ROOT'], "", $_SERVER['PHP_SELF']);
         return str_replace('/index.php', '', $url);
+    }
+    
+    public function stringLimitWords($string, $word_limit)
+    {
+        $words = explode(' ', $string);
+        return implode(' ', array_slice($words, 0, $word_limit));
+    }
+    
+    public function cleanTitle($title)
+    {
+        $newtitle = string_limit_words($title, 10);
+        $urltitle = preg_replace('/[^a-z0-9]/i', ' ', $newtitle);
+        return strtolower(str_replace(' ', '-', $newtitle));
+    }
+    
+    public function restoreTitle($title)
+    {
+        return ucfirst(str_replace('-', ' ', $title));
     }
     
     public static function allowTags($message, $allowImage = false)

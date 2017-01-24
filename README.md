@@ -1,5 +1,5 @@
-# php-messenger
-PHP Messenger is a lightweight secure instant messaging platform designed to put you in control of your data.
+# redbeards-messenger
+Redbeards Messenger is a lightweight secure instant messaging platform designed to put you in control of your data.
 We accomplish this by utilising [Public Key Encryption](https://en.wikipedia.org/wiki/Public-key_cryptography) to create a unique key pair with a 4096 bit key on registration.
 See [Website Security](#website-security) for more information about our security policies.
 
@@ -83,4 +83,4 @@ The following HTML tags are supported in the messenger.
 
 ### Contact
 
-* [Email](mailto::info@fromdownunder.com.au)
+* [Email](mailto::fdu@hmamail.com)

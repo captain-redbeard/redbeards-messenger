@@ -1,18 +1,12 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 23-Dec-2016
- * Made Date: 06-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 06/12/16
  */
-namespace Messenger\Models;
+namespace Redbeard\Models;
 
-use Messenger\Core\Functions;
-use Messenger\Core\Database;
+use Redbeard\Core\Functions;
+use Redbeard\Core\Database;
 
 class Contact
 {
@@ -58,7 +52,7 @@ class Contact
     
     public function delete($guid)
     {
-        Database::update(
+        if(!Database::update(
             "DELETE FROM messages WHERE (user1_guid = ? OR user1_guid = ?) 
                 AND (user2_guid = ? OR user2_guid = ?);",
             [
@@ -67,9 +61,11 @@ class Contact
                 $_SESSION[USESSION]->user_guid,
                 $guid
             ]
-        );
+        )) {
+            return 10;
+        }
         
-        Database::update(
+        if(!Database::update(
             "DELETE FROM conversations WHERE (user_guid = ? OR user_guid = ?) 
                 AND (contact_guid = ? OR contact_guid = ?);",
             [
@@ -78,9 +74,11 @@ class Contact
                 $_SESSION[USESSION]->user_guid,
                 $guid
             ]
-        );
+        )) {
+            return 11;
+        }
         
-        Database::update(
+        if(!Database::update(
             "DELETE FROM contacts WHERE (user_guid = ? OR user_guid = ?) 
                 AND (contact_guid = ? OR contact_guid = ?);",
             [
@@ -89,7 +87,11 @@ class Contact
                 $_SESSION[USESSION]->user_guid,
                 $guid
             ]
-        );
+        )) {
+            return 12;
+        }
+
+        return 0;
     }
     
     public function getContacts()
@@ -109,8 +111,8 @@ class Contact
                 $contacts,
                 new Contact(
                     $contact['contact_guid'],
-                    $contact['contact_alias'],
-                    $contact['username'],
+                    htmlspecialchars($contact['contact_alias']),
+                    htmlspecialchars($contact['username']),
                     $contact['made_date']
                 )
             );

@@ -10,10 +10,10 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <?php if($data['error'] != '') { ?>
+                                    <?php if($data['error'] !== '') { ?>
                                         
                                     <br/>
-                                    <div class="message-error"><?php echo $data['error']; ?></div>
+                                    <div class="message-error"><?=$data['error'];?></div>
                                     
                                     <?php } ?>
 
@@ -27,7 +27,7 @@
 
                             <tr>
                                 <td>
-                                    <a href="<?php echo BASE_HREF; ?>/conversations">Return</a>
+                                    <a href="<?=BASE_HREF;?>/conversations">Return</a>
                                 </td>
                             </tr>
                         </tfoot>

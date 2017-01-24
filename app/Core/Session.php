@@ -1,15 +1,11 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 08-Dec-2016
- * Made Date: 05-Nov-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 20/01/17
  */
-namespace Messenger\Core;
+namespace Redbeard\Core;
+
+use Redbeard\Core\Database;
 
 class Session
 {
@@ -32,7 +28,10 @@ class Session
             session_name($session_name);
             session_start();
             session_regenerate_id();
+            return true;
         }
+        
+        return false;
     }
     
     public static function kill()
@@ -53,9 +52,7 @@ class Session
             $params["httponly"]
         );
         
-        session_destroy();
-        
-        return true;
+        return session_destroy();
     }
     
     public static function loginCheck()
@@ -74,14 +71,10 @@ class Session
                 
                 if ($login_check === $_SESSION['login_string']) {
                     return true;
-                } else {
-                    return false;
                 }
-            } else {
-                return false;
             }
-        } else {
-            return false;
         }
+            
+        return false;
     }
 }

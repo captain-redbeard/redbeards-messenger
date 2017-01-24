@@ -1,15 +1,9 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 08-Dec-2016
- * Made Date: 05-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 05/12/16
  */
-namespace Messenger\Controllers;
+namespace Redbeard\Controllers;
 
 class Logout extends Controller
 {

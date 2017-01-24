@@ -1,15 +1,9 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 23-Dec-2016
- * Made Date: 05-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 05/12/16
  */
-namespace Messenger\Controllers;
+namespace Redbeard\Controllers;
 
 use \DateTimeZone;
 
@@ -20,17 +14,17 @@ class Settings extends Controller
         $this->requiresLogin();
     }
     
-    public function index()
+    public function index($error = '')
     {
         $this->view(
-            'settings',
+            ['settings'],
             [
                 'page' => 'settings',
                 'page_title' => 'Settings - ' . SITE_NAME,
                 'user' => $_SESSION[USESSION],
                 'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
                 'token' => $_SESSION['token'],
-                'error' => ''
+                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
             ]
         );
     }
@@ -47,17 +41,7 @@ class Settings extends Controller
             $error = '';
         }
         
-         $this->view(
-            'settings',
-            [
-                'page' => 'settings',
-                'page_title' => 'Settings - ' . SITE_NAME,
-                'user' => $_SESSION[USESSION],
-                'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
-                'token' => $_SESSION['token'],
-                'error' => $error != '' ? $this->getErrorMessage($error) : $error
-             ]
-        );
+        $this->index($error);
     }
     
     private function updateSettings($parameters)
@@ -85,12 +69,12 @@ class Settings extends Controller
         }
         
         $this->view(
-            'change-password',
+            ['change-password'],
             [
                 'page' => 'change-password',
                 'page_title' => 'Change Password - ' . SITE_NAME,
                 'token' => $_SESSION['token'],
-                'error' => $error != '' ? $this->getErrorMessage($error) : $error
+                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
             ]
         );
     }
@@ -121,12 +105,12 @@ class Settings extends Controller
         }
         
         $this->view(
-            'new-keypair',
+            ['new-keypair'],
             [
                 'page' => 'new-keypair',
                 'page_title' => 'New Keypair - ' . SITE_NAME,
                 'token' => $_SESSION['token'],
-                'error' => $error != '' ? $this->getErrorMessage($error) : $error
+                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
             ]
         );
     }
@@ -156,12 +140,12 @@ class Settings extends Controller
         }
         
         $this->view(
-            'delete-account',
+            ['delete-account'],
             [
                 'page' => 'delete-account',
                 'page_title' => 'Delete Account - ' . SITE_NAME,
                 'token' => $_SESSION['token'],
-                'error' => $error != '' ? $this->getErrorMessage($error) : $error
+                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
             ]
         );
     }

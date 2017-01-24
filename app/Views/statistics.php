@@ -11,7 +11,7 @@
                         <tbody class="text-center">
                             <tr>
                                 <td>Users</td>
-                                <td><strong><?php echo $data['user_count']; ?></strong></td>
+                                <td><strong><?=$data['user_count'];?></strong></td>
                             </tr>
 
                             <tr>

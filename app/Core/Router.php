@@ -1,22 +1,16 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 10-Dec-2016
- * Made Date: 04-Nov-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 20/01/17
  */
-namespace Messenger\Core;
+namespace Redbeard\Core;
 
-use Messenger\Core\Functions;
+use Redbeard\Core\Functions;
 
 class Router
 {
-    protected $controller = '\\Messenger\\Controllers\\Login';
-    protected $method = 'index';
+    protected $controller = APP_PATH . "Controllers\\" . DEFAULT_CONTROLLER;
+    protected $method = DEFAULT_METHOD;
     protected $parameters = [];
     
     public function route($get, $post)
@@ -65,7 +59,7 @@ class Router
     private function setController($url)
     {
         if (isset($url[0])) {
-            $url[0] = str_replace(
+            $temp = str_replace(
                 ' ',
                 '',
                 ucwords(
@@ -77,8 +71,8 @@ class Router
                 )
             );
 
-            if (file_exists('../app/Controllers/' . $url[0] . '.php')) {
-                $this->controller = '\\Messenger\\Controllers\\' . $url[0];
+            if (file_exists('../app/Controllers/' . $temp . '.php')) {
+                $this->controller = APP_PATH . 'Controllers\\' . $temp;
                 unset($url[0]);
             }
         }

@@ -34,7 +34,7 @@
 * @link http://undesigned.org.za/2007/10/22/amazon-s3-php-class
 * @version 0.5.1
 */
-namespace Messenger\ThirdParty;
+namespace Redbeard\ThirdParty;
 
 class S3
 {

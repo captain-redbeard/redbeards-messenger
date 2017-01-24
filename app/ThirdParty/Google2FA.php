@@ -15,17 +15,14 @@
  *
  * PHP Google two-factor authentication module.
  *
- * See http://www.idontplaydarts.com/2011/07/google-totp-two-factor-authentication-for-php/
- * for more details
- *
  * @author Phil
  **/
-namespace Messenger\ThirdParty;
+namespace Redbeard\ThirdParty;
 
 class Google2FA
 {
-    const keyRegeneration = 30; // Interval between key regeneration
-    const otpLength = 6;        // Length of the Token generated
+    const KEYREGENERATION = 30; // Interval between key regeneration
+    const OPTLENGTH = 6;        // Length of the Token generated
 
     private static $lut = [    // Lookup needed for Base32 encoding
         "A" => 0,   "B" => 1,
@@ -50,14 +47,15 @@ class Google2FA
      * Generates a 16 digit secret key in base32 format
      * @return string
      **/
-    public static function generate_secret_key($length = 16)
+    public static function generateSecretKey($length = 16)
     {
         $b32 = "234567QWERTYUIOPASDFGHJKLZXCVBNM";
         $s = "";
-
-        for ($i = 0; $i < $length; $i++)
-            $s .= $b32[rand(0,31)];
-
+        
+        for ($i = 0; $i < $length; $i++) {
+            $s .= $b32[random_int(0, 31)];
+        }
+        
         return $s;
     }
 
@@ -66,38 +64,38 @@ class Google2FA
      * period.
      * @return integer
      **/
-    public static function get_timestamp()
+    public static function getTimestamp()
     {
-        return floor(microtime(true)/self::keyRegeneration);
+        return floor(microtime(true)/self::KEYREGENERATION);
     }
 
     /**
      * Decodes a base32 string into a binary string.
      **/
-    public static function base32_decode($b32)
+    public static function base32Decode($b32)
     {
         $b32 = strtoupper($b32);
-
-        if (!preg_match('/^[ABCDEFGHIJKLMNOPQRSTUVWXYZ234567]+$/', $b32, $match))
+        
+        if (!preg_match('/^[ABCDEFGHIJKLMNOPQRSTUVWXYZ234567]+$/', $b32, $match)) {
             throw new Exception('Invalid characters in the base32 string.');
-
+        }
+        
         $l = strlen($b32);
         $n = 0;
         $j = 0;
         $binary = "";
-
+        
         for ($i = 0; $i < $l; $i++) {
-
             $n = $n << 5;                       // Move buffer left by 5 to make room
             $n = $n + self::$lut[$b32[$i]];     // Add value into buffer
             $j = $j + 5;                        // Keep track of number of bits in buffer
-
+            
             if ($j >= 8) {
                 $j = $j - 8;
                 $binary .= chr(($n & (0xFF << $j)) >> $j);
             }
         }
-
+        
         return $binary;
     }
 
@@ -109,17 +107,18 @@ class Google2FA
      * @param integer $counter - Timestamp as returned by get_timestamp.
      * @return string
      **/
-    public static function oath_hotp($key, $counter)
+    public static function oathHotp($key, $counter)
     {
-        if (strlen($key) < 8)
-        throw new Exception('Secret key is too short. Must be at least 16 base 32 characters');
-
-        $bin_counter = pack('N*', 0) . pack('N*', $counter);		// Counter must be 64-bit int
-        $hash 	 = hash_hmac ('sha1', $bin_counter, $key, true);
-
-        return str_pad(self::oath_truncate($hash), self::otpLength, '0', STR_PAD_LEFT);
+        if (strlen($key) < 8) {
+            throw new Exception('Secret key is too short. Must be at least 16 base 32 characters');
+        }
+        
+        $bin_counter = pack('N*', 0) . pack('N*', $counter); // Counter must be 64-bit int
+        $hash = hash_hmac('sha1', $bin_counter, $key, true);
+        
+        return str_pad(self::oathTruncate($hash), self::OPTLENGTH, '0', STR_PAD_LEFT);
     }
-
+    
     /**
      * Verifys a user inputted key against the current timestamp. Checks $window
      * keys either side of the timestamp.
@@ -130,36 +129,39 @@ class Google2FA
      * @param boolean $useTimeStamp
      * @return boolean
      **/
-    public static function verify_key($b32seed, $key, $window = 1, $useTimeStamp = true)
+    public static function verifyKey($b32seed, $key, $window = 1, $useTimeStamp = true)
     {
-        $timeStamp = self::get_timestamp();
-
-        if ($useTimeStamp !== true) $timeStamp = (int)$useTimeStamp;
-
-        $binarySeed = self::base32_decode($b32seed);
-
-        for ($ts = $timeStamp - $window; $ts <= $timeStamp + $window; $ts++)
-            if (self::oath_hotp($binarySeed, $ts) == $key)
+        $timeStamp = self::getTimestamp();
+        
+        if ($useTimeStamp !== true) {
+            $timeStamp = (int)$useTimeStamp;
+        }
+        
+        $binarySeed = self::base32Decode($b32seed);
+        
+        for ($ts = $timeStamp - $window; $ts <= $timeStamp + $window; $ts++) {
+            if (self::oathHotp($binarySeed, $ts) == $key) {
                 return true;
-
+            }
+        }
+        
         return false;
     }
-
+    
     /**
      * Extracts the OTP from the SHA1 hash.
      * @param binary $hash
      * @return integer
      **/
-    public static function oath_truncate($hash)
+    public static function oathTruncate($hash)
     {
         $offset = ord($hash[19]) & 0xf;
-
+        
         return (
             ((ord($hash[$offset+0]) & 0x7f) << 24 ) |
             ((ord($hash[$offset+1]) & 0xff) << 16 ) |
             ((ord($hash[$offset+2]) & 0xff) << 8 ) |
             (ord($hash[$offset+3]) & 0xff)
-        ) % pow(10, self::otpLength);
+        ) % pow(10, self::OPTLENGTH);
     }
 }
-?>

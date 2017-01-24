@@ -1,18 +1,12 @@
 <?php
 /**
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 10-Dec-2016
- * Made Date: 05-Dec-2016
- * Author: Hosvir
- *
+ * @author captain-redbeard
+ * @since 05/12/16
  */
-namespace Messenger\Controllers;
+namespace Redbeard\Controllers;
 
-use Messenger\Core\Functions;
-use Messenger\Core\Database;
+use Redbeard\Core\Functions;
+use Redbeard\Core\Database;
 
 class Conversations extends Controller
 {
@@ -38,7 +32,7 @@ class Conversations extends Controller
         }
         
         $this->view(
-            'conversations',
+            ['conversations'],
             [
                 'page' => 'conversations',
                 'page_title' => SITE_NAME,
@@ -72,7 +66,11 @@ class Conversations extends Controller
     public function delete($guid = null)
     {
         $conversation = $this->model('Conversation');
-        $conversation->delete($guid);
+        
+        if ($guid != null) {
+            $error = $conversation->delete($guid);
+        }
+        
         $this->redirect('conversations');
     }
 }

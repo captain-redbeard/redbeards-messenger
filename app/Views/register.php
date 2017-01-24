@@ -1,5 +1,5 @@
             <div class="cover-wrapper">
-                <form method="POST" action="<?php echo BASE_HREF; ?>/register/user">
+                <form method="POST" action="<?=BASE_HREF;?>/register/user">
                     <table class="single-table">
                         <thead>
                             <tr>
@@ -10,7 +10,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <input class="glow w100" type="text" name="username" title="Username" tabindex="1" placeholder="Username" autofocus value="<?php if (isset($username)) echo $username; ?>" required>
+                                    <input class="glow w100" type="text" name="username" title="Username" tabindex="1" placeholder="Username" autofocus value="<?=$data['username'];?>" required>
                                 </td>
                             </tr>
 
@@ -32,7 +32,7 @@
                                         <option value="-1" selected disabled>Select Timezone</option>
                                         <?php foreach ($data['timezones'] as $tz) { ?>
 
-                                        <option value="<?php echo $tz; ?>"<?php if ($tz == $data['timezone']) echo " selected"; ?>><?php echo $tz; ?></option>
+                                        <option value="<?=$tz;?>"<?php if ($tz === $data['timezone']) echo " selected"; ?>><?=$tz;?></option>
                                         <?php } ?>
                                         
                                     </select>
@@ -43,11 +43,11 @@
                         <tfoot>
                             <tr>
                                 <td>
-                                    <input type="hidden" name="token" value="<?php echo $data['token']; ?>">
+                                    <input type="hidden" name="token" value="<?=$data['token'];?>">
                                     <input class="raw-button blue-outline w100" type="submit" name="submit" title="Submit" tabindex="5" value="Submit">
-                                    <?php if ($data['error'] != '') { ?>
+                                    <?php if ($data['error'] !== '') { ?>
                                     <br/>
-                                    <div class="message-error"><?php echo $data['error']; ?></div>
+                                    <div class="message-error"><?=$data['error'];?></div>
                                     <?php } ?>
 
                                 </td>
@@ -58,7 +58,7 @@
 
                             <tr>
                                 <td>
-                                    <a class="font-color-blue" href="<?php echo BASE_HREF; ?>/login">Login</a>
+                                    <a class="font-color-blue" href="<?=BASE_HREF;?>/login">Login</a>
                                 </td>
                             </tr>
                         </tfoot>

@@ -1,12 +1,6 @@
 <?php
-/*
- *
- * Details:
- * PHP Messenger.
- *
- * Modified: 04-Dec-2016
- * Made Date: 04-Nov-2016
- * Author: Hosvir
- *
+ /**
+ * @author Hosvir
+ * @since 20/01/17
  */
-require_once '../app/messenger.php';
+require_once '../app/app.php';

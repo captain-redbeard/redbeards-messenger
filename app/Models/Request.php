@@ -5,6 +5,7 @@
  */
 namespace Redbeard\Models;
 
+use Redbeard\Core\Config;
 use Redbeard\Core\Functions;
 use Redbeard\Core\Database;
 
@@ -57,11 +58,11 @@ class Request
             [
                 $guid,
                 $name,
-                $_SESSION[USESSION]->user_guid,
+                $_SESSION[Config::get('app.user_session')]->user_guid,
                 $expire
             ]
         ) > -1) {
-            return BASE_HREF . "/accept/" . $guid;
+            return Config::get('app.base_href') . "/accept/" . $guid;
         } else {
             return 2;
         }
@@ -75,7 +76,7 @@ class Request
             "DELETE FROM contact_requests WHERE request_guid = ? AND user_guid = ?;",
             [
                 $guid,
-                $_SESSION[USESSION]->user_guid
+                $_SESSION[Config::get('app.user_session')]->user_guid
             ]
         )) {
             return 10;
@@ -91,11 +92,11 @@ class Request
             [$guid]
         );
         
-        if (count($request) > 0 && $request[0]['user_guid'] != $_SESSION[USESSION]->user_guid) {
+        if (count($request) > 0 && $request[0]['user_guid'] != $_SESSION[Config::get('app.user_session')]->user_guid) {
             if (Database::insert(
                 "INSERT INTO contacts (user_guid, contact_guid) VALUES (?,?);",
                 [
-                    $_SESSION[USESSION]->user_guid,
+                    $_SESSION[Config::get('app.user_session')]->user_guid,
                     $request[0]['user_guid']
                 ]
             ) > -1) {
@@ -103,7 +104,7 @@ class Request
                     "INSERT INTO contacts (user_guid, contact_guid) VALUES (?,?);",
                     [
                         $request[0]['user_guid'],
-                        $_SESSION[USESSION]->user_guid
+                        $_SESSION[Config::get('app.user_session')]->user_guid
                     ]
                 );
                 
@@ -117,7 +118,7 @@ class Request
                 return 0;
             }
         } else {
-            if ($request[0]['user_guid'] == $_SESSION[USESSION]->user_guid) {
+            if ($request[0]['user_guid'] == $_SESSION[Config::get('app.user_session')]->user_guid) {
                 unset($_SESSION['request']);
                 return 1;
             } else {
@@ -135,7 +136,7 @@ class Request
                 DATE_ADD(made_date, INTERVAL expire HOUR) as expire_time
                 FROM contact_requests
                 WHERE user_guid = ?;",
-            [$_SESSION[USESSION]->user_guid]
+            [$_SESSION[Config::get('app.user_session')]->user_guid]
         );
         
         foreach ($request_data as $request) {
@@ -152,7 +153,7 @@ class Request
                     $request['user_guid'],
                     htmlspecialchars($request['expire']),
                     $expire_time,
-                    BASE_HREF . "/accept/" . $request['request_guid']
+                    Config::get('app.base_href') . "/accept/" . $request['request_guid']
                 )
             );
         }

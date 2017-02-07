@@ -1,35 +1,44 @@
 <?php
 /**
  * @author captain-redbeard
- * @since 20/01/17
+ * @since 05/02/17
  */
 
-//Database
-getenv("DB_HOSTNAME") != null ? define("DB_HOSTNAME", getenv("DB_HOSTNAME")) : define("DB_HOSTNAME", "localhost");
-getenv("DB_DATABASE") != null ? define("DB_DATABASE", getenv("DB_DATABASE")) : define("DB_DATABASE", "messenger");
-getenv("DB_USERNAME") != null ? define("DB_USERNAME", getenv("DB_USERNAME")) : define("DB_USERNAME", "");
-getenv("DB_PASSWORD") != null ? define("DB_PASSWORD", getenv("DB_PASSWORD")) : define("DB_PASSWORD", "");
-getenv("DB_CHARSET") != null ? define("DB_CHARSET", getenv("DB_CHARSET")) : define("DB_CHARSET", "utf8mb4");
-
-//Keys
-define("STORE_KEYS_LOCAL", true);
-define("PPK_PUBLIC_FOLDER", "/keys/public/");
-define("PPK_PRIVATE_FOLDER", "/keys/private/");
-
-//S3, if store keys local = false
-getenv("S3_ACCESS_KEY") != null ? define("S3_ACCESS_KEY", getenv("S3_ACCESS_KEY")) : define("S3_ACCESS_KEY", "");
-getenv("S3_SECRET_KEY") != null ? define("S3_SECRET_KEY", getenv("S3_SECRET_KEY")) : define("S3_SECRET_KEY", "");
-getenv("KEY_BUCKET") != null ? define("KEY_BUCKET", getenv("KEY_BUCKET")) : define("KEY_BUCKET", "");
-
-//App
-define("BASE_DIR", __DIR__);
-define("SITE_NAME", "Redbeards Messenger");
-define("TIMEZONE", "Australia/Brisbane");
-define("USESSION", "redbeard_user-SHfnWp8e2i7");
-define("PW_COST", 12);
-define("SECURE", true);
-define("APP_PATH", "\\Redbeard\\");
-define("DEFAULT_CONTROLLER", "Login");
-define("DEFAULT_METHOD", "index");
-define("MAX_LOGIN_ATTEMPTS", 5);
-define("CONVERSATION_MAX_LENGTH", 100);
+return [
+    'app' => [
+        'base_dir' =>               __DIR__,
+        'timezone' =>               'UTC',
+        'user_session' =>           'redbeard_user',
+        'password_cost' =>          12,
+        'max_login_attempts' =>     5,
+        'secure_cookies' =>         true,
+        'token_expire_time' =>      900,
+        'path' =>                   '\\Redbeard\\',
+        'default_controller' =>     'Login',
+        'default_method' =>         'index',
+        'conversation_max_length' => 100
+    ],
+    
+    'database' => [
+        'rdbms' =>                  'mysql',
+        'hostname' =>               'localhost',
+        'database' =>               'messenger',
+        'username' =>               '',
+        'password' =>               '',
+        'charset'  =>               'utf8mb4',
+    ],
+    
+    'site' => [
+        'name' =>                   'Redbeards Messenger',
+        'theme_color' =>            '4aa3df'
+    ],
+    
+    'keys' => [
+        'store_local' =>            true,
+        'ppk_public_folder' =>      '/keys/public/',
+        'ppk_private_folder' =>     '/keys/private/',
+        's3_access_key' =>          '',
+        's3_secret_key' =>          '',
+        'bucket' =>                 ''
+    ]
+];

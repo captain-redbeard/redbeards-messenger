@@ -3,12 +3,19 @@
  * @author captain-redbeard
  * @since 29/11/16
  */
+use Redbeard\Core\Config;
 use Redbeard\Core\Database;
 
-require_once '../app/config.php';
 require_once '../vendor/autoload.php';
 
-date_default_timezone_set(TIMEZONE);
+//Load config
+Config::init();
+
+//Set database config
+Database::init(Config::get('database'));
+
+//Set timezone
+date_default_timezone_set(Config::get('app.timezone'));
 
 //Delete requests
 Database::update(

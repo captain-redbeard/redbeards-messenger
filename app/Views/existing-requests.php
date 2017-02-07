@@ -21,7 +21,7 @@
                                     
                                 </td>
                                 <td class="text-right">
-                                    <a href="<?=BASE_HREF;?>/requests/delete/<?=$request->request_guid;?>">
+                                    <a href="<?=$data['BASE_HREF'];?>/requests/delete/<?=$request->request_guid;?>">
                                         <div class="grow idc" alt="Delete" title="Delete Request"></div>
                                     </a>
                                 </td>
@@ -36,15 +36,12 @@
 
                             <tr>
                                 <td>
-                                    <a href="<?=BASE_HREF;?>/conversations">Return</a>
+                                    <a href="<?=$data['BASE_HREF'];?>/requests/add">Return</a>
                                 </td>
                             </tr>
                         </tfoot>
                     </table>
-                    <?php if($data['error'] !== '') { ?>
                     
                     <div class="message-error"><?=$data['error'];?></div>
-                    <?php } ?>
-                    
                 </form>
             </div>

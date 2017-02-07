@@ -16,6 +16,19 @@ See [Website Security](#website-security) for more information about our securit
 
 ---
 
+### Demo site
+[https://fromdownunder.com.au](https://fromdownunder.com.au)
+
+---
+
+### Requirements
+
+* PHP >= 7.0.0
+* Endroid/qrcode >= 1.7
+* Composer autoloader
+
+---
+
 ### Install (Proof of concept)
 **Please understand this is still in a Proof of concept stage and the code base may change drastically.**
 

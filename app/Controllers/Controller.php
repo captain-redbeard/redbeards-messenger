@@ -5,28 +5,36 @@
  */
 namespace Redbeard\Controllers;
 
+use Redbeard\Core\Config;
 use Redbeard\Core\Session;
 use Redbeard\Core\Functions;
 
 class Controller
 {
-    public function model($model)
+    protected function model($model)
     {
-        $model = APP_PATH . 'Models\\' . $model;
+        $model = Config::get('app.path') . 'Models\\' . $model;
         return new $model;
     }
     
-    public function startSession()
+    protected function startSession()
     {
         Session::start();
         
-        if (!isset($_SESSION['token']) || (isset($_SESSION['token']) && (time() - $_SESSION['token_time'])) < 300) {
+        if (
+            !isset($_SESSION['token']) ||
+            (isset($_SESSION['token']) && (time() - $_SESSION['token_time']) > $this->config('app.token_expire_time'))
+           ) {
+            //Create new token
             $_SESSION['token'] = Functions::generateRandomString(32);
+            $_SESSION['token_time'] = time();
+        } else {
+            //Extend token time, user is still active
             $_SESSION['token_time'] = time();
         }
     }
     
-    public function checkToken()
+    protected function checkToken()
     {
         $this->startSession();
         
@@ -37,31 +45,34 @@ class Controller
         }
     }
     
-    public function isLoggedIn()
+    protected function isLoggedIn()
     {
         $this->startSession();
         return Session::loginCheck();
     }
     
-    public function requiresLogin()
+    protected function requiresLogin()
     {
         if (!$this->isLoggedIn()) {
             $this->redirect('login');
         }
     }
     
-    public function redirect($page)
+    protected function redirect($page)
     {
-        header('Location: ' . BASE_HREF . '/' . $page);
+        header('Location: ' . $this->config('app.base_href') . '/' . $page);
     }
     
-    public function logout()
+    protected function logout()
     {
         Session::kill();
     }
     
-    public function view($view = [], $data = [], $raw = false)
+    protected function view($view = [], $data = [], $raw = false)
     {
+        $data['BASE_HREF'] = $this->config('app.base_href');
+        $data['THEME_COLOR'] = $this->config('site.theme_color');
+        
         if (!$raw) {
             require_once '../app/Views/template/header.php';
         }
@@ -72,6 +83,22 @@ class Controller
         
         if (!$raw) {
             require_once '../app/Views/template/footer.php';
+        }
+    }
+    
+    protected function config($key, $value = null)
+    {
+        if ($value === null) {
+            return Config::get($key);
+        } else {
+            Config::set($key, $value);
+        }
+    }
+    
+    protected function requiresPermission($permission)
+    {
+        if (!$_SESSION[$this->config('app.user_session')]->hasPermission($permission)) {
+            $this->redirect('permission-denied');
         }
     }
 }

@@ -5,6 +5,7 @@
  */
 namespace Redbeard\Core;
 
+use Redbeard\Core\Config;
 use Redbeard\Core\Database;
 
 class Session
@@ -12,8 +13,8 @@ class Session
     public static function start()
     {
         if (!isset($_SESSION)) {
-            $session_name = USESSION;
-            $secure = SECURE;
+            $session_name = Config::get('app.user_session');
+            $secure = Config::get('app.secure_cookies');
             $http_only = true;
             
             $cookie_params = session_get_cookie_params();

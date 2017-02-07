@@ -24,18 +24,18 @@ class Mfa extends Controller
             ['enable-mfa'],
             [
                 'page' => 'enable-mfa',
-                'page_title' => 'Enable MFA - ' . SITE_NAME,
+                'page_title' => 'Enable MFA - ' . $this->config('site.name'),
                 'qr_code' => $qrCode,
                 'secret_key' => $user[0]['secret_key'],
                 'token' => $_SESSION['token'],
-                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
+                'error' => $this->getErrorMessage($error)
             ]
         );
     }
     
     public function disable()
     {
-        $_SESSION[USESSION]->disableMfa();
+        $_SESSION[$this->config('app.user_session')]->disableMfa();
         $this->redirect('settings');
     }
     
@@ -53,7 +53,7 @@ class Mfa extends Controller
     private function activateMfa($parameters)
     {
         if ($this->checkToken()) {
-            return $_SESSION[USESSION]->enableMfa(
+            return $_SESSION[$this->config('app.user_session')]->enableMfa(
                 $parameters['code1'],
                 $parameters['code2']
             );
@@ -66,7 +66,7 @@ class Mfa extends Controller
     {
         return Database::select(
             "SELECT secret_key, mfa_enabled FROM users WHERE user_guid = ?;",
-            [$_SESSION[USESSION]->user_guid]
+            [$_SESSION[$this->config('app.user_session')]->user_guid]
         );
     }
     
@@ -75,10 +75,10 @@ class Mfa extends Controller
         $qrCode = new QrCode();
         $qrCode
             ->setText("otpauth://totp/" .
-                      SITE_NAME . ":" .
-                      $_SESSION[USESSION]->username . "?secret=" .
+                      $this->config('site.name') . ":" .
+                      $_SESSION[$this->config('app.user_session')]->username . "?secret=" .
                       $user[0]['secret_key'] . "&issuer=" .
-                      SITE_NAME)
+                      $this->config('site.name'))
             ->setSize(200)
             ->setPadding(0)
             ->setErrorCorrection('high')
@@ -94,13 +94,13 @@ class Mfa extends Controller
     {
         switch ($code) {
             case -1:
-                return "Invalid token.";
+                return 'Invalid token.';
             case 1:
-                return "You must provide two consecutive codes.";
+                return 'You must provide two consecutive codes.';
             case 2:
-                return "Invalid codes.";
+                return 'Invalid codes.';
             default:
-                return "Unknown error.";
+                return '';
         }
     }
 }

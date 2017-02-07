@@ -3,12 +3,23 @@
  * @author captain-redbeard
  * @since 09/12/16
  */
+use Redbeard\Core\Config;
 use Redbeard\Core\Database;
+use Redbeard\Core\Functions;
 
-require_once '../app/config.php';
 require_once '../vendor/autoload.php';
 
-date_default_timezone_set(TIMEZONE);
+//Load config
+Config::init();
+
+//Set base url
+Config::set('app.base_href', Functions::getUrl());
+
+//Set database config
+Database::init(Config::get('database'));
+
+//Set timezone
+date_default_timezone_set(Config::get('app.timezone'));
 
 //Get expired users
 $users = Database::select(
@@ -20,13 +31,13 @@ if (count($users) > 0) {
     //For each user
     foreach ($users as $user) {
         //Delete public private key pair
-        if (STORE_KEYS_LOCAL) {
-            unlink(BASE_DIR . PPK_PUBLIC_FOLDER . $user['user_guid'] . ".pem");
-            unlink(BASE_DIR . PPK_PRIVATE_FOLDER . $user['user_guid'] . ".key");
+        if (Config::get('keys.store_local')) {
+            unlink(Config::get('app.base_dir') . Config::get('keys.ppk_public_folder') . $user['user_guid'] . ".pem");
+            unlink(Config::get('app.base_dir') . Config::get('keys.ppk_private_folder') . $user['user_guid'] . ".key");
         } else {
-            S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
-            S3::deleteObject(KEY_BUCKET, $guid . ".pem");
-            S3::deleteObject(KEY_BUCKET, $guid . ".key");
+            S3::setAuth(Config::get('keys.s3_access_key'), Config::get('keys.s3_secret_key'));
+            S3::deleteObject(Config::get('keys.bucket'), $guid . ".pem");
+            S3::deleteObject(Config::get('keys.bucket'), $guid . ".key");
         }
         
         //Delete messages

@@ -20,11 +20,11 @@ class Settings extends Controller
             ['settings'],
             [
                 'page' => 'settings',
-                'page_title' => 'Settings - ' . SITE_NAME,
-                'user' => $_SESSION[USESSION],
+                'page_title' => 'Settings - ' . $this->config('site.name'),
+                'user' => $_SESSION[$this->config('app.user_session')],
                 'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
                 'token' => $_SESSION['token'],
-                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
+                'error' => $this->getErrorMessage($error)
             ]
         );
     }
@@ -47,7 +47,7 @@ class Settings extends Controller
     private function updateSettings($parameters)
     {
         if ($this->checkToken()) {
-            return $_SESSION[USESSION]->update(
+            return $_SESSION[$this->config('app.user_session')]->update(
                 $parameters['username'],
                 $parameters['timezone']
             );
@@ -72,9 +72,9 @@ class Settings extends Controller
             ['change-password'],
             [
                 'page' => 'change-password',
-                'page_title' => 'Change Password - ' . SITE_NAME,
+                'page_title' => 'Change Password - ' . $this->config('site.name'),
                 'token' => $_SESSION['token'],
-                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
+                'error' => $this->getErrorMessage($error)
             ]
         );
     }
@@ -82,7 +82,7 @@ class Settings extends Controller
     private function resetPassword($parameters)
     {
         if ($this->checkToken()) {
-            return $_SESSION[USESSION]->resetPassword(
+            return $_SESSION[$this->config('app.user_session')]->resetPassword(
                 $parameters['password'],
                 $parameters['npassword'],
                 $parameters['cpassword']
@@ -108,9 +108,9 @@ class Settings extends Controller
             ['new-keypair'],
             [
                 'page' => 'new-keypair',
-                'page_title' => 'New Keypair - ' . SITE_NAME,
+                'page_title' => 'New Keypair - ' . $this->config('site.name'),
                 'token' => $_SESSION['token'],
-                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
+                'error' => $this->getErrorMessage($error)
             ]
         );
     }
@@ -118,7 +118,7 @@ class Settings extends Controller
     private function generateNewKeypair($parameters)
     {
         if ($this->checkToken()) {
-            return $_SESSION[USESSION]->generateNewKeypair(
+            return $_SESSION[$this->config('app.user_session')]->generateNewKeypair(
                 $parameters['password'],
                 $parameters['passphrase']
             );
@@ -143,9 +143,9 @@ class Settings extends Controller
             ['delete-account'],
             [
                 'page' => 'delete-account',
-                'page_title' => 'Delete Account - ' . SITE_NAME,
+                'page_title' => 'Delete Account - ' . $this->config('site.name'),
                 'token' => $_SESSION['token'],
-                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
+                'error' => $this->getErrorMessage($error)
             ]
         );
     }
@@ -153,7 +153,7 @@ class Settings extends Controller
     private function deleteAccount($parameters)
     {
         if ($this->checkToken()) {
-            return $_SESSION[USESSION]->delete(
+            return $_SESSION[$this->config('app.user_session')]->delete(
                 $parameters['password']
             );
         } else {
@@ -165,37 +165,42 @@ class Settings extends Controller
     {
         switch ($code) {
             case -1:
-                return "Invalid token.";
+                return 'Invalid token.';
             case 1:
-                return "Username must be less than 64 characters.";
+                return 'Username must be at least 1 character.';
             case 2:
-                return "Username is already taken.";
+                return 'Username must be less than 64 characters.';
             case 3:
-                return "Failed to save settings.";
+                return 'Password must be greater than 8 characters.';
             case 4:
-                return "Username must be at least 1 character.";
-            case 5:
-                return "Failed to create PPK.";
+                return 'Password must be less than 256 characters.';
+            
+            case 6:
+                return 'Failed to create PPK.';
+            
             case 10:
-                return "Passwords don't match.";
+                return 'Failed to save settings.';
             case 11:
-                return "Password must be greater than 8 characters.";
+                return 'Username already taken.';
             case 12:
-                return "Incorrect password.";
+                return 'Passwords don\'t match.';
             case 13:
-                return "Failed to find user, contact support.";
-            case 14:
-                return "Failed to update user, contact support.";
+                return 'Incorrect password.';
+            
+            case 16:
+                return 'Failed to find user, contact support.';
+            case 17:
+                return 'Failed to update user, contact support.';
             case 20:
-                return "Failed to delete messages, contact support.";
+                return 'Failed to delete messages, contact support.';
             case 21:
-                return "Failed to delete conversations, contact support.";
+                return 'Failed to delete conversations, contact support.';
             case 22:
-                return "Failed to delete contacts, contact support.";
+                return 'Failed to delete contacts, contact support.';
             case 23:
-                return "Failed to delete account, contact support.";
+                return 'Failed to delete account, contact support.';
             default:
-                return "Unknown error.";
+                return '';
         }
     }
 }

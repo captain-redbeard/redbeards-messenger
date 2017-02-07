@@ -9,12 +9,17 @@ use Redbeard\Core\Database;
 
 class Accept extends Controller
 {
+    public function __construct()
+    {
+        if ($this->isLoggedIn()) {
+            $_SESSION['request'] = $guid;
+        }
+        
+        $this->requiresLogin();
+    }
+    
     public function index($guid)
     {
-        $this->isLoggedIn();
-        $_SESSION['request'] = $guid;
-        $this->requiresLogin();
-        
         $request = $this->model('Request');
         $error = $request->accept($guid);
         
@@ -23,10 +28,10 @@ class Accept extends Controller
         }
         
         $this->view(
-            ['accept-requests'],
+            ['accept-request'],
             [
-                'page' => 'accept-requests',
-                'page_title' => 'Accept Request - ' . SITE_NAME,
+                'page' => 'accept-request',
+                'page_title' => 'Accept Request - ' . $this->config('site.name'),
                 'error' => $this->getErrorMessage($error)
             ]
         );
@@ -36,11 +41,11 @@ class Accept extends Controller
     {
         switch ($code) {
             case 1:
-                return "You can't add yourself???";
+                return 'You can\'t add yourself???';
             case 2:
-                return "Request expired or invalid.";
+                return 'Request expired or invalid.';
             default:
-                return "Unknown error.";
+                return '';
         }
     }
 }

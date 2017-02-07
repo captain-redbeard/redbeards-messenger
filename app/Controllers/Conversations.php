@@ -13,17 +13,17 @@ class Conversations extends Controller
     public function __construct()
     {
         $this->requiresLogin();
+        
+        if (isset($_SESSION['request'])) {
+            $this->redirect('accept/' . $_SESSION['request']);
+        }
     }
     
     public function index($menu = null, $guid = null, $cguid = null)
     {
-        if (isset($_SESSION['request'])) {
-            $this->redirect('accept/' . $_SESSION['request']);
-        }
-        
         $conversation = $this->model('Conversation');
         $message = $this->model('Message');
-        $_SESSION[USESSION]->updateLastLoad();
+        $_SESSION[$this->config('app.user_session')]->updateLastLoad();
         
         if ($menu !== null && $menu === 'new') {
             $newconversation = $conversation->getNew($guid);
@@ -35,7 +35,7 @@ class Conversations extends Controller
             ['conversations'],
             [
                 'page' => 'conversations',
-                'page_title' => SITE_NAME,
+                'page_title' => $this->config('site.name'),
                 'conversations' => $conversation->getConversations(),
                 'messages' => $message->getMessages($cguid),
                 'newconversation' => $newconversation,
@@ -43,6 +43,7 @@ class Conversations extends Controller
                 'guid' => htmlspecialchars($guid),
                 'cguid' => htmlspecialchars($cguid),
                 'menu' => htmlspecialchars($menu),
+                'user' => $_SESSION[$this->config('app.user_session')],
                 'token' => $_SESSION['token']
             ]
         );

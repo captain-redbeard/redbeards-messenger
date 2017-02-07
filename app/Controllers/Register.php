@@ -10,20 +10,23 @@ use Redbeard\Core\Database;
 
 class Register extends Controller
 {
-    public function index($timezone = '', $username = '', $error = '')
+    public function __construct()
     {
         $this->startSession();
-        
+    }
+    
+    public function index($timezone = '', $username = '', $error = '')
+    {
         $this->view(
             ['register'],
             [
                 'page' => 'register',
-                'page_title' => 'Register to ' . SITE_NAME,
+                'page_title' => 'Register to ' . $this->config('site.name'),
                 'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::ALL),
                 'timezone' => htmlspecialchars($timezone),
                 'username' => htmlspecialchars($username),
                 'token' => $_SESSION['token'],
-                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
+                'error' => $this->getErrorMessage($error)
             ]
         );
     }
@@ -61,23 +64,24 @@ class Register extends Controller
             case -1:
                 return "Invalid token.";
             case 1:
-                return "No password entered.";
+                return 'Username must be at least 1 character.';
             case 2:
-                return "Password must be greater than 8 characters.";
+                return 'Username must be less than 64 characters.';
             case 3:
-                return "Username must be less than 64 characters.";
+                return 'Password must be greater than 8 characters.';
             case 4:
-                return "Username is already taken.";
-            case 5:
-                return "Failed to create PPK.";
-            case 6:
-                return "Failed to create user, contact support.";
-            case 7:
-                return "You must select a Timezone.";
-            case 8:
-                return "Username must be at least 1 character.";
+                return 'Password must be less than 256 characters.';
+            
+            case 10:
+                return 'You must select a Timezone.';
+            case 11:
+                return 'Username is already taken.';
+            case 12:
+                return 'Failed to create user, contact support.';
+            case 13:
+                return 'Failed to create PPK.';
             default:
-                return "Unknown error.";
+                return '';
         }
     }
 }

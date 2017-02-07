@@ -34,9 +34,9 @@ class Check extends Controller
                         ORDER BY made_date DESC LIMIT 1) AS last_message,
                     (SELECT last_load FROM users WHERE user_guid = ?) AS last_load;",
                 [
-                    $_SESSION[USESSION]->user_guid,
-                    $_SESSION[USESSION]->user_guid,
-                    $_SESSION[USESSION]->user_guid
+                    $_SESSION[$this->config('app.user_session')]->user_guid,
+                    $_SESSION[$this->config('app.user_session')]->user_guid,
+                    $_SESSION[$this->config('app.user_session')]->user_guid
                 ]
             );
             
@@ -48,7 +48,7 @@ class Check extends Controller
         }
         
         if ($havemessage) {
-            $_SESSION[USESSION]->updateLastLoad();
+            $_SESSION[$this->config('app.user_session')]->updateLastLoad();
             $conv = $this->model('Conversation');
             $mess = $this->model('Message');
             $conversations = $conv->getConversations($messages[0]['last_load']);
@@ -71,7 +71,7 @@ class Check extends Controller
             
             if (count($message) > 0) {
                 foreach ($message as $m) {
-                    if ($m->user2_guid === $_SESSION[USESSION]->user_guid && $m->direction === 1) {
+                    if ($m->user2_guid === $_SESSION[$this->config('app.user_session')]->user_guid && $m->direction === 1) {
                         $sent = true;
                     } else {
                         $sent = false;

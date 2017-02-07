@@ -22,9 +22,9 @@ class Contacts extends Controller
             ['contacts'],
             [
                 'page' => 'contacts',
-                'page_title' => 'Contacts - ' . SITE_NAME,
+                'page_title' => 'Contacts - ' . $this->config('site.name'),
                 'contacts' => $contact->getContacts(),
-                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
+                'error' => $this->getErrorMessage($error)
             ]
         );
     }
@@ -47,11 +47,11 @@ class Contacts extends Controller
             ['edit-contact'],
             [
                 'page' => 'edit-contact',
-                'page_title' => 'Edit Contact - ' . SITE_NAME,
+                'page_title' => 'Edit Contact - ' . $this->config('site.name'),
                 'contact' => $contact->getByGuid($guid),
                 'guid' => htmlspecialchars($guid),
                 'token' => $_SESSION['token'],
-                'error' => $error != '' ? $this->getErrorMessage($error) : $error
+                'error' => $this->getErrorMessage($error)
             ]
         );
     }
@@ -93,19 +93,19 @@ class Contacts extends Controller
     {
         switch ($code) {
             case -1:
-                return "Invalid token.";
+                return 'Invalid token.';
             case 1:
-                return "Alias must be less than 64 characters.";
+                return 'Alias must be less than 64 characters.';
             case 2:
-                return "Failed to save contact, contact support.";
+                return 'Failed to save contact, contact support.';
             case 10:
-                return "Failed to delete messages, contact support.";
+                return 'Failed to delete messages, contact support.';
             case 11:
-                return "Failed to delete conversations, contact support.";
+                return 'Failed to delete conversations, contact support.';
             case 12:
-                return "Failed to delete contacts, contact support.";
+                return 'Failed to delete contacts, contact support.';
             default:
-                return "Unknown error.";
+                return '';
         }
     }
 }

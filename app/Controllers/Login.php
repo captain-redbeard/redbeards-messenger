@@ -9,23 +9,23 @@ use Redbeard\Core\Functions;
 
 class Login extends Controller
 {
-    //TEST FOR VUNRABLE
-    public function index($username = '', $error = '')
+    public function __construct()
     {
-        $this->startSession();
-        
-        if (isset($_SESSION[USESSION])) {
+        if ($this->isLoggedIn()) {
             $this->redirect('conversations');
         }
-        
+    }
+    
+    public function index($username = '', $error = '')
+    {
         $this->view(
             ['login'],
             [
                 'page' => 'login',
-                'page_title' => 'Login - ' . SITE_NAME,
+                'page_title' => 'Login to ' . $this->config('site.name'),
                 'username' => htmlspecialchars($username),
                 'token' => $_SESSION['token'],
-                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
+                'error' => $this->getErrorMessage($error)
             ]
         );
     }
@@ -61,23 +61,26 @@ class Login extends Controller
     {
         switch ($code) {
             case -1:
-                return "Invalid token.";
+                return 'Invalid token.';
             case 1:
-                return "No password entered.";
+                return 'Username must be at least 1 character.';
             case 2:
-                return "Password must be greater than 8 characters.";
+                return 'Username must be less than 64 characters.';
             case 3:
-                return "Username must be less than 64 characters.";
+                return 'Password must be greater than 8 characters.';
             case 4:
-                return "Username not found.";
-            case 5:
-                return "To many login attempts, try again later.";
-            case 6:
-                return "Incorrect password.";
-            case 7:
-                return "MFA Failed.";
+                return 'Password must be less than 256 characters.';
+            
+            case 10:
+                return 'Incorrect password.';
+            case 11:
+                return 'MFA Failed.';
+            case 12:
+                return 'To many login attempts, try again later.';
+            case 13:
+                return 'Username not found.';
             default:
-                return "Unknown error.";
+                return '';
         }
     }
 }

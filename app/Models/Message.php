@@ -5,6 +5,7 @@
  */
 namespace Redbeard\Models;
 
+use Redbeard\Core\Config;
 use Redbeard\Core\Functions;
 use Redbeard\Core\Database;
 use Redbeard\Core\Session;
@@ -61,32 +62,32 @@ class Message
         $conversation_guid = $conversation_guid != null ? $conversation_guid : Functions::generateRandomString(32);
         $contact = Database::select(
             "SELECT contact_guid FROM contacts WHERE contact_guid = ? AND user_guid = ?;",
-            [$to_guid, $_SESSION[USESSION]->user_guid]
+            [$to_guid, $_SESSION[Config::get('app.user_session')]->user_guid]
         );
         
         if ($to_guid != null && count($contact) > 0) {
-            if (!STORE_KEYS_LOCAL) {
-                S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
-                $to_public_key = S3::getObject(KEY_BUCKET, $to_guid . ".pem");
-                $user_public_key = S3::getObject(KEY_BUCKET, $_SESSION[USESSION]->user_guid . ".pem");
-                $user_private_key = S3::getObject(KEY_BUCKET, $_SESSION[USESSION]->user_guid . ".key");
+            if (!Config::get('keys.store_local')) {
+                S3::setAuth(Config::get('keys.s3_access_key'), Config::get('keys.s3_secret_key'));
+                $to_public_key = S3::getObject(Config::get('keys.bucket'), $to_guid . ".pem");
+                $user_public_key = S3::getObject(Config::get('keys.bucket'), $_SESSION[Config::get('app.user_session')]->user_guid . ".pem");
+                $user_private_key = S3::getObject(Config::get('keys.bucket'), $_SESSION[Config::get('app.user_session')]->user_guid . ".key");
             } else {
                 $to_public_key = file_get_contents(
-                    BASE_DIR .
-                    PPK_PUBLIC_FOLDER .
+                    Config::get('app.base_dir') .
+                    Config::get('keys.ppk_public_folder') .
                     $to_guid .
                     ".pem"
                 );
                 $user_public_key = file_get_contents(
-                    BASE_DIR .
-                    PPK_PUBLIC_FOLDER .
-                    $_SESSION[USESSION]->user_guid .
+                    Config::get('app.base_dir') .
+                    Config::get('keys.ppk_public_folder') .
+                    $_SESSION[Config::get('app.user_session')]->user_guid .
                     ".pem"
                 );
                 $user_private_key = file_get_contents(
-                    BASE_DIR .
-                    PPK_PRIVATE_FOLDER .
-                    $_SESSION[USESSION]->user_guid .
+                    Config::get('app.base_dir') .
+                    Config::get('keys.ppk_private_folder') .
+                    $_SESSION[Config::get('app.user_session')]->user_guid .
                     ".key"
                 );
             }
@@ -94,17 +95,17 @@ class Message
             $to_message = PublicPrivateKey::encrypt(
                 $message,
                 null,
-                STORE_KEYS_LOCAL ? $to_public_key : $to_public_key->body
+                Config::get('keys.store_local') ? $to_public_key : $to_public_key->body
             );
             
             $user_message = PublicPrivateKey::encrypt(
                 $message,
                 null,
-                STORE_KEYS_LOCAL ? $user_public_key : $user_public_key->body
+                Config::get('keys.store_local') ? $user_public_key : $user_public_key->body
             );
             
-            $to_signature = PublicPrivateKey::sign($to_message, $user_private_key, $_SESSION[USESSION]->passphrase);
-            $user_signature = PublicPrivateKey::sign($user_message, $user_private_key, $_SESSION[USESSION]->passphrase);
+            $to_signature = PublicPrivateKey::sign($to_message, $user_private_key, $_SESSION[Config::get('app.user_session')]->passphrase);
+            $user_signature = PublicPrivateKey::sign($user_message, $user_private_key, $_SESSION[Config::get('app.user_session')]->passphrase);
             
             $conversation = Database::select(
                 "SELECT conversation_guid
@@ -112,7 +113,7 @@ class Message
                     WHERE user_guid = ?
                     AND contact_guid = ?;",
                 [
-                    $_SESSION[USESSION]->user_guid,
+                    $_SESSION[Config::get('app.user_session')]->user_guid,
                     $to_guid
                 ]
             );
@@ -122,7 +123,7 @@ class Message
                     "INSERT INTO conversations (conversation_guid, contact_guid, user_guid) VALUES (?,?,?);",
                     [
                         $conversation_guid,
-                        $_SESSION[USESSION]->user_guid,
+                        $_SESSION[Config::get('app.user_session')]->user_guid,
                         $to_guid
                     ]
                 );
@@ -132,7 +133,7 @@ class Message
                     [
                         $conversation_guid,
                         $to_guid,
-                        $_SESSION[USESSION]->user_guid
+                        $_SESSION[Config::get('app.user_session')]->user_guid
                     ]
                 );
                 
@@ -146,7 +147,7 @@ class Message
                 [
                     $conversation_guid,
                     $to_guid,
-                    $_SESSION[USESSION]->user_guid,
+                    $_SESSION[Config::get('app.user_session')]->user_guid,
                     0,
                     $to_message,
                     $to_signature
@@ -159,7 +160,7 @@ class Message
                 [
                     $conversation_guid,
                     $to_guid,
-                    $_SESSION[USESSION]->user_guid,
+                    $_SESSION[Config::get('app.user_session')]->user_guid,
                     1,
                     $user_message,
                     $user_signature
@@ -194,7 +195,7 @@ class Message
                 LIMIT 1;",
             [
                 $conversation_guid,
-                $_SESSION[USESSION]->user_guid            
+                $_SESSION[Config::get('app.user_session')]->user_guid            
             ]
         );
         
@@ -207,10 +208,10 @@ class Message
                     ORDER BY made_date DESC
                     LIMIT ?;",
                 [
-                    $_SESSION[USESSION]->user_guid,
-                    $_SESSION[USESSION]->user_guid,
+                    $_SESSION[Config::get('app.user_session')]->user_guid,
+                    $_SESSION[Config::get('app.user_session')]->user_guid,
                     $conversation_guid,
-                    CONVERSATION_MAX_LENGTH
+                    Config::get('app.conversation_max_length')
                 ]
             );
         } else {
@@ -223,43 +224,43 @@ class Message
                     ORDER BY made_date DESC
                     LIMIT ?;",
                 [
-                    $_SESSION[USESSION]->user_guid,
-                    $_SESSION[USESSION]->user_guid,
+                    $_SESSION[Config::get('app.user_session')]->user_guid,
+                    $_SESSION[Config::get('app.user_session')]->user_guid,
                     $conversation_guid,
                     $made_date,
-                    CONVERSATION_MAX_LENGTH
+                    Config::get('app.conversation_max_length')
                 ]
             );
         }
         
-        if (!STORE_KEYS_LOCAL) {
-            S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
-            $from_public_key = S3::getObject(KEY_BUCKET, $conversation[0]['contact_guid'] . ".pem");
-            $user_public_key = S3::getObject(KEY_BUCKET, $_SESSION[USESSION]->user_guid . ".pem");
-            $user_private_key = S3::getObject(KEY_BUCKET, $_SESSION[USESSION]->user_guid . ".key");
+        if (!Config::get('keys.store_local')) {
+            S3::setAuth(Config::get('keys.s3_access_key'), Config::get('keys.s3_secret_key'));
+            $from_public_key = S3::getObject(Config::get('keys.bucket'), $conversation[0]['contact_guid'] . ".pem");
+            $user_public_key = S3::getObject(Config::get('keys.bucket'), $_SESSION[Config::get('app.user_session')]->user_guid . ".pem");
+            $user_private_key = S3::getObject(Config::get('keys.bucket'), $_SESSION[Config::get('app.user_session')]->user_guid . ".key");
         } else {
             $from_public_key = file_get_contents(
-                BASE_DIR .
-                PPK_PUBLIC_FOLDER .
+                Config::get('app.base_dir') .
+                Config::get('keys.ppk_public_folder') .
                 $conversation[0]['contact_guid'] .
                 ".pem"
             );
             $user_public_key = file_get_contents(
-                BASE_DIR .
-                PPK_PUBLIC_FOLDER .
-                $_SESSION[USESSION]->user_guid .
+                Config::get('app.base_dir') .
+                Config::get('keys.ppk_public_folder') .
+                $_SESSION[Config::get('app.user_session')]->user_guid .
                 ".pem"
             );
             $user_private_key = file_get_contents(
-                BASE_DIR .
-                PPK_PRIVATE_FOLDER .
-                $_SESSION[USESSION]->user_guid .
+                Config::get('app.base_dir') .
+                Config::get('keys.ppk_private_folder') .
+                $_SESSION[Config::get('app.user_session')]->user_guid .
                 ".key"
             );
         }
         
         for ($i = 0; $i < count($messages); $i++) {
-            if ($messages[$i]['user2_guid'] == $_SESSION[USESSION]->user_guid && $messages[$i]['direction'] === 1) {
+            if ($messages[$i]['user2_guid'] == $_SESSION[Config::get('app.user_session')]->user_guid && $messages[$i]['direction'] === 1) {
                 $public_key = $user_public_key;
             } else {
                 $public_key = $from_public_key;
@@ -275,8 +276,8 @@ class Message
                 PublicPrivateKey::decrypt(
                     $messages[$i]['message'],
                     null,
-                    $_SESSION[USESSION]->passphrase,
-                    STORE_KEYS_LOCAL ? $user_private_key : $user_private_key->body
+                    $_SESSION[Config::get('app.user_session')]->passphrase,
+                    Config::get('keys.store_local') ? $user_private_key : $user_private_key->body
                 )
             );            
         }

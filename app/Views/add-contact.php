@@ -1,5 +1,5 @@
             <div class="cover-wrapper">
-                <form method="POST" action="<?=BASE_HREF;?>/requests/add">
+                <form method="POST" action="<?=$data['BASE_HREF'];?>/requests/add">
                     <table class="single-table">
                         <thead>
                             <tr>
@@ -27,7 +27,7 @@
 
                             <tr>
                                 <td class="center">
-                                    <a href="<?=BASE_HREF;?>/requests">View existing requests</a>
+                                    <a href="<?=$data['BASE_HREF'];?>/requests">View existing requests</a>
                                 </td>
                             </tr>
 
@@ -63,13 +63,10 @@
                                     <div class="message-info"><?=$data['url'];?></div>
                                     
                                     <?php } ?>
-                                    <?php if($data['error'] !== '') { ?>
-                                        
+
                                     <br/>
                                     <div class="message-error"><?=$data['error'];?></div>
-                                    <?php } ?>
-
-                                </td> 
+                                </td>
                             </tr>
 
                             <tr><td></td></tr>
@@ -77,7 +74,7 @@
 
                             <tr>
                                 <td>
-                                    <a href="<?=BASE_HREF;?>/conversations">Return</a>
+                                    <a href="<?=$data['BASE_HREF'];?>/conversations">Return</a>
                                 </td>
                             </tr>
                         </tfoot>

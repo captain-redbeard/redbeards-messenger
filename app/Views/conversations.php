@@ -1,21 +1,21 @@
             <div class="a">
                 <div class="b">
                     <div class="c">
-                        <a id="us" href="<?=BASE_HREF;?>/settings">
+                        <a id="us" href="<?=$data['BASE_HREF'];?>/settings">
                             <div class="g is" alt="Settings" title="Settings"></div>
                         </a>
                         
                         <div class="fr">
-                        <a id="ac" href="<?=BASE_HREF;?>/requests/add">
+                        <a id="ac" href="<?=$data['BASE_HREF'];?>/requests/add">
                             <div class="g ia" alt="Add Contact" title="Add Contact"></div>
                         </a>
                     </div>
                 </div>
                     
                 <div class="d">
-                    <a class="v gb y" href="<?=BASE_HREF;?>/contacts">Start Conversation</a>
+                    <a class="v gb y" href="<?=$data['BASE_HREF'];?>/contacts">Start Conversation</a>
                     
-                    <a class="x" href="<?=BASE_HREF;?>/contacts">
+                    <a class="x" href="<?=$data['BASE_HREF'];?>/contacts">
                         <div class="g ic" alt="Contacts" title="Contacts"></div>
                     </a>
                 </div>
@@ -32,14 +32,14 @@
                     <?php foreach ($data['conversations'] as $conversation) { ?>
                         
                     <div class="f <?php if ($data['cguid'] && $conversation->conversation_guid === $data['cguid']) echo "k"; ?>">
-                        <a href="<?=BASE_HREF;?>/conversations/display/<?=$conversation->contact_guid . "/" . $conversation->conversation_guid;?>#l">
+                        <a href="<?=$data['BASE_HREF'];?>/conversations/display/<?=$conversation->contact_guid . "/" . $conversation->conversation_guid;?>#l">
                             <div class="i"><?php if ($conversation->alias !== "") echo $conversation->alias . " - "; echo $conversation->username; ?></div>
                         </a>
                         <div class="cc j fr" data-md="<?=$conversation->made_date;?>">
                             <?=$conversation->getMadeDate();?>
                             &nbsp;
                             
-                            <a href="<?=BASE_HREF;?>/conversations/delete/<?=$conversation->conversation_guid;?>">
+                            <a href="<?=$data['BASE_HREF'];?>/conversations/delete/<?=$conversation->conversation_guid;?>">
                                 <div class="g id ac" alt="Delete Conversation" title="Delete Conversation"></div>
                             </a>
                         </div>
@@ -54,7 +54,7 @@
                 
                 <div class="l">
                     <div class="m">
-                        <a id="ul" href="<?=BASE_HREF;?>/logout">
+                        <a id="ul" href="<?=$data['BASE_HREF'];?>/logout">
                             <div class="g il fr" alt="Logout" title="Logout"></div>
                         </a>
                         
@@ -64,7 +64,7 @@
                     <div class="n">
                         <?php if ($data['messages'] != null) {
                                 foreach ($data['messages'] as $message) { 
-                                    if ($message->user2_guid === $_SESSION[USESSION]->user_guid && $message->direction === 1) $sent = true; else $sent = false;
+                                    if ($message->user2_guid === $data['user']->user_guid && $message->direction === 1) $sent = true; else $sent = false;
                         ?>
                         
                         <div class="o <?php echo $sent ? "fr" : "fl"; ?>">
@@ -95,7 +95,7 @@
                     </div>
                 </div>
                 
-                <form method="POST" action="<?=BASE_HREF;?>/conversations/send" id="s">
+                <form method="POST" action="<?=$data['BASE_HREF'];?>/conversations/send" id="s">
                     <div class="t">
                         <input type="hidden" name="token" value="<?=$data['token'];?>">
                         <textarea class="u" name="m" id="m" placeholder="Enter your message here."<?php if ($data['guid'] === null) echo " disabled"; else echo " autofocus"; ?>></textarea>

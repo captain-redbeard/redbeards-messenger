@@ -5,16 +5,20 @@
  */
 namespace Redbeard\Core;
 
+use Redbeard\Core\Config;
 use Redbeard\Core\Functions;
 
 class Router
 {
-    protected $controller = APP_PATH . "Controllers\\" . DEFAULT_CONTROLLER;
-    protected $method = DEFAULT_METHOD;
+    protected $controller = null;
+    protected $method = null;
     protected $parameters = [];
     
     public function route($get, $post)
     {
+        $this->controller = Config::get('app.path') . "Controllers\\" . Config::get('app.default_controller');
+        $this->method = Config::get('app.default_method');
+        
         //Get parsed url
         $url = $this->parseUrl($get);
         
@@ -59,20 +63,10 @@ class Router
     private function setController($url)
     {
         if (isset($url[0])) {
-            $temp = str_replace(
-                ' ',
-                '',
-                ucwords(
-                    str_replace(
-                        '-',
-                        ' ',
-                        strtolower($url[0])
-                    )
-                )
-            );
-
+            $temp = Functions::cleanMethodName($url[0]);
+            
             if (file_exists('../app/Controllers/' . $temp . '.php')) {
-                $this->controller = APP_PATH . 'Controllers\\' . $temp;
+                $this->controller = Config::get('app.path') . 'Controllers\\' . $temp;
                 unset($url[0]);
             }
         }
@@ -82,11 +76,15 @@ class Router
     
     private function setMethod($url)
     {
-        if (isset($url[1]) && method_exists($this->controller, $url[1])) {
-            $reflection_method = new \ReflectionMethod($this->controller, $url[1]);
-            if ($reflection_method->isPublic()) {
-                $this->method = $url[1];
-                unset($url[1]);
+        if (isset($url[1])) {
+            $temp = Functions::cleanMethodName($url[1]);
+            
+            if (method_exists($this->controller, $temp)) {
+                $reflection_method = new \ReflectionMethod($this->controller, $temp);
+                if ($reflection_method->isPublic()) {
+                    $this->method = $temp;
+                    unset($url[1]);
+                }
             }
         }
         

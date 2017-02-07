@@ -5,6 +5,7 @@
  */
 namespace Redbeard\Models;
 
+use Redbeard\Core\Config;
 use Redbeard\Core\Functions;
 use Redbeard\Core\Database;
 use Redbeard\Core\Session;
@@ -25,7 +26,7 @@ class User
     public function getUser($userid, $passphrase)
     {
         $user_details = Database::select(
-            "SELECT user_id, user_guid, username, timezone, mfa_enabled FROM users WHERE user_id = ?;",
+            "SELECT user_id, user_guid, username, timezone, mfa_enabled, expire FROM users WHERE user_id = ?;",
             [$userid]
         );
         
@@ -61,21 +62,21 @@ class User
         }
         
         if ($timezone === -1) {
-            return 7;
+            return 10;
         }
         
         if (!isset($error)) {
             $existing = Database::select("SELECT user_id FROM users WHERE username = ?;", [$username]);
             if (count($existing) > 0) {
-                return 4;
+                return 11;
             }
             
-            $password = password_hash($password, PASSWORD_DEFAULT, ['cost' => PW_COST]);
+            $password = password_hash($password, PASSWORD_DEFAULT, ['cost' => Config::get('app.password_cost')]);
             $guid = Functions::generateRandomString(32);
             $activation = Functions::generateRandomString(32);
             $secretkey = Google2FA::generateSecretKey();
             
-            if (!STORE_KEYS_LOCAL) {
+            if (!Config::get('keys.store_local')) {
                 $keys = PublicPrivateKey::generateKeyPair(
                     $guid,
                     $guid,
@@ -83,11 +84,11 @@ class User
                     $passphrase
                 );
                 
-                S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
+                S3::setAuth(Config::get('keys.s3_access_key'), Config::get('keys.s3_secret_key'));
                 
                 S3::putObject(
                     $keys[0],
-                    KEY_BUCKET,
+                    Config::get('keys.bucket'),
                     $guid . ".pem",
                     S3::ACL_PRIVATE,
                     [],
@@ -96,7 +97,7 @@ class User
                 
                 S3::putObject(
                     $keys[1],
-                    KEY_BUCKET,
+                    Config::get('keys.bucket'),
                     $guid . ".key",
                     S3::ACL_PRIVATE,
                     [],
@@ -104,14 +105,14 @@ class User
                 );
             } else {
                 $keys = PublicPrivateKey::generateKeyPair(
-                    BASE_DIR . PPK_PUBLIC_FOLDER . $guid,
-                    BASE_DIR . PPK_PRIVATE_FOLDER . $guid,
+                    Config::get('app.base_dir') . Config::get('keys.ppk_public_folder') . $guid,
+                    Config::get('app.base_dir') . Config::get('keys.ppk_private_folder') . $guid,
                     false,
                     $passphrase
                 );
                 
                 if (!$keys) {
-                    return 5;
+                    return 13;
                 }
             }
             
@@ -132,10 +133,10 @@ class User
                 Session::start();
                 $_SESSION['user_id'] = $userid;
                 $_SESSION['login_string'] = hash('sha512', $userid . $_SERVER['HTTP_USER_AGENT'] . $guid);
-                $_SESSION[USESSION] = $this->getUser($userid, $passphrase);
+                $_SESSION[Config::get('app.user_session')] = $this->getUser($userid, $passphrase);
                 return 0;
             } else {
-                return 6;
+                return 12;
             }
         }
     }
@@ -167,17 +168,17 @@ class User
                 [$existing[0]['user_id']]
             );
             
-            if (count($attempts) < MAX_LOGIN_ATTEMPTS) {
+            if (count($attempts) < Config::get('app.max_login_attempts')) {
                 if (password_verify($password, $existing[0]['password'])) {
                     if (password_needs_rehash(
                         $existing[0]['password'],
                         PASSWORD_DEFAULT,
-                        ['cost' => PW_COST]
+                        ['cost' => Config::get('app.password_cost')]
                     )) {
                         $newhash = password_hash(
                             $password,
                             PASSWORD_DEFAULT,
-                            ['cost' => PW_COST]
+                            ['cost' => Config::get('app.password_cost')]
                         );
                             
                         Database::update(
@@ -198,7 +199,7 @@ class User
                                 [$existing[0]['user_id']]
                             );
                             
-                            return 7;
+                            return 11;
                         }
                     }
                     
@@ -208,7 +209,7 @@ class User
                         'sha512',
                         $existing[0]['user_id'] . $_SERVER['HTTP_USER_AGENT'] . $existing[0]['user_guid']
                     );
-                    $_SESSION[USESSION] = $this->getUser($_SESSION['user_id'], $passphrase);
+                    $_SESSION[Config::get('app.user_session')] = $this->getUser($_SESSION['user_id'], $passphrase);
                     
                     return 0;
                 } else {
@@ -216,13 +217,13 @@ class User
                         "INSERT INTO login_attempts(user_id, made_date) VALUES (?, NOW());",
                         [$existing[0]['user_id']]
                     );
-                    return 6;
+                    return 10;
                 }
             } else {
-                return 8;
+                return 12;
             }
         } else {
-            return 9;
+            return 13;
         }
     }
     
@@ -243,7 +244,7 @@ class User
         );
         
         if (count($existing) > 0 && $existing[0]['username'] != $this->username) {
-            return 2;
+            return 11;
         }
         
         if (Database::update(
@@ -255,10 +256,10 @@ class User
                 $this->user_guid
             ]
         )) {
-                $_SESSION[USESSION] = $this->getUser($this->user_id, $this->passphrase);
+                $_SESSION[Config::get('app.user_session')] = $this->getUser($this->user_id, $this->passphrase);
                 return 0;
         } else {
-            return 6;
+            return 10;
         }
     }
     
@@ -344,7 +345,7 @@ class User
     public function resetPassword($password, $new_password, $confirm_new_password)
     {
         if ($new_password != $confirm_new_password) {
-            return 10;
+            return 12;
         }
         
         $validPassword = $this->validatePassword($new_password);
@@ -366,7 +367,7 @@ class User
                 $newpass = password_hash(
                     $new_password,
                     PASSWORD_DEFAULT,
-                    ['cost' => PW_COST]
+                    ['cost' => Config::get('app.password_cost')]
                 );
                 
                 if (Database::update(
@@ -401,13 +402,13 @@ class User
 
         if (count($user) > 0) {
             if (password_verify($password, $user[0]['password'])) {
-                if (STORE_KEYS_LOCAL) {
-                    unlink(BASE_DIR . PPK_PUBLIC_FOLDER . $user[0]['user_guid'] . ".pem");
-                    unlink(BASE_DIR . PPK_PRIVATE_FOLDER . $user[0]['user_guid'] . ".key");
+                if (Config::get('keys.store_local')) {
+                    unlink(Config::get('app.base_dir') . Config::get('keys.ppk_public_folder') . $user[0]['user_guid'] . ".pem");
+                    unlink(Config::get('app.base_dir') . Config::get('keys.ppk_private_folder') . $user[0]['user_guid'] . ".key");
                 } else {
-                    S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
-                    S3::deleteObject(KEY_BUCKET, $guid . ".pem");
-                    S3::deleteObject(KEY_BUCKET, $guid . ".key");
+                    S3::setAuth(Config::get('keys.s3_access_key'), Config::get('keys.s3_secret_key'));
+                    S3::deleteObject(Config::get('keys.bucket'), $guid . ".pem");
+                    S3::deleteObject(Config::get('keys.bucket'), $guid . ".key");
                 }
                 
                 if (!Database::update(
@@ -430,7 +431,7 @@ class User
                     return 21;
                 }
                 
-                if (!STORE_KEYS_LOCAL) {
+                if (!Config::get('keys.store_local')) {
                     $keys = PublicPrivateKey::generateKeyPair(
                         $user[0]['user_guid'],
                         $user[0]['user_guid'],
@@ -438,11 +439,11 @@ class User
                         $passphrase
                     );
                     
-                    S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
+                    S3::setAuth(Config::get('keys.s3_access_key'), Config::get('keys.s3_secret_key'));
                     
                     S3::putObject(
                         $keys[0],
-                        KEY_BUCKET,
+                        Config::get('keys.bucket'),
                         $guid . ".pem",
                         S3::ACL_PRIVATE,
                         [],
@@ -451,7 +452,7 @@ class User
                     
                     S3::putObject(
                         $keys[1],
-                        KEY_BUCKET,
+                        Config::get('keys.bucket'),
                         $guid . ".key",
                         S3::ACL_PRIVATE,
                         [],
@@ -459,8 +460,8 @@ class User
                     );
                 } else {
                     $keys = PublicPrivateKey::generateKeyPair(
-                        BASE_DIR . PPK_PUBLIC_FOLDER . $user[0]['user_guid'],
-                        BASE_DIR . PPK_PRIVATE_FOLDER . $user[0]['user_guid'],
+                        Config::get('app.base_dir') . Config::get('keys.ppk_public_folder') . $user[0]['user_guid'],
+                        Config::get('app.base_dir') . Config::get('keys.ppk_private_folder') . $user[0]['user_guid'],
                         false,
                         $passphrase
                     );
@@ -469,7 +470,7 @@ class User
                         return 5;
                     }
                     
-                    $_SESSION[USESSION] = $this->getUser($this->user_id, $passphrase);
+                    $_SESSION[Config::get('app.user_session')] = $this->getUser($this->user_id, $passphrase);
                     return 0;
                 }
             } else {
@@ -492,13 +493,13 @@ class User
         
         if (count($user) > 0) {
             if (password_verify($password, $user[0]['password'])) {
-                if (STORE_KEYS_LOCAL) {
-                    unlink(BASE_DIR . PPK_PUBLIC_FOLDER . $user[0]['user_guid'] . ".pem");
-                    unlink(BASE_DIR . PPK_PRIVATE_FOLDER . $user[0]['user_guid'] . ".key");
+                if (Config::get('keys.store_local')) {
+                    unlink(Config::get('app.base_dir') . Config::get('keys.ppk_public_folder') . $user[0]['user_guid'] . ".pem");
+                    unlink(Config::get('app.base_dir') . Config::get('keys.ppk_private_folder') . $user[0]['user_guid'] . ".key");
                 } else {
-                    S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
-                    S3::deleteObject(KEY_BUCKET, $guid . ".pem");
-                    S3::deleteObject(KEY_BUCKET, $guid . ".key");
+                    S3::setAuth(Config::get('keys.s3_access_key'), Config::get('keys.s3_secret_key'));
+                    S3::deleteObject(Config::get('keys.bucket'), $guid . ".pem");
+                    S3::deleteObject(Config::get('keys.bucket'), $guid . ".key");
                 }
                 
                 if (!Database::update(
@@ -569,7 +570,7 @@ class User
     }
     
     public function validatePassword($password)
-    {        
+    {
         if ($password === null || strlen($password) < 9) {
             return 3;
         }

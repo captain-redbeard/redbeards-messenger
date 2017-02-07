@@ -5,6 +5,7 @@
  */
 namespace Redbeard\Core;
 
+use Redbeard\Core\Config;
 use \DateTime;
 use \DateTimeZone;
 use \Tidy;
@@ -30,8 +31,8 @@ class Functions
     
     public static function convertTime($time_convert, $short = false)
     {
-        $userTime = new DateTime($time_convert, new DateTimeZone(TIMEZONE));
-        $userTime->setTimezone(new DateTimeZone($_SESSION[USESSION]->timezone));
+        $userTime = new DateTime($time_convert, new DateTimeZone(Config::get('app.timezone')));
+        $userTime->setTimezone(new DateTimeZone($_SESSION[Config::get('app.user_session')]->timezone));
         if (!$short) {
             return $userTime->format('Y-m-d h:i:s A');
         } else {
@@ -39,6 +40,21 @@ class Functions
                 $userTime->format('d/m h:i A') :
                 $userTime->format('h:i A');
         }
+    }
+    
+    public static function cleanMethodName($name)
+    {
+        return str_replace(
+            ' ',
+            '',
+            ucwords(
+                str_replace(
+                    '-',
+                    ' ',
+                    strtolower($name)
+                )
+            )
+        );
     }
     
     public static function cleanInput($input, $level = -1)

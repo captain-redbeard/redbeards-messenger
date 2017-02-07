@@ -28,25 +28,25 @@ class Deletion extends Controller
             ['deletion-policy'],
             [
                 'page' => 'deletion-policy',
-                'page_title' => 'Deletion Policy - ' . SITE_NAME,
+                'page_title' => 'Deletion Policy - ' . $this->config('site.name'),
                 'days' => [7,14,30,60,90],
-                'expire' => $_SESSION[USESSION]->expire,
+                'expire' => $_SESSION[$this->config('app.user_session')]->expire,
                 'token' => $_SESSION['token'],
-                'error' => $error != '' ? $this->getErrorMessage($error) : $error
+                'error' => $this->getErrorMessage($error)
             ]
         );
     }
         
     public function disable()
     {
-        $_SESSION[USESSION]->updateExpire(0);
+        $_SESSION[$this->config('app.user_session')]->updateExpire(0);
         $this->redirect('settings');
     }
     
     private function updateDeletion($parameters)
     {
         if ($this->checkToken()) {
-            return $_SESSION[USESSION]->updateExpire($parameters['expire']);
+            return $_SESSION[$this->config('app.user_session')]->updateExpire($parameters['expire']);
         } else {
             return -1;
         }
@@ -56,9 +56,11 @@ class Deletion extends Controller
     {
         switch ($code) {
             case -1:
-                return "Invalid token.";
+                return 'Invalid token.';
             case 1:
-                return "Expire must be a number.";
+                return 'Expire must be a number.';
+            default:
+                return '';
         }
     }
 }

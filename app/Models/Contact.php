@@ -5,6 +5,7 @@
  */
 namespace Redbeard\Models;
 
+use Redbeard\Core\Config;
 use Redbeard\Core\Functions;
 use Redbeard\Core\Database;
 
@@ -41,7 +42,7 @@ class Contact
             [
                 $alias,
                 $this->contact_guid,
-                $_SESSION[USESSION]->user_guid
+                $_SESSION[Config::get('app.user_session')]->user_guid
             ]
         )) {
             return 0;
@@ -56,9 +57,9 @@ class Contact
             "DELETE FROM messages WHERE (user1_guid = ? OR user1_guid = ?) 
                 AND (user2_guid = ? OR user2_guid = ?);",
             [
-                $_SESSION[USESSION]->user_guid,
+                $_SESSION[Config::get('app.user_session')]->user_guid,
                 $guid,
-                $_SESSION[USESSION]->user_guid,
+                $_SESSION[Config::get('app.user_session')]->user_guid,
                 $guid
             ]
         )) {
@@ -69,9 +70,9 @@ class Contact
             "DELETE FROM conversations WHERE (user_guid = ? OR user_guid = ?) 
                 AND (contact_guid = ? OR contact_guid = ?);",
             [
-                $_SESSION[USESSION]->user_guid,
+                $_SESSION[Config::get('app.user_session')]->user_guid,
                 $guid,
-                $_SESSION[USESSION]->user_guid,
+                $_SESSION[Config::get('app.user_session')]->user_guid,
                 $guid
             ]
         )) {
@@ -82,9 +83,9 @@ class Contact
             "DELETE FROM contacts WHERE (user_guid = ? OR user_guid = ?) 
                 AND (contact_guid = ? OR contact_guid = ?);",
             [
-                $_SESSION[USESSION]->user_guid,
+                $_SESSION[Config::get('app.user_session')]->user_guid,
                 $guid,
-                $_SESSION[USESSION]->user_guid,
+                $_SESSION[Config::get('app.user_session')]->user_guid,
                 $guid
             ]
         )) {
@@ -103,7 +104,7 @@ class Contact
                 (SELECT username FROM users WHERE user_guid = contact_guid) AS username
                 FROM contacts
                 WHERE user_guid = ?;",
-            [$_SESSION[USESSION]->user_guid]
+            [$_SESSION[Config::get('app.user_session')]->user_guid]
         );
         
         foreach ($contact_data as $contact) {
@@ -131,7 +132,7 @@ class Contact
                 FROM contacts
                 WHERE contact_guid = ? 
                 AND user_guid = ?;",
-            [$guid, $_SESSION[USESSION]->user_guid]
+            [$guid, $_SESSION[Config::get('app.user_session')]->user_guid]
         );
         
         if (count($contact_data) > 0) {

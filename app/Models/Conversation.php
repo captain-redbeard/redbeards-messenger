@@ -5,6 +5,7 @@
  */
 namespace Redbeard\Models;
 
+use Redbeard\Core\Config;
 use Redbeard\Core\Functions;
 use Redbeard\Core\Database;
 
@@ -48,9 +49,9 @@ class Conversation
                     FROM conversations WHERE user_guid = ?
                     ORDER BY made_date DESC;",
                 [
-                    $_SESSION[USESSION]->user_guid,
-                    $_SESSION[USESSION]->user_guid,
-                    $_SESSION[USESSION]->user_guid
+                    $_SESSION[Config::get('app.user_session')]->user_guid,
+                    $_SESSION[Config::get('app.user_session')]->user_guid,
+                    $_SESSION[Config::get('app.user_session')]->user_guid
                 ]
             );
         } else {
@@ -66,9 +67,9 @@ class Conversation
                     AND made_date > ?
                     ORDER BY made_date DESC;",
                 [
-                    $_SESSION[USESSION]->user_guid,
-                    $_SESSION[USESSION]->user_guid,
-                    $_SESSION[USESSION]->user_guid,
+                    $_SESSION[Config::get('app.user_session')]->user_guid,
+                    $_SESSION[Config::get('app.user_session')]->user_guid,
+                    $_SESSION[Config::get('app.user_session')]->user_guid,
                     $made_date
                 ]
             );
@@ -87,7 +88,7 @@ class Conversation
                 AND user_guid = ?;",
             [
                 $guid,
-                $_SESSION[USESSION]->user_guid
+                $_SESSION[Config::get('app.user_session')]->user_guid
             ]
         );
     }
@@ -98,8 +99,8 @@ class Conversation
             "DELETE FROM messages WHERE conversation_guid = ? AND (user1_guid = ? OR user2_guid = ?);",
             [
                 $guid,
-                $_SESSION[USESSION]->user_guid,
-                $_SESSION[USESSION]->user_guid
+                $_SESSION[Config::get('app.user_session')]->user_guid,
+                $_SESSION[Config::get('app.user_session')]->user_guid
             ]
         );
         
@@ -107,8 +108,8 @@ class Conversation
             "DELETE FROM conversations WHERE conversation_guid = ? AND (user_guid = ? OR contact_guid = ?);",
             [
                 $guid,
-                $_SESSION[USESSION]->user_guid,
-                $_SESSION[USESSION]->user_guid
+                $_SESSION[Config::get('app.user_session')]->user_guid,
+                $_SESSION[Config::get('app.user_session')]->user_guid
             ]
         );
     }

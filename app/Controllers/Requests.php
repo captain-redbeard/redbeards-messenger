@@ -23,10 +23,10 @@ class Requests extends Controller
             ['existing-requests'],
             [
                 'page' => 'existing-requests',
-                'page_title' => 'Requests - ' . SITE_NAME,
+                'page_title' => 'Requests - ' . $this->config('site.name'),
                 'requests' => $requests,
                 'token' => $_SESSION['token'],
-                'error' => $error !== '' ? $this->getErrorMessage($error) : $error
+                'error' => $this->getErrorMessage($error)
             ]
         );
     }
@@ -49,11 +49,11 @@ class Requests extends Controller
             ['add-contact'],
             [
                 'page' => 'add-contact',
-                'page_title' => 'Add Contact - ' . SITE_NAME,
+                'page_title' => 'Add Contact - ' . $this->config('site.name'),
                 'expire_times' => [1, 6, 12, 24, 48],
                 'url' => $url != '' ? $url : '',
                 'token' => $_SESSION['token'],
-                'error' => $error != '' ? $this->getErrorMessage($error) : $error
+                'error' => $this->getErrorMessage($error)
             ]
         );
     }
@@ -93,15 +93,15 @@ class Requests extends Controller
     {
         switch ($code) {
             case -1:
-                return "Invalid token.";
+                return 'Invalid token.';
             case 1:
-                return "Expire must be a number.";
+                return 'Expire must be a number.';
             case 2:
-                return "Failed to add contact request, contact support.";
+                return 'Failed to add contact request, contact support.';
             case 10:
-                return "Failed to delete request, contact support.";
+                return 'Failed to delete request, contact support.';
             default:
-                return "Unknown error.";
+                return '';
         }
     }
 }

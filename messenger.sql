@@ -26,10 +26,10 @@ SET time_zone = "+00:00";
 CREATE TABLE `contacts` (
   `contact_id` int(11) UNSIGNED NOT NULL,
   `contact_guid` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `contact_alias` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `contact_alias` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_guid` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `made_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -40,11 +40,11 @@ CREATE TABLE `contacts` (
 CREATE TABLE `contact_requests` (
   `request_id` int(11) UNSIGNED NOT NULL,
   `request_guid` varchar(6) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `request_name` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `request_name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_guid` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `expire` tinyint(2) NOT NULL DEFAULT '1',
   `made_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -58,7 +58,7 @@ CREATE TABLE `conversations` (
   `contact_guid` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `user_guid` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `made_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -69,7 +69,7 @@ CREATE TABLE `conversations` (
 CREATE TABLE `login_attempts` (
   `user_id` int(11) UNSIGNED NOT NULL,
   `made_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -86,7 +86,7 @@ CREATE TABLE `messages` (
   `message` blob NOT NULL,
   `signature` blob NOT NULL,
   `made_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -97,8 +97,8 @@ CREATE TABLE `messages` (
 CREATE TABLE `users` (
   `user_id` int(11) UNSIGNED NOT NULL,
   `user_guid` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `username` varchar(64) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `password` varchar(256) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `username` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
   `secret_key` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `activation` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `timezone` varchar(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'UTC',
@@ -108,7 +108,7 @@ CREATE TABLE `users` (
   `last_load` datetime NOT NULL,
   `modified` datetime DEFAULT NULL,
   `made_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Indexes for dumped tables

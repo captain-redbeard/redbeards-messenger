@@ -6,12 +6,19 @@
 namespace Redbeard\Core;
 
 use \PDO;
+use Redbeard\Core\Config;
 
 class Database
 {
-    public static $connection = null;
+    private static $connection = null;
+    private static $config = [];
     
-    public static function connect($rdbms = 'mysql')
+    public static function init($config)
+    {
+        self::$config = $config;
+    }
+    
+    public static function connect($config)
     {
         if (self::$connection === null) {
             $options = [
@@ -21,12 +28,12 @@ class Database
             ];
             
             self::$connection = new PDO(
-                $rdbms . ':' .
-                'host=' . DB_HOSTNAME . ';' .
-                'dbname=' . DB_DATABASE . ';' .
-                'chatset=' . DB_CHARSET . ';',
-                DB_USERNAME,
-                DB_PASSWORD,
+                $config['rdbms'] . ':' .
+                'host=' . $config['hostname'] . ';' .
+                'dbname=' . $config['database'] . ';' .
+                'chatset=' . $config['charset'] . ';',
+                $config['username'],
+                $config['password'],
                 $options
             );
         }
@@ -41,7 +48,7 @@ class Database
     
     private static function prepare($query)
     {
-        return self::connect()->prepare($query);
+        return self::connect(self::$config)->prepare($query);
     }
     
     public static function select($query, $parameters)

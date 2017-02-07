@@ -23,7 +23,7 @@ class Statistics extends Controller
             ['statistics'],
             [
                 'page' => 'statistics',
-                'page_title' => 'Statistics - ' . SITE_NAME,
+                'page_title' => 'Statistics - ' . $this->config('site.name'),
                 'error' => '',
                 'user_count' => $statistics[0]['user_count'],
                 'conversation_count' => $statistics[0]['conversation_count'],

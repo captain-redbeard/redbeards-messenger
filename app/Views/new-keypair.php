@@ -1,5 +1,5 @@
             <div class="cover-wrapper">
-                <form method="POST" action="<?=BASE_HREF;?>/settings/newkeypair">
+                <form method="POST" action="<?=$data['BASE_HREF'];?>/settings/newkeypair">
                     <table class="single-table">
                         <thead>
                             <tr>
@@ -35,7 +35,7 @@
                             <tr>
                                 <td>
                                     <input type="hidden" name="token" value="<?=$data['token'];?>">
-                                    <a class="raw-button blue-button w49 fl" href="<?=BASE_HREF;?>/settings" tabindex="3">Return</a>
+                                    <a class="raw-button blue-button w49 fl" href="<?=$data['BASE_HREF'];?>/settings" tabindex="3">Return</a>
                                     <input class="raw-button red-button w49 fr" type="submit" name="submit" title="Submit" tabindex="4" value="Generate">
                                 </td>
                             </tr>
@@ -44,13 +44,9 @@
                         <tfoot>
                             <tr>
                                 <td>
-                                    <?php if ($data['error'] !== '') { ?>
-                                        
                                     <br/>
                                     <div class="message-error"><?=$data['error'];?></div>
-                                    <?php } ?>
-                                    
-                                </td> 
+                                </td>
                             </tr>
                         </tfoot>
                     </table>

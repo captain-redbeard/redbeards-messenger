@@ -1,7 +1,7 @@
         </div>
         <?php if ($data['page'] === "conversations") { ?>
 
-        <script type="text/JavaScript" src="<?=BASE_HREF;?>/js/m.min.js"></script>
+        <script type="text/JavaScript" src="<?=$data['BASE_HREF'];?>/js/m.min.js"></script>
         <?php } ?>
 
     </body>

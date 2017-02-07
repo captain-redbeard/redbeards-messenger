@@ -129,20 +129,20 @@ class Functions
         return str_replace('/index.php', '', $url);
     }
     
-    public function stringLimitWords($string, $word_limit)
+    public static function stringLimitWords($string, $word_limit)
     {
         $words = explode(' ', $string);
         return implode(' ', array_slice($words, 0, $word_limit));
     }
     
-    public function cleanTitle($title)
+    public static function cleanTitle($title)
     {
-        $newtitle = string_limit_words($title, 10);
+        $newtitle = self::stringLimitWords($title, 10);
         $urltitle = preg_replace('/[^a-z0-9]/i', ' ', $newtitle);
         return strtolower(str_replace(' ', '-', $newtitle));
     }
     
-    public function restoreTitle($title)
+    public static function restoreTitle($title)
     {
         return ucfirst(str_replace('-', ' ', $title));
     }

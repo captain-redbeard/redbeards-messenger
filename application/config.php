@@ -8,7 +8,7 @@ return [
     'app' => [
         'base_dir' =>                   __DIR__,
         'config_directory' =>           __DIR__ . '/Config/',
-        'timezone' =>                   'Australia/Brisbane',
+        'timezone' =>                   'UTC',
         'user_session' =>               'messenger_user',
         'password_cost' =>              12,
         'max_login_attempts' =>         5,

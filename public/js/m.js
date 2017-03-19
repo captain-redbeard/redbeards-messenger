@@ -1,14 +1,3 @@
-/**
- * 
- * Details:
- * PHP Messenger.
- * 
- * Modified: 23-Dec-2016
- * Made Date: 28-Nov-2016
- * Author: Hosvir
- * 
- * */
- 
 function r(m, p, a, c, cb) {
     var x;
     window.XMLHttpRequest ? x=new XMLHttpRequest() : x=new ActiveXObject("Microsoft.XMLHTTP");
@@ -105,7 +94,7 @@ function f(v) {
     n = Math.floor(new Date() / 1000);
     v = Math.floor(new Date(v) / 1000);
     g = n - v;
-    t = "ago";    
+    t = "ago";
     for(i = 0; g >= l[i] && i < p.length; i++) g /= l[i];
     g = Math.round(g);
     if(g != 1) p[i] += "s";

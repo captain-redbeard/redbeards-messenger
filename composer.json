@@ -1,11 +1,15 @@
 {
+    "minimum-stability" : "dev",
+    "prefer-stable" : true,
+    
     "require": {
-        "php": ">=7.0.0",
-        "endroid/qrcode": "^1.7"
+        "redbeards/crew": "dev-master",
+        "redbeards/crew-encryption": "dev-master"
     },
+    
     "autoload": {
         "psr-4": {
-            "Redbeard\\": "app/"
+            "Messenger\\": "application/"
         }
     }
 }

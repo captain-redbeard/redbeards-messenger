@@ -1,17 +1,6 @@
-/**
- * 
- * Details:
- * PHP Messenger.
- * 
- * Modified: 28-Nov-2016
- * Made Date: 25-Nov-2016
- * Author: Hosvir
- * 
- * */
-
 /*============================================================*\
 
-	#Variables
+    #Variables
 
 \*============================================================*/
 
@@ -19,7 +8,7 @@
 @primary-font-size: 1.0em;
 
 /* Text color */
-@primary-text-color: #222222; 
+@primary-text-color: #222222;
 @date-color: #959595;
 @short-message-color: #959595;
 @chatbox-placeholder-color: #D0D0D0;
@@ -53,7 +42,7 @@
 
 /*============================================================*\
 
-	#Other pages
+    #Resets
 
 \*============================================================*/
 
@@ -62,77 +51,121 @@ html,body { margin: 0; padding: 0; line-height: 1; width: 100%; position: relati
 ul,li { margin: 0; }
 .co { width: 100%; height: 100vh; margin: 0 auto; }
 
-.cover-wrapper {
-	width: 100%;
-	height: 100vh;
-	display: flex;
-	background: @register-bg;
-	align-items: center;
-	justify-content: center;
+body {
+    background: lighten(@flat-blue, 10%);
 }
 
-.cover-start {
-	align-self: flex-start;
+a, a:visited {
+    text-decoration: none;
 }
 
-.cover-end {
-	align-self: flex-end;
-}
+/*============================================================*\
 
-.single-table {
+    #Pages
+
+\*============================================================*/
+
+.box-wrapper {
     width: 100%;
-	min-width: 350px;
-    max-width: 350px;
-	padding: 20px;
-	background: @register-box-bg;
-	border-radius: 10px;
+    max-width: 360px;
+    padding: 15% 0 0;
+    margin: auto;
+}
+
+.box-form {
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    max-width: 360px;
+    margin: auto;
+    padding: 45px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0,0,0,0.2), 0 5px 5px 0 rgba(0,0,0,0.24);
+}
+
+.box-form input, .box-form select {
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
     box-sizing: border-box;
+    font-size: 14px;
 }
 
-.single-table a, .single-table a:visited {
-	text-decoration: none;
+.box-form input[type=submit] {
+    text-transform: uppercase;
+    outline: 0;
+    background: @flat-blue;
+    width: 100%;
+    border: 0;
+    padding: 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: normal;
+    transition: all 0.3 ease;
+    cursor: pointer;
 }
 
-.single-table th {
-	padding-bottom: 15px;
+.box-form input[type=submit]:hover,.box-form input[type=submit]:active,.form box-form:focus {
+    background: @flat-blue-hover;
+}
+
+.box-form .message {
+    margin: 15px 0 0;
+    color: #b3b3b3;
+    font-size: 12px;
+}
+
+.box-form .message a {
+    color: @flat-blue;
+    text-decoration: none;
+}
+
+.box-form h1 {
+    font-size: 1.0em;
+    margin-top: 0;
 }
 
 .multi-table {
-	width: 100%;
-	min-width: 350px;
-	padding: 20px;
-	background: @register-box-bg;
-	border-radius: 10px;
-    box-sizing: border-box;
+    width: 100%;
+    padding: 0;
 }
 
 .multi-table a, .multi-table a:visited {
-	text-decoration: none;
+    text-decoration: none;
 }
 
 .multi-table th {
-	text-align: center;
-	padding-bottom: 15px;
+    text-align: center;
+    padding-bottom: 15px;
 }
 
 .multi-table td {
-	padding: 0px 5px 0px 5px;
+    padding: 0px 5px 0px 5px;
 }
 
 .glow {
-	padding: 10px;
+    padding: 10px;
     border: solid 1px #dcdcdc;
     background: #FFFFFF;
     font-size: inherit;
 }
 
 .disabled {
-	background: #EFEFEF;
+    background: #EFEFEF;
 }
 
+/*============================================================*\
+
+    #Buttons
+
+\*============================================================*/
+
 .raw-button {
-	display: inline-block;
-	vertical-align: middle;
+    display: inline-block;
+    vertical-align: middle;
     border: none;
     background: transparent none;
     padding: 0;
@@ -142,166 +175,136 @@ ul,li { margin: 0; }
     text-align: center;
     cursor: pointer;
     border-radius: 3px;
+    margin-bottom: 10px;
 }
 
 .blue-outline {
-	color: @register-button-border-color;
-	border: solid 2px @register-button-border-color;
-	cursor: pointer;
+    color: @register-button-border-color;
+    border: solid 2px @register-button-border-color;
+    cursor: pointer;
 }
 
 .blue-outline:hover {
-	color: @register-button-hover-border-color;
-	border: solid 2px @register-button-hover-border-color;
-	font-weight: bold;
+    color: @register-button-hover-border-color;
+    border: solid 2px @register-button-hover-border-color;
+    font-weight: bold;
 }
 
 .blue-button {
-	color: @button-text-color;
-	background: @flat-blue;
+    color: @button-text-color;
+    background: @flat-blue;
 }
 
 .blue-button:hover {
-	background: @flat-blue-hover;
+    background: @flat-blue-hover;
 }
 
 .red-button {
-	color: @button-text-color;
-	background: @flat-red;
+    color: @button-text-color;
+    background: @flat-red;
 }
 
 .red-button:hover {
-	background: @flat-red-hover;
+    background: @flat-red-hover;
 }
 
 .send-button {
-	float: right;
-	width: 100px;
-	height: 60px;
-	color: #959595;
-	border-top: solid 1px @message-border-color;
-	border-left: solid 1px @message-border-color;
-	border-radius: 0;
+    float: right;
+    width: 100px;
+    height: 60px;
+    color: #959595;
+    border-top: solid 1px @message-border-color;
+    border-left: solid 1px @message-border-color;
+    border-radius: 0;
 }
 
 .send-button:hover {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .gray-button {
-	color: @button-text-color;
-	background: #D0D0D0;
+    color: @button-text-color;
+    background: #D0D0D0;
 }
 
 .gray-button:hover {
-	background: #D9D9D9;
+    background: #D9D9D9;
 }
-
-.message-error {
-	margin-top: 10px;
-	width: 100%;
-	padding: 10px;
-	background: #FF1313;
-	font-size: 0.8em;
-	text-align: center;
-	color: #FFFFFF;
-	border-radius: 10px;
-}
-
-.message-error:empty {
-	padding: 0;
-}
-
-.message-info {
-	margin-top: 10px;
-	width: 100%;
-	padding: 10px;
-	background: #2ecc71;
-	font-size: 0.8em;
-	text-align: center;
-	color: #FFFFFF;
-	border-radius: 10px;
-}
-
 
 /*============================================================*\
 
-	#Misc
+    #Misc
 
 \*============================================================*/
 
-.fl {
-	float: left;
-}
+.fl         { float: left; }
+.fr         { float: right; }
+.pt2        { padding-top: 2px; }
+.cb         { clear: both; }
 
-.fr {
-	float: right;
-}
+.w49 { width: 49%; }
+.w80 { width: 80%; }
+.w100 { width: 100%; }
+.mw800 { max-width: 800px; }
 
-.pt2 {
-	padding-top: 2px;
-}
+.p25 { padding: 25px; }
+.sbw { padding: 5% 0 0; }
 
-.cb {
-	clear: both;
-}
-
-.w49 {
-	width: 49%;
-}
-
-.w80 {
-	width: 80%;
-}
-
-.w100 {
-	width: 100%;
-}
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.hidden { display: none; }
 
 .grow {
-	cursor: pointer;
-	transition: all .2s ease-in-out;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
 }
 
 .grow:hover {
-	transform: scale(1.1);
+    transform: scale(1.1);
 }
 
 .small-text {
-	font-size: 0.9em;
+    font-size: 0.9em;
 }
 
-.text-center {
-	text-align: center;
+.qr-wrapper {
+    width: 200px;
+    margin: 0 auto;
 }
 
-.text-left {
-	text-align: left;
+.message-error {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    background: #FF1313;
+    font-size: 0.8em;
+    text-align: center;
+    color: #FFFFFF;
+    border-radius: 10px;
 }
 
-.text-right {
-	text-align: right;
+.message-error:empty {
+    padding: 0;
 }
 
-.hidden-730 {
-	display: none;
+.message-info {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    background: #2ecc71;
+    font-size: 0.8em;
+    text-align: center;
+    color: #FFFFFF;
+    border-radius: 10px;
 }
 
-.qr-wrapper { 
-	width: 200px; 
-	margin: 0 auto; 
-}
-
-.hidden {
-	display: none;
-}
-
-.iac, .idc, .id, .ie, .il, .is, .ic { 
-	display: inline-block; 
-	background: url('../images/s.png') no-repeat; 
-	overflow: hidden; 
-	text-indent: -9999px; 
-	text-align: left; 
+.iac, .idc, .id, .ie, .il, .is, .ic {
+    display: inline-block;
+    background: url('../images/s.png') no-repeat;
+    overflow: hidden;
+    text-indent: -9999px;
+    text-align: left;
 }
  
 .iac { background-position: -0px -0px; width: 20px; height: 20px; }
@@ -311,22 +314,3 @@ ul,li { margin: 0; }
 .il { background-position: -0px -60px; width: 20px; height: 20px; }
 .is { background-position: -0px -80px; width: 20px; height: 20px; }
 .ic { background-position: -0px -100px; width: 20px; height: 20px; }
-
-
-/*============================================================*\
-
-	#Media queries
-
-\*============================================================*/
-
-@media only screen and (max-width: 400px) {
-    .single-table {
-        min-width: 50px;
-        width: 100%; /* Manually set calc(100% - 10px) in CSS as LESS doesn't support it*/
-    }
-
-    .multi-table {
-        min-width: 50px;
-        width: 100%; /* Manually set calc(100% - 10px) in CSS as LESS doesn't support it*/
-    }
-}

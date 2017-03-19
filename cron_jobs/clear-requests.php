@@ -3,8 +3,8 @@
  * @author captain-redbeard
  * @since 29/11/16
  */
-use Redbeard\Core\Config;
-use Redbeard\Core\Database;
+use Redbeard\Crew\Config;
+use Redbeard\Crew\Database;
 
 require_once '../vendor/autoload.php';
 

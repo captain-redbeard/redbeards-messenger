@@ -24,20 +24,10 @@ See [Website Security](#website-security) for more information about our securit
 ### Requirements
 
 * PHP >= 7.0.0
-* Endroid/qrcode >= 1.7
 * Composer autoloader
-
----
-
-### Install (Proof of concept)
-**Please understand this is still in a Proof of concept stage and the code base may change drastically.**
-
-##### Amazon Web Services - ElasticBeanstalk
-Config files have been created to automate the setup of the server located under .ebextensions.
-You should read over these files carefully and update them as required.
-
-##### Stand alone
-The config files under .ebextensions should be referenced for server setup.
+* redbeards/crew
+* redbeards/crew-encryption
+* Endroid/qrcode >= 1.7
 
 ---
 

@@ -1,6 +1,6 @@
 <?php
  /**
- * @author Hosvir
+ * @author captain-redbeard
  * @since 20/01/17
  */
-require_once '../app/app.php';
+require_once '../application/app.php';

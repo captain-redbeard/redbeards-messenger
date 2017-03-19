@@ -3,9 +3,9 @@
  * @author captain-redbeard
  * @since 09/12/16
  */
-use Redbeard\Core\Config;
-use Redbeard\Core\Database;
-use Redbeard\Core\Functions;
+use Redbeard\Crew\Config;
+use Redbeard\Crew\Database;
+use Redbeard\Crew\Utils\Urls;
 
 require_once '../vendor/autoload.php';
 
@@ -13,7 +13,7 @@ require_once '../vendor/autoload.php';
 Config::init();
 
 //Set base url
-Config::set('app.base_href', Functions::getUrl());
+Config::set('app.base_href', Urls::getUrl());
 
 //Set database config
 Database::init(Config::get('database'));
@@ -31,14 +31,8 @@ if (count($users) > 0) {
     //For each user
     foreach ($users as $user) {
         //Delete public private key pair
-        if (Config::get('keys.store_local')) {
-            unlink(Config::get('app.base_dir') . Config::get('keys.ppk_public_folder') . $user['user_guid'] . ".pem");
-            unlink(Config::get('app.base_dir') . Config::get('keys.ppk_private_folder') . $user['user_guid'] . ".key");
-        } else {
-            S3::setAuth(Config::get('keys.s3_access_key'), Config::get('keys.s3_secret_key'));
-            S3::deleteObject(Config::get('keys.bucket'), $guid . ".pem");
-            S3::deleteObject(Config::get('keys.bucket'), $guid . ".key");
-        }
+        unlink(Config::get('app.base_dir') . Config::get('keys.public_folder') . $user['user_guid'] . '.pem');
+        unlink(Config::get('app.base_dir') . Config::get('keys.private_folder') . $user['user_guid'] . '.key');
         
         //Delete messages
         Database::update(

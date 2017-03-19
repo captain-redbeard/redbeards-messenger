@@ -17,7 +17,7 @@ See [Website Security](#website-security) for more information about our securit
 ---
 
 ### Demo site
-[https://fromdownunder.com.au](https://fromdownunder.com.au)
+[https://messenger.captain-redbeard.com](https://messenger.captain-redbeard.com)
 
 ---
 
